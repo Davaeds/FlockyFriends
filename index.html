@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flocks</title>
+<meta name="description" content="Every Featherly Friend, and who has which. A family bird collection tracker.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Flocks">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#EEF6F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A1828" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<script src="config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: compact app bar, tab views (bottom tab bar on phones), product-style bird cards on a mint ground.
+   Plum ink, mint ground, peach and berry accents. Filled buttons use dark plum or deep green for contrast. */
+:root {
+  --bg: #EEF6F2;
+  --surface: #FFFFFF;
+  --surface-2: #E2EFE9;
+  --tile: #FFFFFF;
+  --ink: #2F2238;
+  --muted: #5E5367;
+  --line: #D2E2DB;
+  --line-strong: #7D958C;
+  --primary: #3A2944;
+  --on-primary: #FFFFFF;
+  --leaf: #1E7A4F;
+  --leaf-fill: #1E7A4F;
+  --on-leaf: #FFFFFF;
+  --leaf-soft: #DDF2E7;
+  --berry: #B4235A;
+  --berry-soft: #FCE4EC;
+  --on-berry: #FFFFFF;
+  --peach: #F2795D;
+  --peach-soft: #FFE6DE;
+  --butter-soft: #FFF2CC;
+  --focus: #2F2238;
+  --shadow: 0 1px 0 rgba(47,34,56,.05), 0 6px 18px rgba(47,34,56,.07);
+  --display: "Baloo 2", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --body: "Nunito", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --r: 20px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #F6F3F8; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
+    --primary: #F3EEF7; --on-primary: #1A1828; --leaf: #7AD7A8; --leaf-fill: #7AD7A8; --on-leaf: #0F2419; --leaf-soft: #20392F; --berry: #FF8DB3; --berry-soft: #43243A; --on-berry: #2A0F1C;
+    --peach: #FF9378; --peach-soft: #43292A; --butter-soft: #3B3424; --focus: #FFD166; --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.28);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #F6F3F8; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
+  --primary: #F3EEF7; --on-primary: #1A1828; --leaf: #7AD7A8; --leaf-fill: #7AD7A8; --on-leaf: #0F2419; --leaf-soft: #20392F; --berry: #FF8DB3; --berry-soft: #43243A; --on-berry: #2A0F1C;
+  --peach: #FF9378; --peach-soft: #43292A; --butter-soft: #3B3424; --focus: #FFD166; --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.28);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px); }
+html.modal-open { overflow: hidden; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 8px 40px; display: flex; flex-direction: column; gap: 16px; }
+
+/* app bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 6px; }
+.brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.brand svg { width: 40px; height: 40px; flex: none; }
+.brand b { font-family: var(--display); font-weight: 800; font-size: 1.75rem; line-height: 1; letter-spacing: -.01em; }
+.me-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 14px 4px 4px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; max-width: 60%; }
+.me-chip span.nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.av { width: 34px; height: 34px; border-radius: 50%; display: inline-grid; place-items: center; color: var(--oc, #fff); font-weight: 800; font-size: .95rem; flex: none; background: var(--c, #6E6A84); }
+.av.sm { width: 22px; height: 22px; font-size: .7rem; }
+.me-chip svg { width: 16px; height: 16px; flex: none; }
+
+.banner { background: var(--butter-soft); border-radius: 14px; padding: 12px 14px; font-weight: 600; }
+.banner b { font-weight: 800; }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; background: var(--surface-2); padding: 5px; border-radius: 999px; width: fit-content; max-width: 100%; }
+.tab { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; min-height: 44px; padding: 6px 16px; border-radius: 999px; font-weight: 800; color: var(--muted); white-space: nowrap; position: relative; }
+.tab svg { width: 22px; height: 22px; flex: none; }
+.tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.tab .n { min-width: 1.5em; padding: 0 6px; border-radius: 999px; background: var(--berry); color: var(--on-berry); font-size: .72rem; line-height: 1.5; text-align: center; font-variant-numeric: tabular-nums; }
+.tab .short { display: none; }
+
+/* toolbar */
+.toolbar { display: flex; flex-direction: column; gap: 10px; }
+.tool-row { display: flex; gap: 10px; align-items: center; }
+.search { flex: 1; display: flex; align-items: center; gap: 8px; min-height: 46px; background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 999px; padding: 0 16px; max-width: 520px; }
+.search:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+.search input { border: 0; outline: 0; background: transparent; width: 100%; min-width: 0; font-size: 16px; padding: 10px 0; }
+.search input::-webkit-search-cancel-button { display: none; }
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 46px; min-height: 46px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; }
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn .dot { min-width: 20px; height: 20px; border-radius: 999px; background: var(--berry); color: var(--on-berry); font-size: .72rem; display: inline-grid; place-items: center; padding: 0 5px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 2px 16px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 40px; border: 1.5px solid var(--line-strong); background: var(--surface); border-radius: 999px; padding: 0 14px; font-weight: 700; font-size: .92rem; }
+.chip .sw { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.chip[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+.result-line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; color: var(--muted); font-weight: 700; font-size: .92rem; }
+.link { background: none; border: 0; padding: 8px 2px; min-height: 40px; color: var(--ink); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+
+/* sections */
+.sec-h { display: flex; align-items: center; gap: 10px; margin: 8px 0 2px; flex-wrap: wrap; }
+.sec-h h2 { font-family: var(--display); font-weight: 800; font-size: 1.3rem; margin: 0; line-height: 1.2; text-wrap: balance; }
+.sec-h .sw { width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+.sec-h .count { margin-left: auto; color: var(--muted); font-weight: 700; font-size: .88rem; display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.mini { display: inline-block; width: 80px; height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.mini i { display: block; height: 100%; border-radius: 99px; background: var(--c, var(--leaf)); }
+.group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+
+/* cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 14px; }
+.card { position: relative; display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
+.grid > .card { content-visibility: auto; contain-intrinsic-size: auto 300px; }
+.card.have::after { content: ""; position: absolute; inset: 0; border: 2.5px solid var(--leaf); border-radius: inherit; pointer-events: none; z-index: 2; }
+.tile { position: relative; display: grid; place-items: center; border: 0; padding: 0; margin: 0; width: 100%; aspect-ratio: 1 / 1; background: var(--tile); }
+.tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.tile svg { width: 74%; height: 74%; }
+.tile:focus-visible { outline-offset: -5px; border-radius: var(--r) var(--r) 0 0; }
+.tile.cartoon::before { content: ""; position: absolute; inset: 14%; border-radius: 50%; background: var(--tint, #EAF5F1); }
+.tile.cartoon svg { position: relative; }
+.qty { position: absolute; top: 10px; right: 10px; background: var(--leaf-fill); color: var(--on-leaf); font-weight: 800; font-size: .8rem; border-radius: 999px; padding: 1px 9px; font-variant-numeric: tabular-nums; }
+.owners { position: absolute; top: 10px; left: 10px; display: flex; }
+.owners .av { border: 2px solid #fff; margin-right: -6px; }
+.card-body { padding: 10px 12px 4px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.card .nm { font-family: var(--display); font-weight: 800; font-size: 1.12rem; line-height: 1.15; margin: 0; overflow-wrap: anywhere; }
+.card .meta { color: var(--muted); font-size: .84rem; font-weight: 600; line-height: 1.35; margin: 0; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; font-size: .74rem; font-weight: 800; padding: 2px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink); }
+.tag.want { background: var(--berry-soft); color: var(--berry); }
+.tag.want svg { width: 12px; height: 12px; }
+.tag.warn { background: var(--butter-soft); }
+.tag.added { background: var(--leaf-soft); }
+.card-actions { display: flex; gap: 8px; padding: 8px 12px 12px; margin-top: auto; }
+.have-btn { flex: 1; min-height: 44px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; font-size: .92rem; white-space: nowrap; }
+.have-btn.on { background: var(--leaf-fill); border-color: var(--leaf-fill); color: var(--on-leaf); }
+.heart { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line-strong); background: var(--surface); display: grid; place-items: center; }
+.heart svg { width: 20px; height: 20px; }
+.heart.on { border-color: var(--berry); background: var(--berry-soft); }
+.add-card { border: 2px dashed var(--line-strong); background: transparent; border-radius: var(--r); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-weight: 800; color: var(--ink); padding: 16px; }
+.add-card .plus { width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: var(--on-primary); display: grid; place-items: center; font-size: 1.9rem; line-height: 1; }
+
+/* stats */
+.meter { background: var(--surface); border-radius: var(--r); padding: 14px 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+.meter-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-weight: 700; }
+.meter .pct { font-family: var(--display); font-weight: 800; font-size: 1.6rem; line-height: 1; color: var(--leaf); font-variant-numeric: tabular-nums; }
+.bar { height: 12px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--leaf-fill); border-radius: 99px; transition: width .4s ease; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--surface-2); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; min-width: 0; }
+.stat b { font-family: var(--display); font-weight: 800; font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-weight: 700; font-size: .82rem; }
+.stat.leaf b { color: var(--leaf); } .stat.berry b { color: var(--berry); }
+.srows { display: flex; flex-direction: column; gap: 8px; }
+.srow { display: grid; grid-template-columns: minmax(0, 1fr) 90px 3.4em; gap: 10px; align-items: center; font-weight: 700; font-size: .9rem; }
+.srow .l { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.srow .sw { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
+.srow .n { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+details.panel summary { cursor: pointer; font-weight: 800; min-height: 44px; display: flex; align-items: center; }
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::after { content: ""; width: 8px; height: 8px; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: translateY(-3px) rotate(45deg); margin-left: 12px; transition: transform .15s ease; }
+details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+
+/* family */
+.people { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.person { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 16px 6px 6px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; }
+.person[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+.panel { background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.panel h2 { font-family: var(--display); font-weight: 800; font-size: 1.3rem; margin: 0; line-height: 1.2; }
+.panel .sub { color: var(--muted); margin: -6px 0 0; font-size: .92rem; }
+.person-head { display: flex; align-items: center; gap: 12px; }
+.person-head .av { width: 52px; height: 52px; font-size: 1.3rem; }
+.person-head h2 { font-size: 1.5rem; }
+.gift-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.gift { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); align-items: center; }
+.gift:first-child { border-top: 0; }
+.gift .thumb { width: 72px; height: 72px; border-radius: 14px; overflow: hidden; border: 0; padding: 0; background: var(--tile); display: grid; place-items: center; position: relative; }
+.gift .thumb img { width: 100%; height: 100%; object-fit: contain; }
+.gift .thumb svg { width: 80%; height: 80%; }
+.gift .nm { font-family: var(--display); font-weight: 800; font-size: 1.08rem; margin: 0; line-height: 1.2; }
+.gift .meta { color: var(--muted); font-size: .85rem; font-weight: 600; margin: 0; }
+.gift .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.pill-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; font-size: .88rem; text-decoration: none; color: var(--ink); }
+.pill-btn.on { background: var(--leaf-fill); border-color: var(--leaf-fill); color: var(--on-leaf); }
+.pill-btn svg { width: 16px; height: 16px; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 10px; }
+.thumbs button { border: 0; padding: 0; background: none; display: flex; flex-direction: column; gap: 4px; align-items: stretch; text-align: center; font-weight: 700; font-size: .78rem; color: var(--ink); min-width: 0; }
+.thumbs .t { aspect-ratio: 1 / 1; border-radius: 14px; background: var(--tile); display: grid; place-items: center; overflow: hidden; position: relative; }
+.thumbs .t img { width: 100%; height: 100%; object-fit: contain; }
+.thumbs .t svg { width: 80%; height: 80%; }
+.thumbs span.l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.secret { display: flex; gap: 8px; align-items: flex-start; font-size: .88rem; color: var(--muted); font-weight: 600; }
+.secret svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+
+/* empty */
+.empty { background: var(--surface); border-radius: var(--r); padding: 28px 20px; text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.empty svg { width: 110px; height: 110px; }
+.empty h2 { font-family: var(--display); font-weight: 800; font-size: 1.3rem; margin: 0; }
+.empty p { margin: 0; color: var(--muted); max-width: 44ch; }
+
+/* dialog (bottom sheet on phones) */
+dialog.sheet { border: 0; padding: 0; background: var(--surface); color: var(--ink); width: 100%; max-width: 100%; margin: auto 0 0; max-height: 94dvh; border-radius: 24px 24px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,.25); overflow: hidden; }
+dialog.sheet[open] { display: flex; flex-direction: column; animation: rise .22s ease-out; }
+dialog.sheet::backdrop { background: rgba(26,24,40,.5); }
+@keyframes rise { from { transform: translateY(24px); opacity: .6; } }
+.dlg-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 0 18px; flex: none; }
+.dlg-bar .grab { width: 40px; height: 5px; border-radius: 9px; background: var(--line-strong); opacity: .6; position: absolute; left: 50%; top: 8px; transform: translateX(-50%); }
+.dlg-bar h2 { font-family: var(--display); font-weight: 800; font-size: 1.2rem; margin: 10px 0 0; }
+.x { margin-left: auto; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--surface-2); display: grid; place-items: center; }
+.x svg { width: 18px; height: 18px; }
+.dlg-body { overflow-y: auto; overscroll-behavior: contain; padding: 8px 18px calc(22px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 720px) {
+  dialog.sheet { margin: auto; max-width: 580px; border-radius: 24px; max-height: 90vh; }
+  .dlg-bar .grab { display: none; }
+}
+.hero { border-radius: 20px; background: var(--tile); aspect-ratio: 4 / 3; max-height: 40vh; width: 100%; display: grid; place-items: center; overflow: hidden; position: relative; flex: none; }
+.hero img { width: 100%; height: 100%; object-fit: contain; }
+.hero svg { width: 62%; height: 88%; position: relative; }
+.hero.cartoon { background: radial-gradient(circle closest-side, var(--tint, #EAF5F1) 0 88%, transparent 89%), var(--tile); }
+.bird-title h2 { font-family: var(--display); font-weight: 800; font-size: 1.75rem; line-height: 1.1; margin: 0; overflow-wrap: anywhere; }
+.bird-title .meta { color: var(--muted); font-weight: 700; margin: 4px 0 0; }
+.about { margin: 0; line-height: 1.55; }
+.field label, .lbl { display: block; font-weight: 800; font-size: .92rem; margin-bottom: 6px; }
+.field input[type=text], .field input[type=number], .field select, .field textarea, .field input[type=password] { width: 100%; border: 1.5px solid var(--line-strong); background: var(--bg); border-radius: 14px; padding: 11px 14px; font-size: 16px; }
+.field textarea { min-height: 84px; resize: vertical; }
+.hint { color: var(--muted); font-size: .86rem; margin: 6px 0 0; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mine-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.stepper { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border-radius: 999px; padding: 4px; }
+.stepper button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--surface); font-weight: 800; font-size: 1.25rem; box-shadow: var(--shadow); }
+.stepper output { min-width: 2.2ch; text-align: center; font-weight: 800; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border: 1.5px solid var(--line-strong); border-radius: 999px; padding: 0 18px; font-weight: 800; background: var(--surface); color: var(--ink); text-decoration: none; }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.btn.leaf { background: var(--leaf-fill); border-color: var(--leaf-fill); color: var(--on-leaf); }
+.btn.wish-on { background: var(--berry-soft); border-color: var(--berry); color: var(--berry); }
+.btn.danger { border-color: var(--berry); color: var(--berry); }
+.btn svg { width: 18px; height: 18px; }
+.btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.who { display: flex; flex-direction: column; gap: 8px; }
+.who-line { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-weight: 700; font-size: .92rem; }
+.who-line .k { color: var(--muted); min-width: 6.5em; }
+.who-line .p { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border-radius: 999px; background: var(--surface-2); }
+.photo-tools { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; }
+.photo-tools .cap { color: var(--muted); font-size: .88rem; font-weight: 600; }
+.src { color: var(--muted); font-size: .86rem; margin: 0; }
+.src a { color: var(--ink); font-weight: 800; }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatches button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1.5px var(--line-strong); }
+.swatches button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg button { min-height: 42px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; }
+.seg button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.people-list { display: flex; flex-direction: column; gap: 10px; }
+.people-list .row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+.people-list .row:first-child { border-top: 0; }
+.people-list .row .nm { font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.confirm { background: var(--berry-soft); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; font-weight: 700; }
+.err { color: var(--berry); font-weight: 800; min-height: 1.5em; margin: 0; }
+.welcome-list { display: flex; flex-direction: column; gap: 10px; }
+.welcome-list button { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 16px 8px 8px; border-radius: 18px; border: 1.5px solid var(--line-strong); background: var(--surface); font-family: var(--display); font-weight: 800; font-size: 1.25rem; text-align: left; }
+.welcome-list .av { width: 48px; height: 48px; font-size: 1.2rem; }
+
+/* toast */
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: flex; align-items: center; gap: 14px; max-width: min(92vw, 460px); background: var(--primary); color: var(--on-primary); padding: 10px 10px 10px 16px; border-radius: 14px; font-weight: 800; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.toast .msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast button { flex: none; border: 0; background: transparent; color: inherit; text-decoration: underline; font-weight: 800; min-height: 36px; padding: 0 8px; }
+.toast:not(:has(button)) { padding-right: 16px; }
+
+footer { color: var(--muted); font-size: .85rem; border-top: 1.5px dashed var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+footer p { margin: 0; max-width: 78ch; }
+footer a { color: var(--ink); font-weight: 700; }
+
+/* interaction feedback */
+@media (hover: hover) {
+  .card .tile:hover img, .card .tile:hover svg { transform: scale(1.03); transition: transform .2s ease; }
+  .chip:hover, .have-btn:hover, .heart:hover, .btn:hover, .pill-btn:hover, .person:hover, .icon-btn:hover { filter: brightness(.97); }
+}
+button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
+
+/* phones: bottom tab bar */
+@media (max-width: 719px) {
+  .app { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; max-width: none; border-radius: 0; padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--surface); box-shadow: 0 -1px 0 var(--line), 0 -8px 24px rgba(0,0,0,.06); justify-content: space-around; gap: 0; }
+  .tab { flex: 1; flex-direction: column; gap: 1px; min-height: 54px; padding: 4px 2px; border-radius: 14px; font-size: .74rem; }
+  .tab[aria-selected="true"] { background: var(--surface-2); box-shadow: none; }
+  .tab .long { display: none; } .tab .short { display: inline; }
+  .tab .n { position: absolute; top: 2px; left: calc(50% + 6px); font-size: .66rem; }
+  .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .card-body { padding: 8px 10px 2px; }
+  .card .nm { font-size: 1.02rem; }
+  .card-actions { padding: 6px 10px 10px; gap: 6px; }
+  .have-btn { font-size: .84rem; }
+  .brand b { font-size: 1.5rem; }
+  .brand svg { width: 34px; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } button:active { transform: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><svg id="logo" viewBox="0 0 120 120" aria-hidden="true"></svg><b>Flocks</b></div>
+    <button class="me-chip" id="meBtn" type="button" hidden aria-haspopup="dialog"></button>
+  </header>
+
+  <div id="banner" role="status"></div>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-birds" data-tab="birds" aria-controls="view-birds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14.5c0-4.7 3.4-8.5 7.9-8.5 2.6 0 4.7 1.3 5.9 3.2l3.2.6-2.4 2.1c.1.5.2 1 .2 1.6 0 4.1-3.4 7-7.4 7-4.3 0-7.4-2.6-7.4-6Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="14.8" cy="10.2" r="1.2" fill="currentColor"/><path d="M8 13.5c1 2 3 2.8 5 2.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span class="long">All birds</span><span class="short">Birds</span></button>
+    <button class="tab" role="tab" id="tab-mine" data-tab="mine" aria-controls="view-mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12.5h18c-.6 4.3-4.3 7.5-9 7.5s-8.4-3.2-9-7.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M5 15.5c2 .8 4.3 1.2 7 1.2s5-.4 7-1.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="9.5" cy="9.5" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="14.5" cy="9" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="long">My flock</span><span class="short">My flock</span><span class="n" id="n-mine" hidden></span></button>
+    <button class="tab" role="tab" id="tab-wish" data-tab="wish" aria-controls="view-wish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20C6 16 3 12.6 3 9.3 3 6.4 5.2 4.2 7.9 4.2c1.7 0 3.1.9 4.1 2.3 1-1.4 2.4-2.3 4.1-2.3 2.7 0 4.9 2.2 4.9 5.1 0 3.3-3 6.7-9 10.7Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg><span class="long">My wish list</span><span class="short">Wishes</span><span class="n" id="n-wish" hidden></span></button>
+    <button class="tab" role="tab" id="tab-family" data-tab="family" aria-controls="view-family"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 9v11M4 13h16" stroke="currentColor" stroke-width="1.9"/><path d="M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9Zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="long">Family &amp; gifts</span><span class="short">Gifts</span></button>
+  </nav>
+
+  <section id="view-birds" role="tabpanel" aria-labelledby="tab-birds" hidden>
+    <div class="toolbar">
+      <div class="tool-row">
+        <label class="search" for="q"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span class="sr">Search birds</span><input id="q" type="search" placeholder="Search by name or look" autocomplete="off" autocorrect="off" enterkeyhint="search"></label>
+        <button class="icon-btn" id="filterBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Filter</span></button>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Season"></div>
+      <div class="result-line" id="resultLine"></div>
+    </div>
+    <div id="birdsOut"></div>
+  </section>
+
+  <section id="view-mine" role="tabpanel" aria-labelledby="tab-mine" hidden></section>
+  <section id="view-wish" role="tabpanel" aria-labelledby="tab-wish" hidden></section>
+  <section id="view-family" role="tabpanel" aria-labelledby="tab-family" hidden></section>
+
+  <footer>
+    <p><strong>Where the bird list comes from.</strong> Birds marked as on Target were listed on <a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a> in October 2026, with Target's own photos and descriptions. Older birds come from the Target Birds fan wiki, news coverage and resale listings. Birds seen only in resale listings are marked "Unconfirmed". If you spot one that's missing, add it from All birds.</p>
+    <p>Featherly Friends, Wondershop, Hyde and EEK! Boutique and Spritz are Target brands. Flocks is a family tracker and is not made by Target.</p>
+  </footer>
+</div>
+
+<dialog class="sheet" id="dlg" aria-labelledby="dlgTitle"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Fonts arrive whenever they arrive; the app paints with system fonts first.
+  (() => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap"; document.head.appendChild(l); })();
+
+  // ---------- constants ----------
+  const SEASONS = [
+    { id: "christmas", label: "Christmas", c: "#E0525B" },
+    { id: "ornament", label: "Ornaments", c: "#C9A227" },
+    { id: "halloween", label: "Halloween", c: "#8A5CC9" },
+    { id: "fall", label: "Fall harvest", c: "#E8873A" },
+    { id: "muertos", label: "Día de Muertos", c: "#E25FA2" },
+    { id: "valentine", label: "Valentine's", c: "#F06A8F" },
+    { id: "stpatricks", label: "St. Patrick's", c: "#2FA35B" },
+    { id: "spring", label: "Spring & Easter", c: "#6DBF6A" },
+    { id: "summer", label: "Summer", c: "#3BA7D9" },
+    { id: "patriotic", label: "Patriotic", c: "#3E5BA9" },
+    { id: "pride", label: "Pride", c: "#B05FD0" },
+    { id: "other", label: "Other", c: "#8E8A9C" }
+  ];
+  const SEASON = Object.fromEntries(SEASONS.map(s => [s.id, s]));
+  const FLOCK_COLORS = ["#C24E33", "#1E7A4F", "#5B47C8", "#9A6A00", "#B8325F", "#17739C"];
+  const BODY_SWATCHES = ["#E0525B", "#F2A65A", "#FFD166", "#7CC6A4", "#6FB7E0", "#9C8BE0", "#F4A6C0", "#F5F1EA", "#8D7A6A", "#3A3245"];
+  const SHOWS = [["", "All birds"], ["have", "I have"], ["need", "I still need"], ["wanted", "Someone wants"]];
+  const SORTS = [["season", "By season"], ["name", "Name A to Z"], ["newest", "Newest first"], ["oldest", "Oldest first"]];
+
+  // ---------- helpers ----------
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  const safeColor = c => (typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)) ? c : "";
+  const safeUrl = u => { try { const x = new URL(u); return x.protocol === "https:" ? x.href : ""; } catch (e) { return ""; } };
+  const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const storageOK = (() => { try { localStorage.setItem("flocks.t", "1"); localStorage.removeItem("flocks.t"); return true; } catch (e) { return false; } })();
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+  function shade(hex, amt) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex || ""); if (!m) return "#8E8A9C";
+    const n = parseInt(m[1], 16), f = v => Math.max(0, Math.min(255, Math.round(v + amt * 255)));
+    return "#" + ((1 << 24) + (f(n >> 16) << 16) + (f((n >> 8) & 255) << 8) + f(n & 255)).toString(16).slice(1);
+  }
+  const soft = hex => shade(hex, 0.34);
+  function lum(hex) { const n = parseInt(hex.slice(1), 16), f = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }; return 0.2126 * f(n >> 16) + 0.7152 * f((n >> 8) & 255) + 0.0722 * f(n & 255); }
+  // Avatar initials: white on dark colours, plum on light ones, whichever reads better.
+  const avStyle = c => { c = safeColor(c) || "#6E6A84"; const l = lum(c); return `--c:${c};--oc:${(1.05 / (l + 0.05)) >= ((l + 0.05) / 0.0703) ? "#FFFFFF" : "#2F2238"}`; };
+  function hashColor(s) { let h = 0; for (const ch of String(s || "")) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return BODY_SWATCHES[h % BODY_SWATCHES.length]; }
+  function slug(s) { return String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "bird"; }
+  const rand = n => Math.random().toString(36).slice(2, 2 + n);
+  const initial = name => esc((String(name || "?").trim().charAt(0) || "?").toUpperCase());
+  const ICON = {
+    heart: (on) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20C6 16 3 12.6 3 9.3 3 6.4 5.2 4.2 7.9 4.2c1.7 0 3.1.9 4.1 2.3 1-1.4 2.4-2.3 4.1-2.3 2.7 0 4.9 2.2 4.9 5.1 0 3.3-3 6.7-9 10.7Z" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2"/></svg>`,
+    x: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+    camera: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+    ext: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    gift: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 9v11M4 13h16" stroke="currentColor" stroke-width="2"/></svg>`,
+    lock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+    chev: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  };
+
+  // ---------- bird drawing ----------
+  function accessory(kind, a) {
+    const A = a || "#E0525B";
+    switch (kind) {
+      case "witch": return `<polygon points="34,40 90,40 70,2" fill="${A}"/><ellipse cx="62" cy="40" rx="34" ry="6" fill="${shade(A,-.12)}"/><rect x="48" y="30" width="30" height="6" fill="#FFD166"/>`;
+      case "santa": return `<path d="M36 40 Q60 0 92 22 L86 40 Z" fill="${A}"/><rect x="32" y="36" width="60" height="10" rx="5" fill="#FFFFFF"/><circle cx="94" cy="22" r="7" fill="#FFFFFF"/>`;
+      case "beanie": return `<path d="M36 42 Q62 6 88 42 Z" fill="${A}"/><rect x="34" y="38" width="56" height="9" rx="4" fill="${shade(A,-.15)}"/><circle cx="62" cy="14" r="7" fill="${shade(A,.25)}"/>`;
+      case "catears": return `<polygon points="40,40 46,12 60,34" fill="${A}"/><polygon points="66,34 80,12 86,40" fill="${A}"/><polygon points="45,34 48,20 55,32" fill="#F4A6C0"/><polygon points="71,32 79,20 81,34" fill="#F4A6C0"/>`;
+      case "pumpkin": return `<ellipse cx="62" cy="30" rx="18" ry="13" fill="#F28C28"/><path d="M62 18 v24 M52 20 q-6 10 0 22 M72 20 q6 10 0 22" stroke="#C96A12" stroke-width="2" fill="none"/><rect x="60" y="12" width="4" height="8" rx="2" fill="#5B8C3A"/>`;
+      case "bones": return `<g stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"><path d="M56 74 h22"/><path d="M54 84 h26"/><path d="M57 94 h20"/></g><circle cx="69" cy="56" r="7" fill="none" stroke="#FFFFFF" stroke-width="3"/>`;
+      case "bow": return `<polygon points="62,34 44,24 44,44" fill="${A}"/><polygon points="62,34 80,24 80,44" fill="${A}"/><circle cx="62" cy="34" r="5" fill="${shade(A,-.15)}"/>`;
+      case "heart": return `<path d="M96 96 C82 86 84 74 92 76 C96 77 96 81 96 81 C96 81 97 77 101 76 C109 74 110 86 96 96 Z" fill="${A}"/>`;
+      case "crown": return `<polygon points="42,40 42,20 52,30 62,14 72,30 82,20 82,40" fill="#F5C542"/><circle cx="62" cy="26" r="3" fill="${A}"/>`;
+      case "flower": return `<g transform="translate(70 30)"><circle cx="0" cy="-8" r="6" fill="${A}"/><circle cx="8" cy="-2" r="6" fill="${A}"/><circle cx="5" cy="7" r="6" fill="${A}"/><circle cx="-5" cy="7" r="6" fill="${A}"/><circle cx="-8" cy="-2" r="6" fill="${A}"/><circle r="5" fill="#FFD166"/></g>`;
+      case "flowercrown": return `<g>${[[42,40,"#E25FA2"],[54,30,"#F28C28"],[66,27,"#FFD166"],[78,30,"#8A5CC9"],[88,40,"#E25FA2"]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="7" fill="${c}"/><circle cx="${x}" cy="${y}" r="2.5" fill="#FFFFFF"/>`).join("")}</g>`;
+      case "tophat": return `<rect x="46" y="8" width="32" height="30" rx="3" fill="#2E2A36"/><rect x="38" y="34" width="48" height="7" rx="3" fill="#2E2A36"/><rect x="46" y="28" width="32" height="5" fill="${A}"/><circle cx="82" cy="30" r="4" fill="#3FA877"/><circle cx="86" cy="34" r="2.5" fill="#E0525B"/>`;
+      case "goggles": return `<path d="M30 56 h68" stroke="${A}" stroke-width="5"/><circle cx="72" cy="57" r="10" fill="#BDE3F5" stroke="${A}" stroke-width="4"/>`;
+      case "scarf": return `<path d="M28 66 Q62 80 96 64 L96 74 Q62 90 28 76 Z" fill="${A}"/><rect x="38" y="76" width="12" height="22" rx="4" fill="${A}"/><path d="M40 84 h8 M40 90 h8" stroke="#FFFFFF" stroke-width="2"/>`;
+      case "sweater": return `<path d="M26 74 Q62 60 98 74 L98 100 Q62 112 26 100 Z" fill="${A}" opacity=".95"/><path d="M30 82 Q62 70 94 82" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="4 5" fill="none"/>`;
+      case "helmet": return `<circle cx="66" cy="62" r="40" fill="#CFEAF7" opacity=".35" stroke="#FFFFFF" stroke-width="4"/><path d="M40 36 q10 -10 22 -10" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" fill="none"/>`;
+      case "leaf": return `<path d="M60 36 Q50 14 70 8 Q76 26 60 36 Z" fill="#E8873A"/><path d="M60 36 Q64 22 70 10" stroke="#9A4F14" stroke-width="2" fill="none"/>`;
+      case "apple": return `<circle cx="98" cy="90" r="11" fill="#E0525B"/><path d="M98 80 q2 -6 6 -7" stroke="#5B3A1E" stroke-width="2.5" fill="none"/><ellipse cx="104" cy="77" rx="5" ry="3" fill="#5B8C3A"/>`;
+      case "pie": return `<ellipse cx="98" cy="96" rx="15" ry="6" fill="#D9A066"/><ellipse cx="98" cy="93" rx="13" ry="4" fill="#E8873A"/><circle cx="98" cy="88" r="4" fill="#FFFFFF"/>`;
+      case "rake": return `<path d="M100 40 L100 106" stroke="#8D6E4A" stroke-width="4" stroke-linecap="round"/><path d="M90 104 h20 M92 104 v6 M98 104 v6 M104 104 v6 M110 104 v6" stroke="#8D6E4A" stroke-width="3"/>`;
+      case "horns": return `<path d="M44 40 Q38 22 48 14 Q48 28 54 36 Z" fill="${A}"/><path d="M80 36 Q86 28 86 14 Q96 22 88 40 Z" fill="${A}"/><circle cx="58" cy="56" r="4" fill="#2E2A36"/>`;
+      case "spider": return `<g stroke="#2E2A36" stroke-width="3" stroke-linecap="round" fill="none"><path d="M30 70 q-12 -4 -18 -14"/><path d="M28 80 q-14 0 -20 -6"/><path d="M30 90 q-12 6 -18 14"/><path d="M96 70 q12 -4 18 -14"/><path d="M98 82 q12 2 18 -2"/></g><circle cx="58" cy="56" r="3" fill="#2E2A36"/><circle cx="64" cy="50" r="3" fill="#2E2A36"/>`;
+      case "tombstone": return `<path d="M88 112 V86 Q88 74 100 74 Q112 74 112 86 V112 Z" fill="#B7B3C2"/><path d="M96 90 h8 M100 86 v10" stroke="#76697F" stroke-width="2.5"/>`;
+      case "bell": return `<path d="M92 86 Q92 72 100 72 Q108 72 108 86 L110 92 H90 Z" fill="#F5C542"/><circle cx="100" cy="94" r="3" fill="#C9A227"/><path d="M100 72 v-6" stroke="#E0525B" stroke-width="3"/>`;
+      case "snowman": return `<circle cx="100" cy="98" r="10" fill="#FFFFFF" stroke="#D3E5DE" stroke-width="2"/><circle cx="100" cy="82" r="7" fill="#FFFFFF" stroke="#D3E5DE" stroke-width="2"/><path d="M100 82 l5 1" stroke="#F28C28" stroke-width="2"/>`;
+      case "poinsettia": return `<g transform="translate(70 30)">${[0,72,144,216,288].map(r => `<ellipse rx="5" ry="11" cy="-8" fill="#E0525B" transform="rotate(${r})"/>`).join("")}<circle r="4" fill="#F5C542"/></g>`;
+      case "vest": return `<path d="M34 70 Q62 62 92 70 L88 100 Q62 106 38 100 Z" fill="#C7CAD6"/><path d="M62 66 v38" stroke="#9EA2B4" stroke-width="2"/>`;
+      case "skirt": return `<path d="M30 92 Q62 84 96 92 L102 106 Q62 114 24 106 Z" fill="${A}"/><path d="M40 92 v16 M54 89 v18 M68 89 v18 M82 90 v17 M30 98 h70" stroke="#2E2A36" stroke-width="2" opacity=".35"/>`;
+      case "egg": return `<path d="M30 96 L36 88 L42 96 L50 86 L58 96 L66 86 L74 96 L82 86 L90 96 L96 88 V108 Q62 122 30 108 Z" fill="#FFF8E7" stroke="#E6D7B5" stroke-width="2"/>`;
+      case "bunny": return `<ellipse cx="50" cy="16" rx="6" ry="20" fill="#FFFFFF" stroke="#F4A6C0" stroke-width="2"/><ellipse cx="72" cy="16" rx="6" ry="20" fill="#FFFFFF" stroke="#F4A6C0" stroke-width="2"/>`;
+      case "lips": return `<path d="M88 70 q6 -5 10 0 q4 -5 10 0 q-10 10 -20 0 Z" fill="#E0525B"/>`;
+      case "mailbox": return `<rect x="88" y="78" width="22" height="16" rx="8" fill="#E0525B"/><rect x="97" y="94" width="4" height="18" fill="#8D6E4A"/><path d="M106 78 v-8 h6 v4 h-6" fill="#FFD166"/>`;
+      case "beret": return `<ellipse cx="60" cy="36" rx="26" ry="9" fill="${A}"/><rect x="58" y="24" width="4" height="6" rx="2" fill="${A}"/>`;
+      case "wave": return `<path d="M14 104 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0" stroke="#3BA7D9" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      case "sun": return `<circle cx="100" cy="24" r="10" fill="#FFD166"/>${[0,45,90,135,180,225,270,315].map(r => `<path d="M100 8 v-4" transform="rotate(${r} 100 24)" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>`).join("")}`;
+      case "snow": return `<g fill="#FFFFFF" opacity=".95"><circle cx="20" cy="30" r="3"/><circle cx="104" cy="16" r="3"/><circle cx="14" cy="60" r="2.5"/><circle cx="110" cy="48" r="2.5"/></g>`;
+      case "trio": return `<circle cx="20" cy="96" r="10" fill="${A}"/><circle cx="104" cy="96" r="10" fill="${A}"/><path d="M14 88 q6 -8 12 0 M98 88 q6 -8 12 0" stroke="#FFFFFF" stroke-width="3" fill="none"/>`;
+      default: return "";
+    }
+  }
+  const FRONT = new Set(["bones", "scarf", "sweater", "vest", "skirt", "egg", "helmet", "goggles"]);
+  function birdSVG(b, opts) {
+    const body = safeColor(b && b.body) || hashColor(b && b.name);
+    const belly = safeColor(b && b.belly) || shade(body, .28);
+    const acc = (b && typeof b.acc === "string") ? b.acc : "";
+    const a = safeColor(b && b.accent) || "#E0525B";
+    const wing = shade(body, -.12);
+    const back = ["horns", "bunny", "catears"].includes(acc) ? accessory(acc, a) : "";
+    const front = FRONT.has(acc) ? accessory(acc, a) : "";
+    const top = !back && !front ? accessory(acc, a) : "";
+    const label = opts && opts.label ? `role="img" aria-label="${esc(opts.label)}"` : 'aria-hidden="true"';
+    return `<svg viewBox="0 0 120 120" ${label}>
+      <ellipse cx="62" cy="112" rx="30" ry="5" fill="#3A2944" opacity=".10"/>
+      ${back}
+      <path d="M26 74 L6 60 L12 84 Z" fill="${wing}"/>
+      <path d="M54 104 v8 M70 104 v8" stroke="#E8873A" stroke-width="3.5" stroke-linecap="round"/>
+      <ellipse cx="62" cy="72" rx="38" ry="35" fill="${body}"/>
+      <ellipse cx="70" cy="84" rx="22" ry="19" fill="${belly}"/>
+      <path d="M34 70 Q30 92 52 96 Q46 80 50 66 Z" fill="${wing}"/>
+      <circle cx="76" cy="58" r="4.5" fill="#2E2A36"/><circle cx="77.5" cy="56.5" r="1.5" fill="#FFFFFF"/>
+      <circle cx="84" cy="68" r="4.5" fill="#F4A6C0" opacity=".75"/>
+      <polygon points="92,60 106,65 92,70" fill="#F5A524"/>
+      ${front}${top}
+    </svg>`;
+  }
+
+  $("#logo").innerHTML = birdSVG({ body: "#7CC6A4", belly: "#FFF3D1", acc: "bow", accent: "#F2795D" }).replace(/^<svg[^>]*>|<\/svg>$/g, "");
+
+  // ---------- tiny IndexedDB key-value store (photo cache) ----------
+  const idb = (() => {
+    let p = null;
+    function open() {
+      if (!p) p = new Promise((res, rej) => {
+        try { const r = indexedDB.open("flocks", 1); r.onupgradeneeded = () => r.result.createObjectStore("kv"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }
+        catch (e) { rej(e); }
+      });
+      return p;
+    }
+    async function op(mode, fn) {
+      try { const db = await open(); return await new Promise(res => { const tx = db.transaction("kv", mode); const req = fn(tx.objectStore("kv")); tx.oncomplete = () => res(req && req.result); tx.onerror = () => res(undefined); }); }
+      catch (e) { return undefined; }
+    }
+    return { get: k => op("readonly", s => s.get(k)), set: (k, v) => op("readwrite", s => s.put(v, k)), del: k => op("readwrite", s => s.delete(k)) };
+  })();
+
+  // ---------- state ----------
+  const S = {
+    data: { birds: {}, flocks: {} },   // id -> record
+    photos: {},                        // id -> version (family photos)
+    loaded: false,
+    meId: store.get("flocks.me") || "",
+    tab: ["birds", "mine", "wish", "family"].includes(store.get("flocks.tab")) ? store.get("flocks.tab") : "birds",
+    q: "", season: "", show: "", sort: ["season", "name", "newest", "oldest"].includes(store.get("flocks.sort")) ? store.get("flocks.sort") : "season",
+    person: "",
+    mode: "starting",                  // starting | preview | live | need-code | locked | unset
+    netErr: false
+  };
+  let birdCache = null, flockCache = null;
+  function birds() { if (!birdCache) birdCache = Object.entries(S.data.birds).map(([id, d]) => Object.assign({ id }, d)).filter(b => b && typeof b.name === "string"); return birdCache; }
+  function flocks() { if (!flockCache) flockCache = Object.entries(S.data.flocks).map(([id, d]) => Object.assign({ id }, d)).sort((a, b) => (a.order || 0) - (b.order || 0) || String(a.name).localeCompare(String(b.name))); return flockCache; }
+  function dirty() { birdCache = null; flockCache = null; }
+  const flock = id => { const d = S.data.flocks[id]; return d ? Object.assign({ id }, d) : null; };
+  const me = () => flock(S.meId);
+  const flockColor = (f, i) => safeColor(f && f.color) || FLOCK_COLORS[(i || 0) % FLOCK_COLORS.length];
+  const qtyOf = (f, bid) => { const o = f && f.owned && f.owned[bid]; return o ? Math.max(1, parseInt(o.qty, 10) || 1) : 0; };
+  const wants = (f, bid) => !!(f && f.wish && f.wish[bid]);
+  const birdIds = () => new Set(birds().map(b => b.id));
+  const ownedIds = f => { const ids = birdIds(); return Object.keys((f && f.owned) || {}).filter(id => ids.has(id)); };
+  const wishIds = f => { const ids = birdIds(); return Object.keys((f && f.wish) || {}).filter(id => ids.has(id)); };
+  const seasonOf = b => SEASON[b.season] || SEASON.other;
+  const others = () => flocks().filter(f => f.id !== S.meId);
+
+  // ---------- data operations (shared by the optimistic UI and the preview store) ----------
+  const OPS = {
+    setOwned(d, fid, bid, q, at) {
+      const F = d.flocks[fid]; if (!F) return;
+      F.owned = Object.assign({}, F.owned);
+      if (q > 0) { F.owned[bid] = { qty: q, at: (F.owned[bid] && F.owned[bid].at) || (/^\d{4}-\d{2}-\d{2}$/.test(at || "") ? at : today()) }; if (F.wish && F.wish[bid]) { F.wish = Object.assign({}, F.wish); delete F.wish[bid]; } }
+      else delete F.owned[bid];
+    },
+    setWish(d, fid, bid, on) { const F = d.flocks[fid]; if (!F) return; F.wish = Object.assign({}, F.wish); if (on) F.wish[bid] = true; else delete F.wish[bid]; },
+    setNote(d, fid, bid, text) { const F = d.flocks[fid]; if (!F) return; F.notes = Object.assign({}, F.notes); if (text) F.notes[bid] = text; else delete F.notes[bid]; },
+    setGift(d, fid, forId, bid, on) {
+      const F = d.flocks[fid]; if (!F) return;
+      F.gifts = Object.assign({}, F.gifts); const g = Object.assign({}, F.gifts[forId]);
+      if (on) g[bid] = true; else delete g[bid];
+      F.gifts[forId] = g;
+    },
+    saveFlock(d, fid, name, color, order) {
+      if (d.flocks[fid]) d.flocks[fid] = Object.assign({}, d.flocks[fid], { name, color });
+      else d.flocks[fid] = { name, color, order, owned: {}, wish: {}, notes: {} };
+    },
+    deleteFlock(d, fid) { delete d.flocks[fid]; for (const F of Object.values(d.flocks)) if (F.gifts && F.gifts[fid]) { F.gifts = Object.assign({}, F.gifts); delete F.gifts[fid]; } },
+    addBird(d, id, rec) { if (!d.birds[id]) d.birds[id] = rec; },
+    deleteBird(d, id) { if (d.birds[id] && d.birds[id].source === "added") delete d.birds[id]; }
+  };
+
+  // ---------- backends ----------
+  const CFG = window.FLOCKS_CONFIG || {};
+  const configured = !!(CFG.supabaseUrl && CFG.supabaseKey && !/YOUR-/.test(String(CFG.supabaseUrl) + String(CFG.supabaseKey)));
+
+  function makeRemote(code) {
+    const base = String(CFG.supabaseUrl).replace(/\/$/, "") + "/rest/v1/rpc/";
+    async function rpc(fn, args) {
+      const headers = { "Content-Type": "application/json", apikey: CFG.supabaseKey };
+      if (/^eyJ/.test(CFG.supabaseKey)) headers.Authorization = "Bearer " + CFG.supabaseKey;
+      const res = await fetch(base + fn, { method: "POST", headers, body: JSON.stringify(Object.assign({ p_code: code }, args)) });
+      if (!res.ok) throw new Error("http " + res.status);
+      return res.json();
+    }
+    return {
+      kind: "live",
+      load: () => rpc("flocks_load", {}),
+      check: () => rpc("flocks_check", {}),
+      setOwned: (f, b, q, at) => rpc("flocks_set_owned", { p_flock: f, p_bird: b, p_qty: q, p_at: at || null }),
+      setWish: (f, b, on) => rpc("flocks_set_wish", { p_flock: f, p_bird: b, p_on: on }),
+      setNote: (f, b, t) => rpc("flocks_set_note", { p_flock: f, p_bird: b, p_note: t }),
+      setGift: (f, r, b, on) => rpc("flocks_set_gift", { p_flock: f, p_for: r, p_bird: b, p_on: on }),
+      saveFlock: (f, name, color, order) => rpc("flocks_save_flock", { p_flock: f, p_name: name, p_color: color, p_order: order }),
+      deleteFlock: f => rpc("flocks_delete_flock", { p_flock: f }),
+      addBird: (id, r) => rpc("flocks_add_bird", { p_id: id, p_name: r.name, p_season: r.season, p_year: r.year, p_kind: r.kind, p_body: r.body, p_by: r.addedBy }),
+      deleteBird: id => rpc("flocks_delete_bird", { p_id: id }),
+      getPhoto: async id => { const r = await rpc("flocks_get_photo", { p_id: id }); if (r && r.error) throw r; return r && r.url; },
+      setPhoto: (id, url) => rpc("flocks_save_photo", { p_id: id, p_data: url }),
+      deletePhoto: id => rpc("flocks_delete_photo", { p_id: id })
+    };
+  }
+
+  // Preview mode: no shared database configured, so everything stays on this device.
+  function makeLocal() {
+    const KEY = "flocks.preview.v2", OLD = "flocks.preview.v1";
+    const parse = k => { try { return JSON.parse(store.get(k) || "null"); } catch (e) { return null; } };
+    let d = parse(KEY);
+    const ready = fetch("birds.json").then(r => r.json()).then(async j => {
+      const fresh = !d || !d.birds || !d.flocks;
+      if (fresh) d = { birds: {}, flocks: {}, photos: {} };
+      // Refresh the starting list on every open; family-added birds are kept.
+      j.birds.forEach(b => { const cur = d.birds[b.id]; if (!cur || cur.source !== "added") { const x = Object.assign({}, b); delete x.id; d.birds[b.id] = x; } });
+      if (fresh) {
+        const old = parse(OLD);   // data from the first test version
+        const oldFlocks = old && old.flocks && typeof old.flocks === "object" ? Object.keys(old.flocks) : [];
+        const recolor = { "#F2795D": "#C24E33", "#3FA877": "#1E7A4F" };
+        if (oldFlocks.length) oldFlocks.forEach(id => {
+          const f = old.flocks[id]; if (!f || typeof f.name !== "string") return;
+          const c = safeColor(f.color);
+          d.flocks[id] = { name: f.name.slice(0, 30), color: recolor[c && c.toUpperCase()] || c || FLOCK_COLORS[0], order: f.order || 0, owned: f.owned || {}, wish: f.wish || {}, notes: f.notes || {}, gifts: f.gifts || {} };
+        });
+        else j.flocks.forEach(f => { const x = Object.assign({}, f); delete x.id; d.flocks[f.id] = x; });
+        if (old && old.birds) for (const id in old.birds) { const b = old.birds[id]; if (b && b.source === "added" && typeof b.name === "string" && !d.birds[id]) d.birds[id] = b; }
+        if (old && old.photos) for (const id in old.photos) { const ph = old.photos[id]; if (ph && typeof ph.url === "string" && /^data:image\//.test(ph.url)) { await idb.set("local:" + id, ph.url); d.photos[id] = Date.now(); } }
+        if (old) store.del(OLD);
+      }
+      save();
+    }).catch(() => { d = d || { birds: {}, flocks: {}, photos: {} }; });
+    function save() { if (storageOK && !store.set(KEY, JSON.stringify(d))) throw new Error("full"); }
+    const ok = { ok: true };
+    const run = fn => ready.then(() => { fn(); save(); return ok; });
+    return {
+      kind: "preview",
+      load: () => ready.then(() => ({
+        birds: Object.keys(d.birds).map(id => ({ id, data: d.birds[id] })),
+        flocks: Object.keys(d.flocks).map(id => ({ id, data: d.flocks[id] })),
+        photos: Object.keys(d.photos || {}).map(id => ({ id, v: d.photos[id] }))
+      })),
+      check: () => Promise.resolve(ok),
+      setOwned: (f, b, q, at) => run(() => OPS.setOwned(d, f, b, q, at)),
+      setWish: (f, b, on) => run(() => OPS.setWish(d, f, b, on)),
+      setNote: (f, b, t) => run(() => OPS.setNote(d, f, b, t)),
+      setGift: (f, r, b, on) => run(() => OPS.setGift(d, f, r, b, on)),
+      saveFlock: (f, n, c, o) => run(() => OPS.saveFlock(d, f, n, c, o)),
+      deleteFlock: f => run(() => OPS.deleteFlock(d, f)),
+      addBird: (id, r) => run(() => OPS.addBird(d, id, r)),
+      deleteBird: id => run(() => OPS.deleteBird(d, id)),
+      getPhoto: id => idb.get("local:" + id),
+      setPhoto: async (id, url) => { await ready; await idb.set("local:" + id, url); d.photos = d.photos || {}; d.photos[id] = Date.now(); save(); return ok; },
+      deletePhoto: async id => { await ready; await idb.del("local:" + id); if (d.photos) delete d.photos[id]; save(); return ok; }
+    };
+  }
+
+  // ---------- sync ----------
+  let api = null, gen = 0, inflight = 0, lastSig = "", timer = 0;
+  function schedule(ms) {
+    clearTimeout(timer);
+    if (api && api.kind === "live" && document.visibilityState === "visible") timer = setTimeout(refresh, ms == null ? 15000 : ms);
+  }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") refresh(); else clearTimeout(timer); });
+  async function refresh() {
+    clearTimeout(timer);
+    const a = api; if (!a) return;
+    const startGen = gen;
+    try {
+      const r = await a.load();
+      if (a !== api) return;                       // backend was replaced while loading
+      if (r && r.error) { authProblem(r.error); return; }
+      if (S.mode === "locked" || S.mode === "unset") { S.mode = a.kind === "live" ? "live" : "preview"; renderBanner(); }
+      if (startGen === gen && inflight === 0) apply(r, true);
+      if (S.netErr) { S.netErr = false; renderBanner(); }
+    } catch (e) {
+      if (!S.netErr) { S.netErr = true; renderBanner(); }
+    } finally { if (a === api) schedule(); }
+  }
+  function apply(r, persist) {
+    const sig = JSON.stringify(r);
+    if (sig === lastSig) return;
+    lastSig = sig;
+    const next = { birds: {}, flocks: {} };
+    (r.birds || []).forEach(x => { if (x && x.id && x.data) next.birds[x.id] = x.data; });
+    (r.flocks || []).forEach(x => { if (x && x.id && x.data) next.flocks[x.id] = x.data; });
+    S.data = next; dirty();
+    const ph = {}; (r.photos || []).forEach(p => { if (p && p.id) ph[p.id] = String(p.v); });
+    for (const id in S.photos) if (S.photos[id] === "pending") ph[id] = "pending";
+    S.photos = ph;
+    S.loaded = true;
+    if (persist && api && api.kind === "live") store.set("flocks.snap.v2", sig);
+    onData();
+  }
+  function canWrite() {
+    if (S.mode === "locked") { toast("Flocks is paused for a few minutes after too many wrong passcodes."); return false; }
+    if (S.mode === "unset" || S.mode === "need-code" || !api) { toast("Flocks isn't ready yet."); return false; }
+    return true;
+  }
+  async function mutate(local, remote, failMsg) {
+    if (!canWrite()) return false;
+    local(S.data); dirty(); gen++; inflight++;
+    lastSig = "";            // the screen now differs from the last server copy, so the next load always re-applies
+    onData();
+    let ok = true;
+    try {
+      const r = await remote();
+      if (r && r.error) { ok = false; if (["wrong", "locked", "unset"].includes(r.error)) authProblem(r.error); else toast(r.error === "too_many" ? "That list is full." : (failMsg || "That didn't save. Try again.")); }
+    } catch (e) { ok = false; toast(failMsg || "That didn't save. Check your connection and try again."); }
+    finally { inflight--; gen++; }
+    if (api && api.kind === "live") schedule(ok ? 600 : 50);
+    else if (api) refresh();
+    return ok;
+  }
+  function authProblem(kind) {
+    clearTimeout(timer);
+    if (kind === "wrong") { store.del("flocks.code"); api = null; S.mode = "need-code"; openDialog("code", { err: S.loaded ? "The family passcode changed. Enter the new one." : "" }); }
+    else if (kind === "locked") { S.mode = "locked"; renderBanner(); }
+    else if (kind === "unset") { S.mode = "unset"; renderBanner(); }
+  }
+
+  // ---------- photos ----------
+  const photoMem = {};   // id -> { v, url (data URL), src (blob URL for <img>) }
+  function remember(id, entry) {
+    const old = photoMem[id];
+    if (old && old.src && (!entry || old.src !== entry.src)) setTimeout(() => URL.revokeObjectURL(old.src), 4000);
+    if (entry) photoMem[id] = entry; else delete photoMem[id];
+  }
+  function srcOf(m) {
+    if (!m.src) {
+      try {
+        const [head, b64] = m.url.split(","); const bin = atob(b64); const u8 = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+        m.src = URL.createObjectURL(new Blob([u8], { type: (/data:([^;]+)/.exec(head) || [])[1] || "image/jpeg" }));
+      } catch (e) { m.src = m.url; }
+    }
+    return m.src;
+  }
+  const photoBusy = {};
+  function familyPhoto(id) {
+    const v = S.photos[id]; if (!v) return null;
+    const m = photoMem[id];
+    if (m && (m.v === v || v === "pending")) return srcOf(m);
+    if (!photoBusy[id] && api) {
+      photoBusy[id] = true;
+      (async () => {
+        const key = "photo:" + id;
+        const cached = api.kind === "live" ? await idb.get(key) : null;
+        if (cached && cached.v === v && typeof cached.url === "string") { remember(id, { v, url: cached.url }); return; }
+        const url = await api.getPhoto(id);
+        if (typeof url === "string" && /^data:image\//.test(url)) { remember(id, { v, url }); if (api && api.kind === "live") idb.set(key, { v, url }); }
+      })().catch(() => {}).finally(() => { photoBusy[id] = false; if (photoMem[id]) onPhoto(id); });
+    }
+    return m ? srcOf(m) : null;
+  }
+  const failedImg = new Set(), svgMemo = new Map();
+  const isTarget = u => /^https:\/\/(www\.)?target\.com\//.test(u);
+  const resaleSearch = b => "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent("featherly friends " + b.name + (b.year ? " " + b.year : ""));
+  function targetImg(b, w) { const u = safeUrl(b.img); if (!u || !/^https:\/\/target\.scene7\.com\//.test(u)) return ""; return u.split("?")[0] + "?wid=" + w + "&hei=" + w + "&fmt=pjpeg&qlt=85"; }
+  function artHTML(b, size, label) {
+    const fam = familyPhoto(b.id);
+    const alt = esc(label || "");
+    if (fam) return { html: `<img src="${esc(fam)}" alt="${alt}" decoding="async" data-fb="${esc(b.id)}">`, photo: true };
+    const t = failedImg.has(b.id) ? "" : targetImg(b, size);
+    if (t) return { html: `<img src="${esc(t)}" srcset="${esc(t)} 1x, ${esc(targetImg(b, size * 2))} 2x" alt="${alt}" loading="lazy" decoding="async" data-fb="${esc(b.id)}">`, photo: true };
+    if (label) return { html: birdSVG(b, { label }), photo: false };
+    const key = b.id + "|" + b.body + "|" + b.acc + "|" + b.accent + "|" + b.name;
+    let svg = svgMemo.get(key); if (!svg) { svg = birdSVG(b); svgMemo.set(key, svg); }
+    return { html: svg, photo: false };
+  }
+  document.addEventListener("error", e => {
+    const img = e.target;
+    if (!img || img.tagName !== "IMG" || !img.dataset.fb) return;
+    const b = S.data.birds[img.dataset.fb]; const box = img.parentNode;
+    if (!box) return;
+    if (!/^(data|blob):/.test(img.getAttribute("src") || "")) failedImg.add(img.dataset.fb);
+    box.classList.add("cartoon"); box.style.setProperty("--tint", soft(safeColor(b && b.body) || hashColor(b && b.name)));
+    box.innerHTML = birdSVG(Object.assign({ id: img.dataset.fb }, b || {}));
+    const cap = document.querySelector("#photoCap");
+    if (cap && box.classList.contains("hero")) cap.textContent = "The photo couldn't load, so this is a cartoon stand-in.";
+  }, true);
+  function shrink(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file); const im = new Image();
+      im.onload = () => {
+        const max = 900, k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+        const c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        let q = 0.82, out = c.toDataURL("image/jpeg", q);
+        while (out.length > 650000 && q > 0.4) { q -= 0.12; out = c.toDataURL("image/jpeg", q); }
+        resolve(out);
+      };
+      im.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode")); };
+      im.src = url;
+    });
+  }
+  async function uploadPhoto(id, file) {
+    if (!api) return;
+    toast("Saving photo…");
+    let url;
+    try { url = await shrink(file); } catch (e) { toast("That photo couldn't be opened. Try another."); return; }
+    const prevV = S.photos[id], prevM = photoMem[id];
+    remember(id, { v: "pending", url }); S.photos[id] = "pending"; onPhoto(id);
+    try {
+      const r = await api.setPhoto(id, url);
+      if (r && r.error) throw r;
+      delete S.photos[id];   // the next load brings the real version
+      toast("Photo saved. Everyone can see it.");
+      if (api.kind === "live") schedule(300); else refresh();
+    } catch (e) {
+      if (prevV) S.photos[id] = prevV; else delete S.photos[id];
+      remember(id, prevM || null);
+      onPhoto(id);
+      toast(e && e.message === "full" ? "This phone is out of room for preview photos." : "The photo didn't save. Try again.");
+    }
+  }
+
+  // ---------- DOM patching ----------
+  // Views are rebuilt as HTML strings, then morphed into the page so unchanged cards
+  // (and their images) stay put. Keeps taps fast with hundreds of birds.
+  // Bird cards go in as empty keyed slots and are filled separately, so only the
+  // cards whose HTML actually changed get re-parsed.
+  const tpl = document.createElement("template");
+  let slots = new Map();
+  function slot(b) { slots.set(b.id, card(b)); return `<article class="card" data-k="${esc(b.id)}" data-slot></article>`; }
+  function paint(el, html) {
+    const fill = slots; slots = new Map();
+    tpl.innerHTML = html;
+    morph(el, tpl.content);
+    if (!fill.size) return;
+    el.querySelectorAll("article[data-k]").forEach(node => {
+      const h = fill.get(node.getAttribute("data-k"));
+      if (h == null || node.__h === h) return;
+      const fk = node.contains(document.activeElement) ? focusKey(document.activeElement) : null;
+      tpl.innerHTML = h;
+      const nn = tpl.content.firstElementChild; nn.__h = h;
+      node.replaceWith(nn);
+      if (fk) { const t = nn.querySelector(fk); if (t) t.focus({ preventScroll: true }); }
+    });
+  }
+  const FOCUS_ATTRS = ["data-have", "data-wish", "data-open", "data-step", "data-season", "data-gift", "data-person", "data-goto", "data-welcome"];
+  function focusKey(el) {
+    if (!el || el === document.body) return null;
+    if (el.id) return "#" + CSS.escape(el.id);
+    for (const a of FOCUS_ATTRS) if (el.hasAttribute(a)) return `[${a}="${CSS.escape(el.getAttribute(a))}"]`;
+    return null;
+  }
+  function morph(from, to) {
+    const a = from.childNodes, b = to.childNodes;
+    for (let i = 0; i < b.length; i++) {
+      const n = b[i], o = a[i];
+      if (!o) { from.appendChild(n.cloneNode(true)); continue; }
+      if (o.nodeType !== n.nodeType || o.nodeName !== n.nodeName || (o.nodeType === 1 && o.getAttribute("data-k") !== n.getAttribute("data-k"))) { from.replaceChild(n.cloneNode(true), o); continue; }
+      if (o.nodeType === 1 && n.hasAttribute("data-slot")) continue;   // card slot: filled by paint()
+      if (o.nodeType !== 1) { if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue; continue; }
+      for (const at of Array.from(o.attributes)) if (!n.hasAttribute(at.name) && !(at.name === "open" && o.nodeName === "DETAILS")) o.removeAttribute(at.name);
+      for (const at of Array.from(n.attributes)) if (o.getAttribute(at.name) !== at.value) o.setAttribute(at.name, at.value);
+      morph(o, n);
+    }
+    while (a.length > b.length) from.removeChild(from.lastChild);
+  }
+
+  // ---------- render: top ----------
+  function onData() {
+    renderHeader(); renderBanner(); renderTabs(); renderView();
+    if (dlgState.kind === "bird") renderBirdLive();
+    if (dlgState.kind === "settings") renderSettings(false);
+    if (S.loaded && !me() && flocks().length && S.mode !== "need-code" && dlgState.kind !== "welcome" && dlgState.kind !== "code") openDialog("welcome");
+  }
+  function onPhoto(id) {
+    renderView();
+    if (dlgState.kind === "bird" && dlgState.id === id) renderBirdHero();
+  }
+  function renderHeader() {
+    const b = $("#meBtn"); const m = me();
+    b.hidden = !m;
+    if (m) b.innerHTML = `<span class="av" style="${avStyle(flockColor(m))}">${initial(m.name)}</span><span class="nm">${esc(m.name)}</span>${ICON.chev}<span class="sr">, open settings</span>`;
+  }
+  function renderBanner() {
+    const el = $("#banner"); let h = "";
+    if (S.mode === "preview") h = storageOK ? `<div class="banner"><b>Preview.</b> Changes are saved on this device only. Once the family database is connected, everyone shares one list.</div>`
+      : `<div class="banner"><b>Preview.</b> This browser isn't letting Flocks save, so changes will disappear when the page closes.</div>`;
+    else if (S.mode === "locked") h = `<div class="banner"><b>Too many wrong passcodes.</b> Flocks is paused for 15 minutes to keep it safe. Try again after that.</div>`;
+    else if (S.mode === "unset") h = `<div class="banner"><b>Almost ready.</b> The family passcode hasn't been set yet. Ask whoever set up Flocks to finish the last step.</div>`;
+    else if (S.netErr) h = `<div class="banner"><b>Offline.</b> Showing the last saved copy. Changes will need a connection.</div>`;
+    el.innerHTML = h;
+  }
+  function renderTabs() {
+    const m = me();
+    const setN = (id, n) => { const el = $(id); el.hidden = !n; el.textContent = n; };
+    setN("#n-mine", m ? ownedIds(m).length : 0);
+    setN("#n-wish", m ? wishIds(m).length : 0);
+    document.querySelectorAll(".tab").forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
+    ["birds", "mine", "wish", "family"].forEach(k => { $("#view-" + k).hidden = k !== S.tab; });
+  }
+  function renderView() {
+    if (S.tab === "birds") renderBirds();
+    else if (S.tab === "mine") renderMine();
+    else if (S.tab === "wish") renderWish();
+    else renderFamily();
+  }
+
+  // ---------- cards ----------
+  function card(b) {
+    const m = me();
+    const q = qtyOf(m, b.id), w = wants(m, b.id);
+    const owners = flocks().filter(f => f.id !== S.meId && qtyOf(f, b.id));
+    const wanters = flocks().filter(f => f.id !== S.meId && wants(f, b.id) && !qtyOf(f, b.id));
+    const art = artHTML(b, 320, "");
+    const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
+    let tags = wanters.map(f => `<span class="tag want">${ICON.heart(true)}${esc(f.name)} wants</span>`).join("");
+    if (b.source === "resale") tags += `<span class="tag warn">Unconfirmed</span>`;
+    if (b.source === "added") tags += `<span class="tag added">Family added</span>`;
+    return `<article class="card${q ? " have" : ""}" data-k="${esc(b.id)}">
+      <button class="tile${art.photo ? "" : " cartoon"}" type="button" data-open="${esc(b.id)}" style="--tint:${soft(safeColor(b.body) || hashColor(b.name))}" aria-label="${esc(b.name)}, details">${art.html}</button>
+      ${owners.length ? `<div class="owners" aria-label="${esc("Also in " + owners.map(f => f.name).join(" and ") + "'s flock")}" role="img">${owners.map(f => `<span class="av sm" style="${avStyle(flockColor(f))}">${initial(f.name)}</span>`).join("")}</div>` : ""}
+      ${q > 1 ? `<span class="qty" aria-label="${q} copies">×${q}</span>` : ""}
+      <div class="card-body"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
+      <div class="card-actions">
+        <button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "In my flock ✓" : "I have it"}</button>
+        <button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>
+      </div>
+    </article>`;
+  }
+  function sortList(list) {
+    const yr = b => parseInt(b.year, 10) || 0;
+    const byName = (a, b) => a.name.localeCompare(b.name);
+    if (S.sort === "name") return list.sort(byName);
+    if (S.sort === "oldest") return list.sort((a, b) => (yr(a) || 9999) - (yr(b) || 9999) || byName(a, b));
+    return list.sort((a, b) => yr(b) - yr(a) || byName(a, b));
+  }
+  function grouped(list, withProgress) {
+    if (S.sort !== "season") return `<div class="grid">${sortList(list.slice()).map(slot).join("")}</div>`;
+    const m = me(); let h = "";
+    for (const s of SEASONS) {
+      const items = list.filter(b => seasonOf(b).id === s.id); if (!items.length) continue;
+      let count = `${items.length} ${items.length === 1 ? "bird" : "birds"}`;
+      if (withProgress && m) {
+        const all = birds().filter(b => seasonOf(b).id === s.id), got = all.filter(b => qtyOf(m, b.id)).length;
+        count = `<span class="mini" aria-hidden="true"><i style="width:${Math.round(100 * got / all.length)}%;--c:${s.c};background:${s.c}"></i></span>${got} of ${all.length}`;
+      }
+      h += `<section class="group"><div class="sec-h"><span class="sw" style="--c:${s.c}"></span><h2>${esc(s.label)}</h2><span class="count">${count}</span></div><div class="grid">${sortList(items).map(slot).join("")}</div></section>`;
+    }
+    return h;
+  }
+  function emptyState(t, p, extra) { return `<div class="empty">${birdSVG({ body: "#FFD166", belly: "#FFF3D1", acc: "beanie", accent: "#7CC6A4" })}<h2>${esc(t)}</h2><p>${esc(p)}</p>${extra || ""}</div>`; }
+  function loadingState() { return emptyState("Gathering the birds…", "One moment while the list loads."); }
+
+  // ---------- views ----------
+  function renderBirds() {
+    const present = new Set(birds().map(b => seasonOf(b).id));
+    paint($("#chips"), [{ id: "", label: "All seasons" }].concat(SEASONS.filter(s => present.has(s.id))).map(s =>
+      `<button class="chip" type="button" data-season="${s.id}" aria-pressed="${S.season === s.id}">${s.id ? `<span class="sw" style="--c:${s.c}"></span>` : ""}${esc(s.label)}</button>`).join(""));
+    const nf = (S.show ? 1 : 0) + (S.sort !== "season" ? 1 : 0);
+    $("#filterBtn").innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Filter</span>${nf ? `<span class="dot">${nf}</span>` : ""}`;
+    const out = $("#birdsOut");
+    if (!S.loaded) { out.innerHTML = loadingState(); $("#resultLine").innerHTML = ""; return; }
+    const m = me(), q = S.q.trim().toLowerCase();
+    const list = birds().filter(b => {
+      if (S.season && seasonOf(b).id !== S.season) return false;
+      if (q && !`${b.name} ${b.kind || ""} ${b.line || ""} ${b.year || ""} ${seasonOf(b).label} ${b.about || ""}`.toLowerCase().includes(q)) return false;
+      if (S.show === "have" && !qtyOf(m, b.id)) return false;
+      if (S.show === "need" && qtyOf(m, b.id)) return false;
+      if (S.show === "wanted" && !others().some(f => wants(f, b.id) && !qtyOf(f, b.id))) return false;
+      return true;
+    });
+    const filtered = !!(S.season || q || S.show);
+    paint($("#resultLine"), `<span>${list.length} of ${birds().length} birds</span>${filtered ? `<button class="link" type="button" id="clearFilters">Clear filters</button>` : ""}`);
+    paint(out, (list.length ? grouped(list, false) : emptyState("No birds match", "Try a different name, season or filter.")) +
+      `<div class="grid" style="margin-top:14px"><button class="add-card" type="button" id="addBird"><span class="plus" aria-hidden="true">+</span>Add a missing bird</button></div>`);
+  }
+  function seasonBars(f) {
+    return `<div class="srows">${SEASONS.map(s => {
+      const all = birds().filter(b => seasonOf(b).id === s.id); if (!all.length) return "";
+      const got = all.filter(b => qtyOf(f, b.id)).length;
+      return `<div class="srow"><span class="l"><span class="sw" style="--c:${s.c}"></span>${esc(s.label)}</span><span class="mini" aria-hidden="true"><i style="width:${Math.round(100 * got / all.length)}%;background:${s.c}"></i></span><span class="n">${got}/${all.length}</span></div>`;
+    }).join("")}</div>`;
+  }
+  function renderMine() {
+    const el = $("#view-mine"); const m = me();
+    if (!S.loaded) { el.innerHTML = loadingState(); return; }
+    if (!m) { el.innerHTML = emptyState("Who's using this phone?", "Pick your name to see your flock.", `<button class="btn primary" type="button" data-welcome>Pick my name</button>`); return; }
+    const ids = ownedIds(m), total = birds().length, pct = total ? Math.round(100 * ids.length / total) : 0;
+    const extras = ids.reduce((n, id) => n + qtyOf(m, id), 0) - ids.length;
+    const list = birds().filter(b => qtyOf(m, b.id));
+    paint(el, `<div class="meter"><div class="meter-top"><span>${esc(m.name)} has <b>${ids.length}</b> of ${total} birds</span><span class="pct">${pct}%</span></div><div class="bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
+        <div class="stats"><div class="stat leaf"><b>${ids.length}</b><span>collected</span></div><div class="stat"><b>${extras}</b><span>${extras === 1 ? "extra copy" : "extra copies"}</span></div><div class="stat berry"><b>${wishIds(m).length}</b><span>wished for</span></div></div>
+        <details class="panel" style="box-shadow:none;padding:0"><summary>Collection by season</summary>${seasonBars(m)}</details></div>` +
+      (list.length ? grouped(list, true) : emptyState("Your flock is waiting", "Go to All birds and tap \"I have it\" on each bird you own.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+  }
+  function renderWish() {
+    const el = $("#view-wish"); const m = me();
+    if (!S.loaded) { el.innerHTML = loadingState(); return; }
+    if (!m) { el.innerHTML = emptyState("Who's using this phone?", "Pick your name to see your wish list.", `<button class="btn primary" type="button" data-welcome>Pick my name</button>`); return; }
+    const list = birds().filter(b => wants(m, b.id));
+    const names = others().map(f => f.name);
+    paint(el, `<p class="secret">${ICON.gift}<span>${names.length ? esc(names.join(" and ")) + " can see this list when choosing gifts." : "The family can see this list when choosing gifts."}</span></p>` +
+      (list.length ? grouped(list, false) : emptyState("No wishes yet", "Tap the heart on any bird you're hoping to find. It shows up here and in the family's gift ideas.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+  }
+  function renderFamily() {
+    const el = $("#view-family"); const all = flocks(); const m = me();
+    if (!S.loaded) { el.innerHTML = loadingState(); return; }
+    if (!all.length) { el.innerHTML = emptyState("No flocks yet", "Add someone from settings."); return; }
+    if (!S.person || !S.data.flocks[S.person] || (S.person === S.meId && others().length)) {
+      if (!S.person || !S.data.flocks[S.person]) S.person = (others()[0] || all[0]).id;
+    }
+    const order = others().concat(m ? [m] : []);
+    const p = flock(S.person); const pi = all.findIndex(f => f.id === p.id); const isMe = p.id === S.meId;
+    const wished = birds().filter(b => wants(p, b.id) && !qtyOf(p, b.id));
+    const owned = birds().filter(b => qtyOf(p, b.id));
+    const mine = m && m.gifts && m.gifts[p.id] ? m.gifts[p.id] : {};
+    const gettingCount = wished.filter(b => mine[b.id]).length;
+    let h = `<div class="people" role="group" aria-label="Whose flock">${order.map(f => `<button class="person" type="button" data-person="${esc(f.id)}" aria-pressed="${f.id === p.id}"><span class="av" style="${avStyle(flockColor(f, all.indexOf(f)))}">${initial(f.name)}</span>${esc(f.id === S.meId ? f.name + " (you)" : f.name)}</button>`).join("")}</div>`;
+    h += `<div class="panel"><div class="person-head"><span class="av" style="${avStyle(flockColor(p, pi))}">${initial(p.name)}</span><div><h2>${esc(isMe ? "Your flock" : p.name + "'s flock")}</h2><p class="sub" style="margin:0">${owned.length} of ${birds().length} birds · ${wished.length} on the wish list</p></div></div>
+      <details><summary class="lbl" style="min-height:44px;display:flex;align-items:center;cursor:pointer">Collection by season</summary>${seasonBars(p)}</details></div>`;
+    h += `<div class="panel"><h2>${esc(isMe ? "Your wish list" : "Gift ideas for " + p.name)}</h2>`;
+    if (!isMe) h += `<p class="sub">Birds ${esc(p.name)} is wishing for and doesn't have yet.</p>`;
+    else h += `<p class="sub">This is what the family sees when shopping for you. Whatever they've decided to get you stays hidden.</p>`;
+    if (wished.length) {
+      h += `<ul class="gift-list">${wished.map(b => {
+        const art = artHTML(b, 160, ""); const url = safeUrl(b.url); const got = !!mine[b.id];
+        const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
+        return `<li class="gift"><button class="thumb${art.photo ? "" : " cartoon"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+          <div><p class="nm">${esc(b.name)}</p><p class="meta">${esc(meta)}</p>
+          <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
+      }).join("")}</ul>`;
+      if (!isMe) h += `<p class="secret">${ICON.lock}<span>Only you can see what you're getting. ${esc(p.name)} won't see it in the app${gettingCount ? `. You're getting ${gettingCount}.` : "."}</span></p>`;
+    } else h += `<p class="sub" style="margin:0">${esc(isMe ? "Your wish list is empty. Tap the heart on any bird to add it." : p.name + " hasn't wished for any birds yet.")}</p>`;
+    h += `</div>`;
+    h += `<div class="panel"><h2>${esc(isMe ? "In your flock" : "Already in " + p.name + "'s flock")}</h2>${!isMe ? `<p class="sub">So you don't buy one ${esc(p.name)} already has.</p>` : ""}`;
+    h += owned.length ? `<div class="thumbs">${sortList(owned.slice()).map(b => { const art = artHTML(b, 160, ""); return `<button type="button" data-open="${esc(b.id)}"><span class="t${art.photo ? "" : " cartoon"}">${art.html}</span><span class="l">${esc(b.name)}${qtyOf(p, b.id) > 1 ? " ×" + qtyOf(p, b.id) : ""}</span></button>`; }).join("")}</div>`
+      : `<p class="sub" style="margin:0">No birds marked yet.</p>`;
+    h += `</div>`;
+    paint(el, h);
+  }
+
+  // ---------- dialog ----------
+  const dlg = $("#dlg");
+  const dlgState = { kind: "", id: "", opener: null, noteStart: "", locked: false };
+  function openDialog(kind, arg) {
+    if (dlg.open) closeDialog(true);
+    dlgState.kind = kind; dlgState.id = (arg && arg.id) || ""; dlgState.opener = document.activeElement; dlgState.locked = kind === "code" || kind === "welcome";
+    if (dlgState.opener === document.body) dlgState.opener = null;
+    if (kind === "bird") renderBirdDialog();
+    else if (kind === "add") renderAddDialog();
+    else if (kind === "filter") renderFilter();
+    else if (kind === "settings") renderSettings(true);
+    else if (kind === "code") renderCode(arg && arg.err);
+    else if (kind === "welcome") renderWelcome();
+    document.documentElement.classList.add("modal-open");
+    try { dlg.showModal(); } catch (e) { dlg.setAttribute("open", ""); }
+    const first = dlg.querySelector("[autofocus]") || dlg.querySelector(".x") || dlg.querySelector("button, input");
+    if (first) first.focus({ preventScroll: true });
+  }
+  function closeDialog(silent) {
+    if (dlgState.kind === "bird") saveNoteNow();
+    const opener = dlgState.opener;
+    dlgState.kind = ""; dlgState.id = ""; dlgState.locked = false;
+    if (dlg.open) dlg.close();
+    dlg.innerHTML = "";
+    document.documentElement.classList.remove("modal-open");
+    if (!silent && opener && document.contains(opener)) opener.focus({ preventScroll: true });
+  }
+  dlg.addEventListener("cancel", e => { e.preventDefault(); if (!dlgState.locked) closeDialog(); });
+  dlg.addEventListener("click", e => { if (e.target === dlg && !dlgState.locked) closeDialog(); });
+  dlg.addEventListener("close", () => {
+    if (dlg.open || !dlgState.kind) return;   // the close event arrives late; ignore it if a dialog is open again
+    if (dlgState.locked) { try { dlg.showModal(); } catch (e) {} const f = dlg.querySelector("input, button"); if (f) f.focus(); }
+    else closeDialog();
+  });
+  const bar = (title, closable) => `<div class="dlg-bar"><span class="grab" aria-hidden="true"></span>${title ? `<h2 id="dlgTitle">${esc(title)}</h2>` : ""}${closable === false ? "" : `<button class="x" type="button" data-close aria-label="Close">${ICON.x}</button>`}</div>`;
+
+  function renderBirdDialog() {
+    const b = birds().find(x => x.id === dlgState.id); if (!b) { closeDialog(true); return; }
+    const m = me(); const note = (m && m.notes && m.notes[b.id]) || "";
+    dlgState.noteStart = note;
+    const url = safeUrl(b.url);
+    const meta = [seasonOf(b).label, b.kind, b.year].filter(Boolean).join(" · ");
+    const meta2 = [b.line, b.price].filter(Boolean).join(" · ");
+    let src = b.source === "target" ? "Listed on Target.com in October 2026." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
+    dlg.innerHTML = bar("", true) + `<div class="dlg-body">
+      <div class="hero" id="birdHero"></div>
+      <div class="bird-title"><h2 id="dlgTitle">${esc(b.name)}</h2><p class="meta">${esc(meta)}</p>${meta2 ? `<p class="meta" style="margin:0">${esc(meta2)}</p>` : ""}</div>
+      ${b.about ? `<p class="about">${esc(b.about)}</p>` : ""}
+      <div id="birdLive"></div>
+      ${m ? `<div class="field"><label for="note">My note</label><textarea id="note" maxlength="1000" placeholder="Where you found it, who gave it to you…">${esc(note)}</textarea></div>` : ""}
+      <div class="photo-tools"><span class="cap" id="photoCap"></span><span class="btns">
+        <label class="btn" for="photoIn">${ICON.camera}<span id="photoBtnLbl">Add my photo</span></label>
+        <button class="btn" type="button" id="delPhoto" hidden>Remove my photo</button></span>
+        <input id="photoIn" type="file" accept="image/*" hidden></div>
+      <p class="src">${esc(src)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${isTarget(url) ? "See it on Target" : "View source"}</a>` : ""}</p>
+      ${b.source === "added" ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
+    </div>`;
+    renderBirdHero(); renderBirdLive();
+  }
+  function renderBirdHero() {
+    const b = birds().find(x => x.id === dlgState.id); const hero = $("#birdHero"); if (!b || !hero) return;
+    const art = artHTML(b, 600, b.name);
+    hero.className = "hero" + (art.photo ? "" : " cartoon");
+    hero.style.setProperty("--tint", soft(safeColor(b.body) || hashColor(b.name)));
+    hero.innerHTML = art.html;
+    const fam = !!familyPhoto(b.id);
+    const cap = $("#photoCap"); if (cap) cap.textContent = fam ? "Photo added by the family." : (targetImg(b, 600) ? "Photo from Target's listing." : "Cartoon stand-in. Add a real photo if you have one.");
+    const lbl = $("#photoBtnLbl"); if (lbl) lbl.textContent = fam ? "Replace photo" : "Add my photo";
+    const del = $("#delPhoto"); if (del) del.hidden = !fam;
+  }
+  function renderBirdLive() {
+    const b = birds().find(x => x.id === dlgState.id); const el = $("#birdLive"); if (!b || !el) return;
+    const m = me(); const q = qtyOf(m, b.id), w = wants(m, b.id);
+    const owners = flocks().filter(f => qtyOf(f, b.id)), wanters = flocks().filter(f => wants(f, b.id) && !qtyOf(f, b.id));
+    const chip = f => `<span class="p"><span class="av sm" style="${avStyle(flockColor(f))}">${initial(f.name)}</span>${esc(f.id === S.meId ? "You" : f.name)}${qtyOf(f, b.id) > 1 ? " ×" + qtyOf(f, b.id) : ""}</span>`;
+    let h = "";
+    if (m) {
+      const since = q && m.owned[b.id] && m.owned[b.id].at ? new Date(m.owned[b.id].at + "T12:00:00").toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : "";
+      h += `<div class="mine-row"><div><span class="lbl" id="qtyLbl">How many I have</span>
+          <div class="stepper" role="group" aria-labelledby="qtyLbl"><button type="button" data-step="-1" aria-label="One fewer"${q ? "" : " disabled"}>−</button><output aria-live="polite">${q}</output><button type="button" data-step="1" aria-label="One more">+</button></div></div>
+          <button class="btn${w ? " wish-on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" style="align-self:flex-end">${ICON.heart(w)}${w ? "On my wish list" : "Add to wish list"}</button></div>
+          ${since ? `<p class="hint" style="margin:0">In your flock since ${esc(since)}.</p>` : ""}`;
+    }
+    h += `<div class="who"><div class="who-line"><span class="k">Wanted by</span>${wanters.length ? wanters.map(chip).join("") : "<span>Nobody right now</span>"}</div>
+      <div class="who-line"><span class="k">In the flock of</span>${owners.length ? owners.map(chip).join("") : "<span>Nobody yet</span>"}</div></div>`;
+    paint(el, h);
+  }
+  let noteTimer = 0, qTimer = 0;
+  function saveNoteNow() {
+    clearTimeout(noteTimer);
+    const n = $("#note"); const m = me(); if (!n || !m || dlgState.kind !== "bird") return;
+    const text = n.value.trim().slice(0, 1000);
+    if (text === dlgState.noteStart) return;
+    const before = dlgState.noteStart;
+    dlgState.noteStart = text;
+    const fid = m.id, bid = dlgState.id;
+    mutate(d => OPS.setNote(d, fid, bid, text), () => api.setNote(fid, bid, text), "Your note didn't save. Check your connection; it will try again when you leave the note.")
+      .then(ok => { if (!ok && dlgState.kind === "bird" && dlgState.id === bid && dlgState.noteStart === text) dlgState.noteStart = before; });
+  }
+
+  const draft = { name: "", season: "christmas", year: String(new Date().getFullYear()), kind: "", body: BODY_SWATCHES[0] };
+  function renderAddDialog() {
+    dlg.innerHTML = bar("Add a missing bird") + `<form class="dlg-body" id="addForm" novalidate>
+      <div class="hero cartoon" id="addArt" style="--tint:${soft(draft.body)};max-height:26vh">${birdSVG({ body: draft.body })}</div>
+      <p class="hint" style="margin:0">Everyone will see it on the master list. A cartoon stands in until someone adds a photo.</p>
+      <div class="field"><label for="a-name">Bird's name</label><input id="a-name" type="text" maxlength="60" required placeholder="Like Pep or Cauldy" value="${esc(draft.name)}" autofocus></div>
+      <div class="row2"><div class="field"><label for="a-season">Season</label><select id="a-season">${SEASONS.map(s => `<option value="${s.id}"${s.id === draft.season ? " selected" : ""}>${esc(s.label)}</option>`).join("")}</select></div>
+        <div class="field"><label for="a-year">Year</label><input id="a-year" type="number" inputmode="numeric" min="2014" max="2099" value="${esc(draft.year)}"></div></div>
+      <div class="field"><label for="a-kind">What it looks like (optional)</label><input id="a-kind" type="text" maxlength="80" placeholder="Like witch hat or apple picker" value="${esc(draft.kind)}"></div>
+      <div class="field"><span class="lbl" id="swl">Feather color</span><div class="swatches" role="group" aria-labelledby="swl">${BODY_SWATCHES.map(c => `<button type="button" data-swatch="${c}" style="background:${c}" aria-label="Color ${c}" aria-pressed="${c === draft.body}"></button>`).join("")}</div></div>
+      <p class="err" id="addErr" role="alert"></p>
+      <div class="btns"><button class="btn primary" type="submit">Add to the list</button><button class="btn" type="button" data-close>Cancel</button></div>
+    </form>`;
+  }
+  function renderFilter() {
+    dlg.innerHTML = bar("Filter and sort") + `<div class="dlg-body">
+      <div><span class="lbl" id="fshow">Show</span><div class="seg" role="group" aria-labelledby="fshow">${SHOWS.map(([v, l]) => `<button type="button" data-show="${v}" aria-pressed="${S.show === v}">${esc(l)}</button>`).join("")}</div></div>
+      <div><span class="lbl" id="fsort">Sort</span><div class="seg" role="group" aria-labelledby="fsort">${SORTS.map(([v, l]) => `<button type="button" data-sort="${v}" aria-pressed="${S.sort === v}">${esc(l)}</button>`).join("")}</div></div>
+      <div class="btns"><button class="btn primary" type="button" data-close>Show birds</button><button class="btn" type="button" id="resetFilters">Reset</button></div></div>`;
+  }
+  function renderSettings(full) {
+    if (!full && !$("#settingsBody")) return;
+    const m = me(); const all = flocks();
+    const body = `${m ? `<div class="field"><label for="s-name">Your name in Flocks</label><div class="tool-row"><input id="s-name" type="text" maxlength="30" value="${esc(m.name)}" style="flex:1"><button class="btn primary" type="button" id="saveName">Save</button></div></div>` : ""}
+      <div><span class="lbl">Who's using this phone</span><div class="people-list">${all.map((f, i) => `<div class="row"><span class="av" style="${avStyle(flockColor(f, i))}">${initial(f.name)}</span><span class="nm">${esc(f.name)}${f.id === S.meId ? " (this phone)" : ""}</span>${f.id === S.meId ? "" : `<button class="btn" type="button" data-become="${esc(f.id)}">Switch</button>`}<button class="btn danger" type="button" data-askdel="${esc(f.id)}" aria-label="Remove ${esc(f.name)}">Remove</button></div><div id="del-${esc(f.id)}"></div>`).join("")}</div></div>
+      <div class="field"><label for="s-new">Add someone to the family</label><div class="tool-row"><input id="s-new" type="text" maxlength="30" placeholder="Their name" style="flex:1"><button class="btn" type="button" id="addPerson">Add</button></div></div>
+      ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.</p></div>` : ""}
+      <p class="hint">Flocks keeps everyone's birds in one shared list. Photos of current birds come from Target's listings; everything else is drawn as a cartoon until someone adds a photo.</p>`;
+    if (full) dlg.innerHTML = bar("Settings") + `<div class="dlg-body" id="settingsBody">${body}</div>`;
+    else if (!$("#settingsBody .confirm") && !(document.activeElement && dlg.contains(document.activeElement) && document.activeElement.tagName === "INPUT")) $("#settingsBody").innerHTML = body;
+  }
+  function renderCode(err) {
+    dlg.innerHTML = bar("Welcome to Flocks", false) + `<form class="dlg-body" id="codeForm">
+      <div class="hero cartoon" style="--tint:#FFE6DE;max-height:24vh">${birdSVG({ body: "#7CC6A4", belly: "#FFF3D1", acc: "bow", accent: "#F2795D" })}</div>
+      <p style="margin:0">Enter the family passcode. You only need to do this once on each phone.</p>
+      <div class="field"><label for="c-code">Family passcode</label><input id="c-code" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" required autofocus></div>
+      <p class="err" id="codeErr" role="alert">${esc(err || "")}</p>
+      <button class="btn primary" type="submit">Open Flocks</button></form>`;
+  }
+  function renderWelcome() {
+    const all = flocks();
+    dlg.innerHTML = bar("Who's using this phone?", false) + `<div class="dlg-body">
+      <p style="margin:0">Pick your name. You can change this later in settings.</p>
+      <div class="welcome-list">${all.map((f, i) => `<button type="button" data-become="${esc(f.id)}"><span class="av" style="${avStyle(flockColor(f, i))}">${initial(f.name)}</span>${esc(f.name)}</button>`).join("")}</div>
+      <div class="field"><label for="w-new">Someone else?</label><div class="tool-row"><input id="w-new" type="text" maxlength="30" placeholder="Your name" style="flex:1"><button class="btn" type="button" id="welcomeAdd">Add me</button></div></div></div>`;
+  }
+
+  // ---------- toast ----------
+  let toastT = 0, toastAction = null;
+  function toast(msg, action) {
+    const t = $("#toast");
+    t.innerHTML = `<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
+    t.firstChild.textContent = msg; t.hidden = false; toastAction = action || null;
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAction = null; }, action ? 5000 : 2600);
+  }
+
+  // ---------- actions ----------
+  function needMe() { if (me()) return true; openDialog("welcome"); return false; }
+  function setOwned(bid, q, withUndo, at) {
+    const m = me(); if (!m || !api) return;
+    if (!canWrite()) return;
+    const prev = qtyOf(m, bid); const prevAt = prev && m.owned[bid] && m.owned[bid].at; const fid = m.id; const b = S.data.birds[bid];
+    const useAt = at || "";
+    mutate(d => OPS.setOwned(d, fid, bid, q, useAt), () => api.setOwned(fid, bid, q, useAt));
+    if (withUndo && prev && !q) toast(`${b ? b.name : "Bird"} removed from your flock`, { label: "Undo", run: () => setOwned(bid, prev, false, prevAt) });
+    else if (withUndo && !prev && q) toast(`${b ? b.name : "Bird"} added to your flock`);
+  }
+  function setWish(bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setWish(d, fid, bid, on), () => api.setWish(fid, bid, on)); }
+  function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setGift(d, fid, forId, bid, on), () => api.setGift(fid, forId, bid, on)); }
+  function addPerson(name, becomeIt) {
+    name = String(name || "").trim().slice(0, 30); if (!name || !api) return false;
+    const id = "flock-" + slug(name).slice(0, 30) + "-" + rand(4);
+    const color = FLOCK_COLORS[flocks().length % FLOCK_COLORS.length], order = flocks().length + 1;
+    mutate(d => OPS.saveFlock(d, id, name, color, order), () => api.saveFlock(id, name, color, order));
+    if (becomeIt) become(id);
+    return true;
+  }
+  function become(id) { S.meId = id; store.set("flocks.me", id); S.person = ""; const m = me(); closeDialog(true); onData(); if (m) toast(`Hi ${m.name}!`); }
+
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button, a, label"); if (!t) return;
+    const d = t.dataset;
+    if (t.id === "toastAct") { const a = toastAction; $("#toast").hidden = true; toastAction = null; if (a) a.run(); return; }
+    if (d.close !== undefined) { closeDialog(); return; }
+    if (d.tab) { S.tab = d.tab; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
+    if (d.goto) { S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
+    if (d.welcome !== undefined) { openDialog("welcome"); return; }
+    if (d.season !== undefined) { S.season = S.season === d.season ? "" : d.season; renderBirds(); return; }
+    if (d.show !== undefined) { S.show = d.show; dlg.querySelectorAll("[data-show]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.show === S.show))); renderBirds(); return; }
+    if (d.sort) { S.sort = d.sort; store.set("flocks.sort", S.sort); dlg.querySelectorAll("[data-sort]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.sort === S.sort))); renderBirds(); return; }
+    if (t.id === "resetFilters") { S.show = ""; S.sort = "season"; store.set("flocks.sort", "season"); renderFilter(); renderBirds(); return; }
+    if (t.id === "clearFilters") { S.show = ""; S.season = ""; S.q = ""; $("#q").value = ""; renderBirds(); return; }
+    if (t.id === "filterBtn") { openDialog("filter"); return; }
+    if (t.id === "meBtn") { openDialog("settings"); return; }
+    if (d.open) { openDialog("bird", { id: d.open }); return; }
+    if (d.have) { if (!needMe()) return; const m = me(); setOwned(d.have, qtyOf(m, d.have) ? 0 : 1, true); return; }
+    if (d.wish) { if (!needMe()) return; const m = me(); const on = !wants(m, d.wish); setWish(d.wish, on); if (on && qtyOf(m, d.wish)) toast("You already have this one, but it's on your wish list too."); return; }
+    if (d.step && dlgState.kind === "bird") { if (!needMe()) return; const m = me(); const q = Math.max(0, Math.min(99, qtyOf(m, dlgState.id) + Number(d.step))); setOwned(dlgState.id, q, false); return; }
+    if (d.gift) { if (!needMe()) return; const m = me(); const on = !(m.gifts && m.gifts[S.person] && m.gifts[S.person][d.gift]); setGift(S.person, d.gift, on); return; }
+    if (d.person) { S.person = d.person; renderFamily(); return; }
+    if (d.swatch) { draft.body = d.swatch; dlg.querySelectorAll("[data-swatch]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); const a = $("#addArt"); if (a) { a.style.setProperty("--tint", soft(draft.body)); a.innerHTML = birdSVG({ body: draft.body }); } return; }
+    if (d.become) { become(d.become); return; }
+    if (t.id === "addBird") { if (!api) return; openDialog("add"); return; }
+    if (t.id === "welcomeAdd") { const v = $("#w-new").value; if (addPerson(v, true)) return; $("#w-new").focus(); return; }
+    if (t.id === "addPerson") { const v = $("#s-new"); if (addPerson(v.value, false)) { toast(`${v.value.trim()} added`); v.value = ""; renderSettings(true); } return; }
+    if (t.id === "saveName") { const m = me(); const v = $("#s-name").value.trim().slice(0, 30); if (!m || !v || !api) return; const fid = m.id, c = flockColor(m), o = m.order || 1; mutate(dd => OPS.saveFlock(dd, fid, v, c, o), () => api.saveFlock(fid, v, c, o)); toast("Name saved"); return; }
+    if (d.askdel) { const f = flock(d.askdel); const box = $("#del-" + CSS.escape(d.askdel)); if (!f || !box) return; box.innerHTML = `<div class="confirm">Remove ${esc(f.name)} and everything in their flock? This can't be undone.<div class="btns"><button class="btn danger" type="button" data-dodel="${esc(f.id)}">Yes, remove</button><button class="btn" type="button" data-nodel="${esc(f.id)}">Keep</button></div></div>`; return; }
+    if (d.nodel) { const box = $("#del-" + CSS.escape(d.nodel)); if (box) box.innerHTML = ""; return; }
+    if (d.dodel) {
+      const fid = d.dodel; const self = fid === S.meId;
+      if (!canWrite()) return;
+      if (self) { S.meId = ""; store.del("flocks.me"); closeDialog(true); }
+      mutate(dd => OPS.deleteFlock(dd, fid), () => api.deleteFlock(fid));
+      if (!self && dlgState.kind === "settings") renderSettings(true);
+      return;
+    }
+    if (t.id === "forgetCode") { store.del("flocks.code"); store.del("flocks.snap.v2"); location.reload(); return; }
+    if (t.id === "delPhoto") { const id = dlgState.id; if (!api) return; api.deletePhoto(id).then(r => { if (r && r.error) throw r; delete S.photos[id]; remember(id, null); idb.del("photo:" + id); onPhoto(id); toast("Photo removed"); if (api.kind === "live") schedule(300); }).catch(() => toast("That didn't save. Try again.")); return; }
+    if (t.id === "delBird") { $("#delWrap").innerHTML = `<div class="confirm">Remove this bird for everyone?<div class="btns"><button class="btn danger" type="button" id="delYes">Yes, remove it</button><button class="btn" type="button" id="delNo">Keep it</button></div></div>`; return; }
+    if (t.id === "delNo") { renderBirdDialog(); return; }
+    if (t.id === "delYes") { const id = dlgState.id; closeDialog(); mutate(dd => OPS.deleteBird(dd, id), () => api.deleteBird(id)); toast("Removed from the list"); return; }
+  });
+  document.addEventListener("keydown", e => {
+    const tab = e.target.closest && e.target.closest('[role="tab"]');
+    if (tab && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+      const tabs = [...document.querySelectorAll('[role="tab"]')]; const i = tabs.indexOf(tab);
+      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click(); e.preventDefault();
+    }
+  });
+  document.addEventListener("input", e => {
+    const id = e.target.id;
+    if (id === "q") { S.q = e.target.value; clearTimeout(qTimer); qTimer = setTimeout(renderBirds, 120); }
+    else if (id === "note") { clearTimeout(noteTimer); noteTimer = setTimeout(saveNoteNow, 1200); }
+    else if (id === "a-name") draft.name = e.target.value;
+    else if (id === "a-kind") draft.kind = e.target.value;
+    else if (id === "a-year") draft.year = e.target.value;
+  });
+  document.addEventListener("change", e => {
+    if (e.target.id === "a-season") draft.season = e.target.value;
+    if (e.target.id === "photoIn" && e.target.files && e.target.files[0] && dlgState.kind === "bird") uploadPhoto(dlgState.id, e.target.files[0]);
+  });
+  document.addEventListener("focusout", e => { if (e.target && e.target.id === "note") saveNoteNow(); });
+  document.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (e.target.id === "codeForm") {
+      const code = $("#c-code").value.trim(); const err = $("#codeErr"); if (!code) return;
+      err.textContent = "Checking…";
+      const a = makeRemote(code);
+      try {
+        const r = await a.check();
+        if (r && r.error) { err.textContent = r.error === "locked" ? "Too many wrong tries. Wait 15 minutes and try again." : r.error === "unset" ? "The passcode hasn't been set up yet." : "That passcode didn't match. Check it and try again."; return; }
+        store.set("flocks.code", code); dlgState.locked = false; closeDialog(true); start(a); toast("You're in");
+      } catch (x) { err.textContent = "Can't reach Flocks right now. Check your connection and try again."; }
+      return;
+    }
+    if (e.target.id === "addForm") {
+      const name = draft.name.trim(); const err = $("#addErr");
+      if (!name) { err.textContent = "Give the bird a name first."; $("#a-name").focus(); return; }
+      if (draft.year && !/^20\d{2}$/.test(draft.year)) { err.textContent = "Use a four-digit year like 2024, or leave it empty."; return; }
+      const id = "added-" + slug(name) + "-" + rand(5);
+      const rec = { name: name.slice(0, 60), season: draft.season, year: draft.year || "", kind: draft.kind.trim().slice(0, 80), body: draft.body, source: "added", addedBy: S.meId || "", addedOn: today() };
+      closeDialog();
+      const ok = await mutate(d => OPS.addBird(d, id, rec), () => api.addBird(id, rec));
+      if (ok) { toast(`${name} is on the list`); draft.name = ""; draft.kind = ""; }
+    }
+  });
+
+  // ---------- start ----------
+  function start(a) {
+    api = a; S.mode = a.kind === "live" ? "live" : "preview";
+    lastSig = "";
+    renderBanner();
+    refresh();
+  }
+  function boot() {
+    renderTabs(); renderView();
+    if (!configured) { start(makeLocal()); return; }
+    const code = store.get("flocks.code");
+    const snap = store.get("flocks.snap.v2");
+    if (code && snap) { try { apply(JSON.parse(snap), false); } catch (e) {} }
+    if (!code) { S.mode = "need-code"; openDialog("code"); return; }
+    start(makeRemote(code));
+  }
+  boot();
+
+  if ("serviceWorker" in navigator && location.protocol === "https:" && configured) {
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  }
+})();
+</script>
+</body>
+</html>

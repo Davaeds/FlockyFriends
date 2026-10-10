@@ -1,0 +1,25 @@
+# Supabase pauses free projects that go unused for a while. This pings the
+# database twice a week so the family never finds it asleep.
+name: Keep database awake
+on:
+  schedule:
+    - cron: "17 14 * * 1,4"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ping Supabase
+        run: |
+          URL=$(grep -o 'https://[a-z0-9-]*\.supabase\.co' config.js | head -1)
+          KEY=$(grep -o 'supabaseKey: *"[^"]*"' config.js | sed 's/.*"\(.*\)"/\1/')
+          if [ -z "$URL" ] || [ -z "$KEY" ] || [ "$KEY" = "YOUR-ANON-OR-PUBLISHABLE-KEY" ]; then
+            echo "config.js is not filled in yet; nothing to ping."; exit 0
+          fi
+          # Older "anon" keys are JWTs (start with eyJ) and also go in the
+          # Authorization header. Newer "publishable" keys go in apikey only.
+          case "$KEY" in
+            eyJ*) curl -fsS -X POST "$URL/rest/v1/rpc/flocks_ping" -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{}' ;;
+            *)    curl -fsS -X POST "$URL/rest/v1/rpc/flocks_ping" -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}' ;;
+          esac
