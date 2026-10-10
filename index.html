@@ -134,8 +134,10 @@ button { cursor: pointer; }
 .tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .tile svg { width: 74%; height: 74%; }
 .tile:focus-visible { outline-offset: -5px; border-radius: var(--r) var(--r) 0 0; }
-.tile.cartoon::before { content: ""; position: absolute; inset: 14%; border-radius: 50%; background: var(--tint, #EAF5F1); }
-.tile.cartoon svg { position: relative; }
+.nophoto { background: var(--surface-2) !important; }
+.np { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--muted); font-weight: 800; font-size: .82rem; text-align: center; padding: 8px; width: 100%; height: 100%; }
+.tile .np svg, .hero .np svg, .thumb .np svg, .thumbs .np svg { width: 30%; max-width: 64px; height: auto; opacity: .75; }
+.thumb .np span, .thumbs .np span { display: none; }
 .qty { position: absolute; top: 10px; right: 10px; background: var(--leaf-fill); color: var(--on-leaf); font-weight: 800; font-size: .8rem; border-radius: 999px; padding: 1px 9px; font-variant-numeric: tabular-nums; }
 .owners { position: absolute; top: 10px; left: 10px; display: flex; }
 .owners .av { border: 2px solid #fff; margin-right: -6px; }
@@ -348,7 +350,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   <section id="view-family" role="tabpanel" aria-labelledby="tab-family" hidden></section>
 
   <footer>
-    <p><strong>Where the bird list comes from.</strong> Birds marked as on Target were listed on <a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a> in October 2026, with Target's own photos and descriptions. Older birds come from the Target Birds fan wiki, news coverage and resale listings. Birds seen only in resale listings are marked "Unconfirmed". If you spot one that's missing, add it from All birds.</p>
+    <p><strong>Where the bird list comes from.</strong> Birds marked as on Target were listed on <a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a> in October 2026, with Target's own photos and descriptions. Older birds and their photos come from the Target Birds fan wiki, news coverage and resale listings; each bird's page says where its photo came from. Birds seen only in resale listings are marked "Unconfirmed". If you spot one that's missing, add it from All birds.</p>
     <p>Featherly Friends, Wondershop, Hyde and EEK! Boutique and Spritz are Target brands. Flocks is a family tracker and is not made by Target.</p>
   </footer>
 </div>
@@ -744,27 +746,40 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   const isTarget = u => /^https:\/\/(www\.)?target\.com\//.test(u);
   const resaleSearch = b => "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent("featherly friends " + b.name + (b.year ? " " + b.year : ""));
   function targetImg(b, w) { const u = safeUrl(b.img); if (!u || !/^https:\/\/target\.scene7\.com\//.test(u)) return ""; return u.split("?")[0] + "?wid=" + w + "&hei=" + w + "&fmt=pjpeg&qlt=85"; }
+  // photos/index.json lists the real photos the repo's photo finder saved: id -> { v, from, page }
+  let repoPhotos = {};
+  fetch("photos/index.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).then(j => {
+    if (j && typeof j === "object") { delete j._missing; repoPhotos = j; if (S.loaded) { renderView(); if (dlgState.kind === "bird") renderBirdHero(); } }
+  }).catch(() => {});
+  const repoPhoto = b => { const p = repoPhotos[b.id]; return p && /^[0-9a-f]{6,40}$/.test(String(p.v)) && !failedImg.has("r:" + b.id) ? "photos/" + encodeURIComponent(b.id) + ".jpg?v=" + p.v : ""; };
+  const CAMERA_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;
+  function photoSource(b) {
+    if (familyPhoto(b.id)) return { kind: "family" };
+    if (repoPhoto(b)) { const p = repoPhotos[b.id]; return { kind: p.from === "wiki" ? "wiki" : p.from === "resale" ? "resale" : "target", page: safeUrl(p.page) }; }
+    if (!failedImg.has("t:" + b.id) && targetImg(b, 100)) return { kind: "target", page: safeUrl(b.url) };
+    return { kind: "" };
+  }
   function artHTML(b, size, label) {
-    const fam = familyPhoto(b.id);
     const alt = esc(label || "");
-    if (fam) return { html: `<img src="${esc(fam)}" alt="${alt}" decoding="async" data-fb="${esc(b.id)}">`, photo: true };
-    const t = failedImg.has(b.id) ? "" : targetImg(b, size);
-    if (t) return { html: `<img src="${esc(t)}" srcset="${esc(t)} 1x, ${esc(targetImg(b, size * 2))} 2x" alt="${alt}" loading="lazy" decoding="async" data-fb="${esc(b.id)}">`, photo: true };
-    if (label) return { html: birdSVG(b, { label }), photo: false };
-    const key = b.id + "|" + b.body + "|" + b.acc + "|" + b.accent + "|" + b.name;
-    let svg = svgMemo.get(key); if (!svg) { svg = birdSVG(b); svgMemo.set(key, svg); }
-    return { html: svg, photo: false };
+    const fam = failedImg.has("f:" + b.id) ? null : familyPhoto(b.id);
+    if (fam) return { html: `<img src="${esc(fam)}" alt="${alt}" decoding="async" data-fb="${esc(b.id)}" data-k="f">`, photo: true };
+    const r = repoPhoto(b);
+    if (r) return { html: `<img src="${esc(r)}" alt="${alt}" loading="lazy" decoding="async" data-fb="${esc(b.id)}" data-k="r">`, photo: true };
+    const t = failedImg.has("t:" + b.id) ? "" : targetImg(b, size);
+    if (t) return { html: `<img src="${esc(t)}" srcset="${esc(t)} 1x, ${esc(targetImg(b, size * 2))} 2x" alt="${alt}" loading="lazy" decoding="async" data-fb="${esc(b.id)}" data-k="t">`, photo: true };
+    return { html: `<span class="np"${label ? ` role="img" aria-label="${alt}, no photo yet"` : ""}>${CAMERA_SVG}<span>No photo yet</span></span>`, photo: false };
   }
   document.addEventListener("error", e => {
     const img = e.target;
     if (!img || img.tagName !== "IMG" || !img.dataset.fb) return;
-    const b = S.data.birds[img.dataset.fb]; const box = img.parentNode;
-    if (!box) return;
-    if (!/^(data|blob):/.test(img.getAttribute("src") || "")) failedImg.add(img.dataset.fb);
-    box.classList.add("cartoon"); box.style.setProperty("--tint", soft(safeColor(b && b.body) || hashColor(b && b.name)));
-    box.innerHTML = birdSVG(Object.assign({ id: img.dataset.fb }, b || {}));
-    const cap = document.querySelector("#photoCap");
-    if (cap && box.classList.contains("hero")) cap.textContent = "The photo couldn't load, so this is a cartoon stand-in.";
+    const id = img.dataset.fb; const b = S.data.birds[id]; const box = img.parentNode;
+    if (!box || !b) return;
+    if (["r", "t", "f"].includes(img.dataset.k)) failedImg.add(img.dataset.k + ":" + id);
+    // fall through to the next source for this bird
+    const art = artHTML(Object.assign({ id }, b), box.classList.contains("hero") ? 600 : 320, img.getAttribute("alt") || "");
+    box.classList.toggle("nophoto", !art.photo);
+    box.innerHTML = art.html;
+    if (box.classList.contains("hero")) renderBirdHero();
   }, true);
   function shrink(file) {
     return new Promise((resolve, reject) => {
@@ -787,7 +802,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     let url;
     try { url = await shrink(file); } catch (e) { toast("That photo couldn't be opened. Try another."); return; }
     const prevV = S.photos[id], prevM = photoMem[id];
-    remember(id, { v: "pending", url }); S.photos[id] = "pending"; onPhoto(id);
+    failedImg.delete("f:" + id); remember(id, { v: "pending", url }); S.photos[id] = "pending"; onPhoto(id);
     try {
       const r = await api.setPhoto(id, url);
       if (r && r.error) throw r;
@@ -899,7 +914,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     if (b.source === "resale") tags += `<span class="tag warn">Unconfirmed</span>`;
     if (b.source === "added") tags += `<span class="tag added">Family added</span>`;
     return `<article class="card${q ? " have" : ""}" data-k="${esc(b.id)}">
-      <button class="tile${art.photo ? "" : " cartoon"}" type="button" data-open="${esc(b.id)}" style="--tint:${soft(safeColor(b.body) || hashColor(b.name))}" aria-label="${esc(b.name)}, details">${art.html}</button>
+      <button class="tile${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
       ${owners.length ? `<div class="owners" aria-label="${esc("Also in " + owners.map(f => f.name).join(" and ") + "'s flock")}" role="img">${owners.map(f => `<span class="av sm" style="${avStyle(flockColor(f))}">${initial(f.name)}</span>`).join("")}</div>` : ""}
       ${q > 1 ? `<span class="qty" aria-label="${q} copies">×${q}</span>` : ""}
       <div class="card-body"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
@@ -1007,7 +1022,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       h += `<ul class="gift-list">${wished.map(b => {
         const art = artHTML(b, 160, ""); const url = safeUrl(b.url); const got = !!mine[b.id];
         const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
-        return `<li class="gift"><button class="thumb${art.photo ? "" : " cartoon"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+        return `<li class="gift"><button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
           <div><p class="nm">${esc(b.name)}</p><p class="meta">${esc(meta)}</p>
           <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
       }).join("")}</ul>`;
@@ -1015,7 +1030,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     } else h += `<p class="sub" style="margin:0">${esc(isMe ? "Your wish list is empty. Tap the heart on any bird to add it." : p.name + " hasn't wished for any birds yet.")}</p>`;
     h += `</div>`;
     h += `<div class="panel"><h2>${esc(isMe ? "In your flock" : "Already in " + p.name + "'s flock")}</h2>${!isMe ? `<p class="sub">So you don't buy one ${esc(p.name)} already has.</p>` : ""}`;
-    h += owned.length ? `<div class="thumbs">${sortList(owned.slice()).map(b => { const art = artHTML(b, 160, ""); return `<button type="button" data-open="${esc(b.id)}"><span class="t${art.photo ? "" : " cartoon"}">${art.html}</span><span class="l">${esc(b.name)}${qtyOf(p, b.id) > 1 ? " ×" + qtyOf(p, b.id) : ""}</span></button>`; }).join("")}</div>`
+    h += owned.length ? `<div class="thumbs">${sortList(owned.slice()).map(b => { const art = artHTML(b, 160, ""); return `<button type="button" data-open="${esc(b.id)}"><span class="t${art.photo ? "" : " nophoto"}">${art.html}</span><span class="l">${esc(b.name)}${qtyOf(p, b.id) > 1 ? " ×" + qtyOf(p, b.id) : ""}</span></button>`; }).join("")}</div>`
       : `<p class="sub" style="margin:0">No birds marked yet.</p>`;
     h += `</div>`;
     paint(el, h);
@@ -1083,11 +1098,16 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   function renderBirdHero() {
     const b = birds().find(x => x.id === dlgState.id); const hero = $("#birdHero"); if (!b || !hero) return;
     const art = artHTML(b, 600, b.name);
-    hero.className = "hero" + (art.photo ? "" : " cartoon");
-    hero.style.setProperty("--tint", soft(safeColor(b.body) || hashColor(b.name)));
-    hero.innerHTML = art.html;
+    hero.className = "hero" + (art.photo ? "" : " nophoto");
+    if (hero.innerHTML !== art.html) hero.innerHTML = art.html;
     const fam = !!familyPhoto(b.id);
-    const cap = $("#photoCap"); if (cap) cap.textContent = fam ? "Photo added by the family." : (targetImg(b, 600) ? "Photo from Target's listing." : "Cartoon stand-in. Add a real photo if you have one.");
+    const src = photoSource(b);
+    const cap = $("#photoCap");
+    if (cap) {
+      const words = { family: "Photo added by the family.", target: "Photo from Target's listing.", wiki: "Photo from the Target Birds fan wiki.", resale: "Photo from a resale listing." }[src.kind];
+      cap.innerHTML = words ? esc(words) + (src.page && src.kind !== "family" ? ` <a href="${esc(src.page)}" target="_blank" rel="noopener">Source</a>` : "")
+        : "No photo yet. If you have this bird, add a photo so everyone can see it.";
+    }
     const lbl = $("#photoBtnLbl"); if (lbl) lbl.textContent = fam ? "Replace photo" : "Add my photo";
     const del = $("#delPhoto"); if (del) del.hidden = !fam;
   }
@@ -1121,16 +1141,15 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       .then(ok => { if (!ok && dlgState.kind === "bird" && dlgState.id === bid && dlgState.noteStart === text) dlgState.noteStart = before; });
   }
 
-  const draft = { name: "", season: "christmas", year: String(new Date().getFullYear()), kind: "", body: BODY_SWATCHES[0] };
+  const draft = { name: "", season: "christmas", year: String(new Date().getFullYear()), kind: "", body: BODY_SWATCHES[0], file: null };
   function renderAddDialog() {
     dlg.innerHTML = bar("Add a missing bird") + `<form class="dlg-body" id="addForm" novalidate>
-      <div class="hero cartoon" id="addArt" style="--tint:${soft(draft.body)};max-height:26vh">${birdSVG({ body: draft.body })}</div>
-      <p class="hint" style="margin:0">Everyone will see it on the master list. A cartoon stands in until someone adds a photo.</p>
+      <p class="hint" style="margin:0">Everyone will see it on the master list.</p>
       <div class="field"><label for="a-name">Bird's name</label><input id="a-name" type="text" maxlength="60" required placeholder="Like Pep or Cauldy" value="${esc(draft.name)}" autofocus></div>
       <div class="row2"><div class="field"><label for="a-season">Season</label><select id="a-season">${SEASONS.map(s => `<option value="${s.id}"${s.id === draft.season ? " selected" : ""}>${esc(s.label)}</option>`).join("")}</select></div>
         <div class="field"><label for="a-year">Year</label><input id="a-year" type="number" inputmode="numeric" min="2014" max="2099" value="${esc(draft.year)}"></div></div>
       <div class="field"><label for="a-kind">What it looks like (optional)</label><input id="a-kind" type="text" maxlength="80" placeholder="Like witch hat or apple picker" value="${esc(draft.kind)}"></div>
-      <div class="field"><span class="lbl" id="swl">Feather color</span><div class="swatches" role="group" aria-labelledby="swl">${BODY_SWATCHES.map(c => `<button type="button" data-swatch="${c}" style="background:${c}" aria-label="Color ${c}" aria-pressed="${c === draft.body}"></button>`).join("")}</div></div>
+      <div class="field"><span class="lbl">Photo (optional)</span><div class="tool-row"><label class="btn" for="a-photo">${ICON.camera}<span>Choose a photo</span></label><span class="hint" id="a-photo-name" style="margin:0"></span></div><input id="a-photo" type="file" accept="image/*" hidden></div>
       <p class="err" id="addErr" role="alert"></p>
       <div class="btns"><button class="btn primary" type="submit">Add to the list</button><button class="btn" type="button" data-close>Cancel</button></div>
     </form>`;
@@ -1148,7 +1167,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       <div><span class="lbl">Who's using this phone</span><div class="people-list">${all.map((f, i) => `<div class="row"><span class="av" style="${avStyle(flockColor(f, i))}">${initial(f.name)}</span><span class="nm">${esc(f.name)}${f.id === S.meId ? " (this phone)" : ""}</span>${f.id === S.meId ? "" : `<button class="btn" type="button" data-become="${esc(f.id)}">Switch</button>`}<button class="btn danger" type="button" data-askdel="${esc(f.id)}" aria-label="Remove ${esc(f.name)}">Remove</button></div><div id="del-${esc(f.id)}"></div>`).join("")}</div></div>
       <div class="field"><label for="s-new">Add someone to the family</label><div class="tool-row"><input id="s-new" type="text" maxlength="30" placeholder="Their name" style="flex:1"><button class="btn" type="button" id="addPerson">Add</button></div></div>
       ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.</p></div>` : ""}
-      <p class="hint">Flocks keeps everyone's birds in one shared list. Photos of current birds come from Target's listings; everything else is drawn as a cartoon until someone adds a photo.</p>`;
+      <p class="hint">Flocks keeps everyone's birds in one shared list. Photos come from Target's listings, the Target Birds fan wiki and resale listings. Any bird without one can get a family photo.</p>`;
     if (full) dlg.innerHTML = bar("Settings") + `<div class="dlg-body" id="settingsBody">${body}</div>`;
     else if (!$("#settingsBody .confirm") && !(document.activeElement && dlg.contains(document.activeElement) && document.activeElement.tagName === "INPUT")) $("#settingsBody").innerHTML = body;
   }
@@ -1260,6 +1279,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   });
   document.addEventListener("change", e => {
     if (e.target.id === "a-season") draft.season = e.target.value;
+    if (e.target.id === "a-photo") { draft.file = e.target.files && e.target.files[0] || null; const n = $("#a-photo-name"); if (n) n.textContent = draft.file ? "Photo chosen" : ""; }
     if (e.target.id === "photoIn" && e.target.files && e.target.files[0] && dlgState.kind === "bird") uploadPhoto(dlgState.id, e.target.files[0]);
   });
   document.addEventListener("focusout", e => { if (e.target && e.target.id === "note") saveNoteNow(); });
@@ -1284,7 +1304,8 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       const rec = { name: name.slice(0, 60), season: draft.season, year: draft.year || "", kind: draft.kind.trim().slice(0, 80), body: draft.body, source: "added", addedBy: S.meId || "", addedOn: today() };
       closeDialog();
       const ok = await mutate(d => OPS.addBird(d, id, rec), () => api.addBird(id, rec));
-      if (ok) { toast(`${name} is on the list`); draft.name = ""; draft.kind = ""; }
+      const file = draft.file; draft.file = null;
+      if (ok) { toast(`${name} is on the list`); draft.name = ""; draft.kind = ""; if (file) uploadPhoto(id, file); }
     }
   });
 

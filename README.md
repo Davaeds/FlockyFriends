@@ -26,7 +26,7 @@ and can see what the other has and wants, so gift shopping is easy.
 
    Never put the passcode in this repo. Share it with the family by text or in person.
 3. **Keys.** In the project, open **Connect** (or **Project Settings > API Keys**), copy the **Project URL** and the **publishable** (or legacy **anon**) key, and put them in `config.js`. That key is meant to be public. The passcode is what keeps strangers out. Never use the **secret** or **service_role** key here.
-4. **Hosting.** Push this folder to a public GitHub repo. In the repo, go to **Settings > Pages**, set **Source: Deploy from a branch**, branch `main`, folder `/ (root)`, then **Save**. The app appears at `https://<your-user>.github.io/<repo>/` after a minute or two.
+4. **Hosting.** This repo is already set up. In the repo, go to **Settings > Pages**, set **Source: Deploy from a branch**, branch `main`, folder `/ (root)`, then **Save**. The app appears at `https://davaeds.github.io/FlockyFriends/` after a minute or two.
 5. **On each iPhone.** Open the link in **Safari**, tap **Share > Add to Home Screen**, then open Flocks from the new icon, enter the family passcode once, and pick your name.
 
 ## How it stays private
@@ -40,7 +40,9 @@ and can see what the other has and wants, so gift shopping is easy.
 
 ## Photos
 
-Birds Target sells today show Target's own product photo, loaded from Target's image server with a link back to the listing. Older birds show a cartoon stand-in drawn from their description. Anyone can tap a bird and choose **Add my photo**. The photo is shrunk on the phone and saved for everyone to see.
+Every bird shows a real photo when one could be found. The **Fetch bird photos** workflow (`.github/workflows/photos.yml`, script `tools/fetch_photos.py`) looks for each bird's photo on Target's listing, its page on the Target Birds fan wiki, or a resale listing that shows only that bird. It saves the photos in `photos/` and lists where each one came from in `photos/index.json`. The app credits the source under each photo. Birds still without a photo say "No photo yet", and anyone can tap the bird and choose **Add my photo**, which is shrunk on the phone and saved for everyone to see.
+
+To look again for missing photos, open **Actions > Fetch bird photos > Run workflow**.
 
 ## Where the bird list comes from
 
