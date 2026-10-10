@@ -40,13 +40,15 @@ and can see what the other has and wants, so gift shopping is easy.
 
 ## Photos
 
-Every bird shows a real photo when one could be found. The **Fetch bird photos** workflow (`.github/workflows/photos.yml`, script `tools/fetch_photos.py`) looks for each bird's photo on Target's listing, its page on the Target Birds fan wiki, or a resale listing that shows only that bird. It saves the photos in `photos/` and lists where each one came from in `photos/index.json`. The app credits the source under each photo. Birds still without a photo say "No photo yet", and anyone can tap the bird and choose **Add my photo**, which is shrunk on the phone and saved for everyone to see.
+Every bird shows a real photo when one could be found. The **Fetch bird photos** workflow (`.github/workflows/photos.yml`, script `tools/fetch_photos.py`) uses Target's own product photo for birds Target lists, and otherwise the photo the Target Birds fan wiki shows for that bird's release, so two birds with the same name from different years each get their own picture. It saves the photos in `photos/` and lists where each one came from in `photos/index.json`; the app credits the source under each photo. Birds still without a photo say "No photo yet", and anyone can tap the bird and choose **Add my photo**, which is shrunk on the phone and saved for everyone to see.
 
 To look again for missing photos, open **Actions > Fetch bird photos > Run workflow**.
 
 ## Where the bird list comes from
 
-`birds.json` lists named Featherly Friends characters (like Crawsly and Bonjour), combined from Target.com listings (October 2026), the Target Birds fan wiki (page titles), news and deal coverage, and resale listings. Ornaments, multi-packs, accessories and other decor are left out; `research/excluded.json` lists what was left out. Each bird records which kind of source it came from, and birds seen only in resale listings are marked "Unconfirmed" in the app. The family can add any missing bird from **All birds > Add a missing bird**.
+`birds.json` follows the fan wiki's [All Releases](https://target-birds.fandom.com/wiki/All_Releases) page: every named bird from 2016 to 2026 (including named minis and the two-bird sets), in the year and season the wiki gives, plus Target's newest birds that aren't on the wiki yet. Re-releases (the 2024 Reunion Collection, the 2025 Anniversary Collection) are noted on the original bird rather than listed twice, and Target's product names are kept as notes (searching "Bonjour" finds Chérie). Early unnamed birds (2013 to 2016), colour-named minis, ornaments, multi-packs and accessories are left out; `research/excluded.json` lists them.
+
+How it's built: the **Copy fan wiki pages** workflow (`tools/wiki_dump.py`) saves the wiki to `research/wiki-pages.json`, and `tools/wiki_birds.py` turns that into `research/wiki-birds.json`. When two records turn out to be the same bird, `birds.json` has a `merged` entry, and both the app and `setup.sql` move anyone's flock, wish list, notes, gift plans and family photo to the record that stays. The family can add any missing bird from **All birds > Add a missing bird**.
 
 ## Changing things later
 

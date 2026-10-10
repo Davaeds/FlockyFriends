@@ -350,7 +350,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   <section id="view-family" role="tabpanel" aria-labelledby="tab-family" hidden></section>
 
   <footer>
-    <p><strong>Where the bird list comes from.</strong> Birds marked as on Target were listed on <a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a> in October 2026, with Target's own photos and descriptions. Older birds and their photos come from the Target Birds fan wiki, news coverage and resale listings; each bird's page says where its photo came from. Birds seen only in resale listings are marked "Unconfirmed". If you spot one that's missing, add it from All birds.</p>
+    <p><strong>Where the bird list comes from.</strong> Every named bird on the Target Birds fan wiki's <a href="https://target-birds.fandom.com/wiki/All_Releases" target="_blank" rel="noopener">release list</a> (2016 to 2026), in the year and season the wiki gives, plus Target's newest birds that aren't on the wiki yet (<a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a>, October 2026). Early unnamed birds, ornaments, multi-packs and accessories are left out. Each bird's page says where its photo came from. If you spot one that's missing, add it from All birds.</p>
     <p>Featherly Friends, Wondershop, Hyde and EEK! Boutique and Spritz are Target brands. Flocks is a family tracker and is not made by Target.</p>
   </footer>
 </div>
@@ -603,6 +603,19 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       if (fresh) d = { birds: {}, flocks: {}, photos: {} };
       // Refresh the starting list on every open; family-added birds are kept.
       j.birds.forEach(b => { const cur = d.birds[b.id]; if (!cur || cur.source !== "added") { const x = Object.assign({}, b); delete x.id; d.birds[b.id] = x; } });
+      // Birds that were listed twice were merged: move this phone's data to the record that stays (same as setup.sql).
+      for (const [o, n] of Object.entries(j.merged || {})) {
+        if (!d.birds[o] || d.birds[o].source === "added") continue;
+        const fl = Object.values(d.flocks);
+        if (!n) { if (!d.photos[o] && !fl.some(f => ["owned", "wish", "notes"].some(k => f[k] && o in f[k]))) delete d.birds[o]; continue; }
+        if (!d.birds[n]) continue;
+        fl.forEach(f => {
+          ["owned", "wish", "notes"].forEach(k => { if (f[k] && o in f[k]) { if (!(n in f[k])) f[k][n] = f[k][o]; delete f[k][o]; } });
+          Object.values(f.gifts || {}).forEach(g => { if (g && o in g) { if (!(n in g)) g[n] = g[o]; delete g[o]; } });
+        });
+        if (d.photos[o]) { if (!d.photos[n]) { const url = await idb.get("local:" + o); if (url) { await idb.set("local:" + n, url); d.photos[n] = Date.now(); } } await idb.del("local:" + o); delete d.photos[o]; }
+        delete d.birds[o];
+      }
       if (fresh) {
         const old = parse(OLD);   // data from the first test version
         const oldFlocks = old && old.flocks && typeof old.flocks === "object" ? Object.keys(old.flocks) : [];

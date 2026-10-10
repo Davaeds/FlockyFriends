@@ -1,16 +1,20 @@
 """Find and save a real photo for every bird.
 
 Runs in GitHub Actions (see .github/workflows/photos.yml), which can reach the
-sites the photos live on. For each bird in tools/photo-sources.json without a
-photo yet, it tries, in order:
+sites the photos live on. For each bird in tools/photo-sources.json it tries,
+in order:
   1. Target's own product image (target.scene7.com)
-  2. the bird's page on the Target Birds fan wiki (lead image)
-  3. the bird's Target product page (og:image)
-  4. a resale listing that names only this bird (og:image)
+  2. the photo the Target Birds fan wiki shows for that bird's release
+  3. the bird's own page on the fan wiki (lead image; year-specific titles only
+     when several birds share a name)
+  4. the bird's Target product page (og:image)
+  5. a resale listing that names only this bird (og:image)
+A bird keeps its saved photo unless a better source (1 or 2) now has a
+different picture. Photos of birds no longer on the list are deleted.
 The image is resized to at most 800 px, saved as photos/<id>.jpg, and recorded
 in photos/index.json with where it came from, so the app can credit it.
 
-usage: python3 tools/fetch_photos.py [--only id,id]   (birds already in photos/index.json are skipped)
+usage: python3 tools/fetch_photos.py [--only id,id]
 """
 import io, json, os, re, sys, time, hashlib, urllib.parse, urllib.request
 from collections import Counter
@@ -24,6 +28,9 @@ WIKI = "https://target-birds.fandom.com"
 UA = "FlocksPhotoFetcher/1.0 (family collection app; https://github.com/Davaeds/FlockyFriends)"
 BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
 SKIP_FILE = re.compile(r"\.svg$|\.gif$|logo|wordmark|icon|site-community|favicon|placeholder|no.?image|badge", re.I)
+
+def target_url(img):
+    return img.split("?")[0] + "?wid=800&hei=800&fmt=pjpeg&qlt=90"
 
 def get(url, ua=UA, accept="*/*", tries=2):
     for i in range(tries):
@@ -97,13 +104,22 @@ def main():
     missing_log = index.pop("_missing", {})
     shared = Counter(p for v in src.values() for p in v["pages"])   # a listing used by several birds shows several birds
     stats = Counter()
+    for gone in [k for k in index if k not in src]:   # bird merged into another or taken off the list
+        index.pop(gone)
+        if os.path.exists(os.path.join(OUT, gone + ".jpg")): os.remove(os.path.join(OUT, gone + ".jpg"))
+        stats["removed"] += 1
+    for k in [k for k in missing_log if k not in src]: missing_log.pop(k)
     for bid, s in src.items():
         if only and bid not in only: continue
-        if bid in index and os.path.exists(os.path.join(OUT, bid + ".jpg")): stats["kept"] += 1; continue
+        best = target_url(s["img"]) if s.get("img") else s.get("wimg", "")
+        have = index.get(bid)
+        if have and os.path.exists(os.path.join(OUT, bid + ".jpg")) and (not best or have.get("image") == best):
+            stats["kept"] += 1; continue
         tried = []
         attempts = []
-        if s.get("img"): attempts.append(("target", lambda s=s: (s["img"].split("?")[0] + "?wid=800&hei=800&fmt=pjpeg&qlt=90", "")))
-        attempts.append(("wiki", lambda s=s: wiki_lead_image(s["wiki"], s["name"], s["year"])))
+        if s.get("img"): attempts.append(("target", lambda s=s: (target_url(s["img"]), "")))
+        if s.get("wimg"): attempts.append(("wiki", lambda s=s: (s["wimg"], s.get("wpage", ""))))
+        if s.get("wiki"): attempts.append(("wiki", lambda s=s: wiki_lead_image(s["wiki"], s["name"], s["year"])))
         for p in s["pages"]:
             if "target.com/p/" in p: attempts.append(("target", lambda p=p: (og_image(p), p)))
         for p in s["pages"]:
@@ -127,7 +143,9 @@ def main():
                 tried.append(f"{kind}: {type(e).__name__} {str(e)[:60]}")
             finally:
                 time.sleep(0.4)
-        if not done:
+        if not done and have and os.path.exists(os.path.join(OUT, bid + ".jpg")):
+            stats["kept (better photo failed)"] += 1   # keep the old photo rather than none
+        elif not done:
             stats["missing"] += 1; missing_log[bid] = tried
             print(f"MISS {bid:40} {' | '.join(tried)[:160]}", flush=True)
         else:
