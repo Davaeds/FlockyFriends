@@ -303,7 +303,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   .tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; max-width: none; border-radius: 0; padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--surface); box-shadow: 0 -1px 0 var(--line), 0 -8px 24px rgba(0,0,0,.06); justify-content: space-around; gap: 0; }
   .tab { flex: 1; flex-direction: column; gap: 1px; min-height: 54px; padding: 4px 2px; border-radius: 14px; font-size: .74rem; }
   .tab[aria-selected="true"] { background: var(--surface-2); box-shadow: none; }
-  .tab .long { display: none; } .tab .short { display: inline; }
+  .tab { min-width: 0; } .tab .long { display: none; } .tab .short { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
   .tab .n { position: absolute; top: 2px; left: calc(50% + 6px); font-size: .66rem; }
   .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -905,6 +905,10 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     const setN = (id, n) => { const el = $(id); el.hidden = !n; el.textContent = n; };
     setN("#n-mine", m ? ownedIds(m).length : 0);
     setN("#n-wish", m ? wishIds(m).length : 0);
+    // Name the family tab after the other person when there is just one, so it's clear where their flock is.
+    const o = m ? others() : [], fam = $("#tab-family");
+    fam.querySelector(".long").textContent = o.length === 1 ? o[0].name + "'s flock & gifts" : "Family & gifts";
+    fam.querySelector(".short").textContent = o.length === 1 ? o[0].name : "Family";
     document.querySelectorAll(".tab").forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
     ["birds", "mine", "wish", "family"].forEach(k => { $("#view-" + k).hidden = k !== S.tab; });
   }
