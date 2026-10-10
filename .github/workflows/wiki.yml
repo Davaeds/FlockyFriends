@@ -1,0 +1,32 @@
+# Saves a copy of the Target Birds fan wiki's pages to research/wiki-pages.json,
+# used to check the bird list is complete and each bird's year is right.
+# Runs when the script changes, or by hand from the Actions tab.
+name: Copy fan wiki pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/wiki_dump.py", ".github/workflows/wiki.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: photos
+  cancel-in-progress: false
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/wiki_dump.py
+      - name: Commit
+        run: |
+          git config user.name "flocks-photos[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/wiki-pages.json
+          if git diff --cached --quiet; then echo "No change."; exit 0; fi
+          git commit -m "Update fan wiki copy"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
