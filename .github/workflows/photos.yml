@@ -1,5 +1,6 @@
 # Finds a real photo for each bird (Target, the fan wiki, or a resale listing)
-# and commits them to photos/. Runs when the bird list changes, or by hand
+# and commits them to photos/, plus a cut-out copy of each bird for the shelf
+# (cutouts/). Runs when the bird list changes, or by hand
 # from the Actions tab ("Fetch bird photos" > Run workflow).
 name: Fetch bird photos
 on:
@@ -11,7 +12,7 @@ on:
         default: ""
   push:
     branches: [main]
-    paths: ["tools/photo-sources.json", "tools/fetch_photos.py", ".github/workflows/photos.yml"]
+    paths: ["tools/photo-sources.json", "tools/fetch_photos.py", "tools/make_cutouts.py", ".github/workflows/photos.yml"]
 permissions:
   contents: write
 concurrency:
@@ -32,11 +33,15 @@ jobs:
           ONLY: ${{ github.event.inputs.only }}
         run: |
           if [ -n "$ONLY" ]; then python tools/fetch_photos.py --only "$ONLY"; else python tools/fetch_photos.py; fi
+      - name: Cut birds out for the shelf
+        run: |
+          pip install --quiet "rembg[cpu]==2.0.86"
+          python tools/make_cutouts.py
       - name: Commit new photos
         run: |
           git config user.name "flocks-photos[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add photos
+          git add photos cutouts
           if git diff --cached --quiet; then echo "No new photos."; exit 0; fi
           git commit -m "Add bird photos ($(ls photos/*.jpg | wc -l) total)"
           for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
