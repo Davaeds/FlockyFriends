@@ -246,10 +246,12 @@ details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
 .case[data-wall="hearts"] .case-in { background-image: radial-gradient(circle at 30% 30%, var(--pat) 2.5px, transparent 3px), radial-gradient(circle at 70% 70%, var(--pat) 2.5px, transparent 3px); background-size: 22px 22px; }
 .shelf-group + .shelf-group { margin-top: 4px; }
 .sign { display: inline-flex; align-items: center; gap: 7px; margin: 4px 0 2px 6px; padding: 3px 12px 3px 9px; border-radius: 8px; background: var(--tagbg); color: #3B2A1A; font-weight: 800; font-size: .86rem; box-shadow: 0 2px 0 var(--wood-d), 0 3px 8px rgba(0,0,0,.12); transform: rotate(-1.5deg); }
+.shelf-group .sign { margin-bottom: 12px; }
 .sign .sw { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
 .sign .n { color: #6B5847; font-weight: 700; }
 .planks { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); grid-auto-rows: 176px;
   background: linear-gradient(to bottom, transparent 130px, var(--wood-l) 130px 137px, var(--wood) 137px 161px, var(--wood-d) 161px 163px, rgba(60,30,0,.2) 163px, transparent 176px) 0 0 / 100% 176px repeat-y; }
+@media (max-width: 420px) { .planks { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .perch { position: relative; border: 0; padding: 0; margin: 0; background: transparent; min-width: 0; color: inherit; -webkit-touch-callout: none; }
 .perch:focus-visible { outline-offset: -4px; border-radius: 14px; }
 .perch .b { position: absolute; left: 6px; right: 6px; top: 6px; height: 125px; display: flex; align-items: flex-end; justify-content: center; }
@@ -262,7 +264,8 @@ details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
 @keyframes sway { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-2.6deg); } 70% { transform: rotate(2.3deg); } }
 @keyframes breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(.985, 1.03); } }
 @keyframes peck { 0%, 55%, 100% { transform: rotate(0); } 64% { transform: rotate(7deg); } 72% { transform: rotate(0); } 80% { transform: rotate(6deg); } 88% { transform: rotate(0); } }
-.perch.turn img.cut { transform: scaleX(-1); }
+.perch.tilt img.cut { transform: rotate(-7deg) translateX(-2px); }
+.case.still .perch .bird, .case.still .perch .b, .case.still .perch .sh { animation: none !important; }
 .perch.hop .b { animation: hop .5s cubic-bezier(.3,.7,.4,1); }
 .perch.hop .sh { animation: hopsh .5s cubic-bezier(.3,.7,.4,1); }
 @keyframes hop { 0% { transform: none; } 14% { transform: scale(1.07, .9); } 46% { transform: translateY(-18px) scale(.95, 1.06); } 76% { transform: scale(1.05, .93); } 100% { transform: none; } }
@@ -272,17 +275,18 @@ details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
 .perch .frame { width: 84px; aspect-ratio: 1 / 1; background: #fff; padding: 5px 5px 0; border-radius: 4px; box-shadow: 0 4px 8px rgba(50,25,0,.28); transform: rotate(-2deg); display: grid; place-items: center; overflow: hidden; color: #5E5367; }
 .perch:nth-child(even) .frame { transform: rotate(2deg); }
 .perch .frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
-.perch .frame .np span { display: none; }
+.perch .frame .np { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.perch .frame .np span { font-size: .72rem; font-weight: 800; line-height: 1.1; text-align: center; }
 .perch .frame .np svg { width: 34px; height: 34px; }
-.perch .tag { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); max-width: calc(100% - 10px); padding: 1px 8px; border-radius: 5px; background: var(--tagbg); color: #3B2A1A; font-weight: 800; font-size: .8rem; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 0 rgba(0,0,0,.22); }
-.perch .x2 { position: absolute; top: 4px; right: 8px; background: var(--leaf-fill); color: var(--on-leaf); font-weight: 800; font-size: .74rem; border-radius: 999px; padding: 0 7px; }
+.perch .tag { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: block; max-width: calc(100% - 8px); padding: 1px 7px; border-radius: 5px; background: var(--tagbg); color: #3B2A1A; font-weight: 800; font-size: .86rem; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 0 rgba(0,0,0,.22); }
+.perch .x2 { position: absolute; top: 4px; right: 8px; background: var(--leaf-fill); color: var(--on-leaf); font-weight: 800; font-size: .82rem; border-radius: 999px; padding: 0 7px; }
 .shelf-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 18px 12px 150px; color: #3B2A1A; position: relative; }
 .shelf-empty .planks { position: absolute; left: 0; right: 0; bottom: 0; height: 176px; }
 .shelf-empty h2 { font-family: var(--display); font-weight: 800; font-size: 1.3rem; margin: 0; }
 .shelf-empty p { margin: 0; max-width: 34ch; font-weight: 600; }
-.shelf-note { color: var(--muted); font-size: .88rem; font-weight: 600; margin: 4px 0 0; }
-.wood-sw button { width: 46px; height: 46px; }
-.wall-sw button { width: 46px; height: 46px; border-radius: 12px; }
+.case.peek { zoom: .62; flex: none; align-self: stretch; width: auto; margin: 0 0 4px; }
+.case.peek .planks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.shelf-note { color: var(--muted); font-size: .88rem; font-weight: 600; margin: 18px 0 0; }
 
 /* empty */
 .empty { background: var(--surface); border-radius: var(--r); padding: 28px 20px; text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -323,6 +327,7 @@ dialog.sheet::backdrop { background: rgba(26,24,40,.5); }
 .mine-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .stepper { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border-radius: 999px; padding: 4px; }
 .stepper button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--surface); font-weight: 800; font-size: 1.25rem; box-shadow: var(--shadow); }
+.stepper button:disabled { opacity: .35; box-shadow: none; }
 .stepper output { min-width: 2.2ch; text-align: center; font-weight: 800; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border: 1.5px solid var(--line-strong); border-radius: 999px; padding: 0 18px; font-weight: 800; background: var(--surface); color: var(--ink); text-decoration: none; }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
@@ -351,6 +356,12 @@ details.fam > summary { min-height: 48px; font-weight: 800; display: flex; align
 .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
 .swatches button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1.5px var(--line-strong); }
 .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+.swatches.wood-sw button, .swatches.wall-sw button { width: 48px; height: 48px; }
+.swatches.wall-sw button { border-radius: 12px; }
+.wall-sw button[data-pat="dots"] { background-image: radial-gradient(var(--pat) 2.5px, transparent 3px) !important; background-size: 12px 12px !important; }
+.wall-sw button[data-pat="stripes"] { background-image: repeating-linear-gradient(90deg, var(--pat) 0 6px, transparent 6px 13px) !important; }
+.wall-sw button[data-pat="hearts"] { background-image: radial-gradient(circle at 30% 30%, var(--pat) 2.5px, transparent 3px), radial-gradient(circle at 70% 70%, var(--pat) 2.5px, transparent 3px) !important; background-size: 14px 14px !important; }
+.wall-sw button[data-wall="night"] { border-color: #8D86B5; }
 .seg { display: flex; flex-wrap: wrap; gap: 8px; }
 .seg button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 800; }
 .seg button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
@@ -372,7 +383,7 @@ details.fam > summary { min-height: 48px; font-weight: 800; display: flex; align
 
 footer { color: var(--muted); font-size: .85rem; border-top: 1.5px dashed var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
 footer p { margin: 0; max-width: 78ch; }
-footer a { color: var(--ink); font-weight: 700; }
+footer a { color: var(--ink); font-weight: 700; display: inline-block; padding: 12px 0; margin: -12px 0; }
 
 /* interaction feedback */
 @media (hover: hover) {
@@ -613,7 +624,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     tab: TABS.includes(store.get("flocks.tab")) ? store.get("flocks.tab") : "birds",
     q: "", season: "", show: "", year: "", scroll: {}, sort: ["season", "name", "newest", "oldest"].includes(store.get("flocks.sort")) ? store.get("flocks.sort") : "season",
     person: "",
-    shelf: (() => { let v = {}; try { v = JSON.parse(store.get("flocks.shelf") || "{}") || {}; } catch (e) {} return { who: "", wood: WOODS[v.wood] ? v.wood : "oak", wall: WALLS[v.wall] ? v.wall : "mint", sort: SHELF_SORTS.some(x => x[0] === v.sort) ? v.sort : "season" }; })(),
+    shelf: (() => { let v = {}; try { v = JSON.parse(store.get("flocks.shelf") || "{}") || {}; } catch (e) {} return { who: "", wood: WOODS[v.wood] ? v.wood : "oak", wall: WALLS[v.wall] ? v.wall : "mint", sort: SHELF_SORTS.some(x => x[0] === v.sort) ? v.sort : "season", move: v.move !== false }; })(),
     mode: "starting",                  // starting | preview | live | need-code | locked | unset
     netErr: false
   };
@@ -1139,8 +1150,9 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       if (hits.length) { paint(out, `<ul class="rows">${hits.slice(0, 60).map(row).join("")}</ul>${hits.length > 60 ? `<p class="hint">Showing the first 60. Type more of the name to narrow it down.</p>` : ""}`); return; }
       const near = closest(q);
       paint(out, `<div class="empty">${MASCOT}<h2>No bird called \u201c${esc(q)}\u201d</h2><p>Check the spelling, or add it so everyone can see it.</p>
-        ${near ? `<button class="btn" type="button" data-try="${esc(near.name)}">Did you mean ${esc(near.name)}?</button>` : ""}
-        <button class="btn primary" type="button" id="addBird" data-name="${esc(nice(q).slice(0, 60))}">Add \u201c${esc(nice(q).slice(0, 40))}\u201d to the list</button></div>`);
+        ${near ? `<button class="btn primary" type="button" data-try="${esc(near.name)}">Did you mean ${esc(near.name)}?</button>
+        <button class="link" type="button" id="addBird" data-name="${esc(nice(q).slice(0, 60))}">Not it? Add \u201c${esc(nice(q).slice(0, 40))}\u201d as a new bird</button>`
+        : `<button class="btn primary" type="button" id="addBird" data-name="${esc(nice(q).slice(0, 60))}">Add \u201c${esc(nice(q).slice(0, 40))}\u201d to the list</button>`}</div>`);
       return;
     }
     const list = birds().filter(b => {
@@ -1240,7 +1252,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     else { const a = artHTML(b, 200, ""); art = `<span class="frame">${a.html}</span>`; }
     let h = 0; for (const ch of b.id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
     const life = c ? ` i${h % 3}${awake.has(b.id) ? " awake" : ""}` : "";
-    const pace = c ? ` style="--t:${(3 + (h % 17) / 10).toFixed(1)}s;--dl:-${((h >> 5) % 40) / 10}s"` : "";
+    const pace = c ? ` style="--t:${(3 + (h % 17) / 10).toFixed(1)}s;--dl:-${((h >>> 5) % 40) / 10}s"` : "";
     return `<button class="perch${life}" type="button" data-k="${esc(b.id)}" data-perch="${esc(b.id)}"${pace} aria-label="${esc(b.name)}${q > 1 ? ", " + q + " copies" : ""}, details">${c ? `<span class="sh" aria-hidden="true"></span>` : ""}<span class="b">${art}</span>${q > 1 ? `<span class="x2" aria-hidden="true">×${q}</span>` : ""}<span class="tag" aria-hidden="true">${esc(b.name)}</span></button>`;
   }
   function shelfList(f) {
@@ -1265,7 +1277,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     const list = shelfList(f);
     let h = `<div class="shelf-head">${order.length > 1 ? `<div class="seg" role="group" aria-label="Whose shelf">${order.map(x => `<button type="button" data-shelfwho="${esc(x.id)}" aria-pressed="${x.id === f.id}">${esc(x.id === S.meId ? "Mine" : x.name + "'s")}</button>`).join("")}</div>` : ""}
       <button class="icon-btn" type="button" id="decorate" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5l5 5-8.5 8.5H6v-5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 7l5 5" stroke="currentColor" stroke-width="2"/></svg><span>Decorate</span></button></div>`;
-    h += `<div class="case" data-wall="${L[3]}" style="--wood:${W[1]};--wood-l:${W[2]};--wood-d:${W[3]};--wall:${L[1]};--pat:${L[2]}">${bunting()}<div class="case-in">`;
+    h += `<div class="case${S.shelf.move ? "" : " still"}" data-wall="${L[3]}" style="--wood:${W[1]};--wood-l:${W[2]};--wood-d:${W[3]};--wall:${L[1]};--pat:${L[2]}">${bunting()}<div class="case-in">`;
     if (!list.length) {
       h += `<div class="shelf-empty" style="color:${S.shelf.wall === "night" ? "#F3EEF7" : "#3B2A1A"}"><h2>${esc(isMe ? "Your shelf is ready" : f.name + "'s shelf is empty")}</h2><p>${esc(isMe ? "Every bird you mark “I have it” hops up here." : "Birds in " + f.name + "'s flock will show up here.")}</p>${isMe ? `<button class="btn primary" type="button" data-goto="birds">Find my birds</button>` : ""}<div class="planks" aria-hidden="true"></div></div>`;
     } else if (S.shelf.sort === "season") {
@@ -1291,24 +1303,30 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     for (let i = 0; i < 3; i++) { const s = document.createElement("span"); s.className = "luv"; s.textContent = "\u2665"; s.setAttribute("aria-hidden", "true"); s.style.setProperty("--x", (30 + i * 20 + Math.random() * 10) + "%"); s.style.animationDelay = i * 90 + "ms"; n.appendChild(s); setTimeout(() => s.remove(), 1200); }
   }
   setInterval(() => {
-    if (S.tab !== "shelf" || document.hidden || dlg.open || still.matches) return;
+    if (S.tab !== "shelf" || document.hidden || dlg.open || still.matches || !S.shelf.move) return;
     const live = [...document.querySelectorAll("#view-shelf .perch.awake")]; if (!live.length) return;
     const n = live[Math.floor(Math.random() * live.length)];
-    if (Math.random() < .6) play(n, "hop", 520); else play(n, "turn", 1400 + Math.random() * 1600);
-  }, 1700);
+    if (Math.random() < .6) play(n, "hop", 520); else play(n, "tilt", 1200 + Math.random() * 1200);
+  }, 3200);
   function renderDecorate() {
-    const sw = (obj, key, cls) => `<div class="swatches ${cls}" role="group">${Object.entries(obj).map(([k, v]) => `<button type="button" data-${key}="${k}" aria-pressed="${S.shelf[key] === k}" aria-label="${esc(v[0])}" title="${esc(v[0])}" style="background:${key === "wood" ? `linear-gradient(${v[2]} 0 30%, ${v[1]} 30%)` : v[1]}"></button>`).join("")}</div>`;
-    dlg.innerHTML = bar("Decorate the shelf") + `<div class="dlg-body">
+    const sw = (obj, key, cls) => `<div class="swatches ${cls}" role="group">${Object.entries(obj).map(([k, v]) => `<button type="button" data-${key}="${k}" aria-pressed="${S.shelf[key] === k}" aria-label="${esc(v[0])}" title="${esc(v[0])}"${key === "wall" ? ` data-pat="${v[3]}"` : ""} style="background:${key === "wood" ? `linear-gradient(${v[2]} 0 30%, ${v[1]} 30%)` : `${v[1]};--pat:${v[2]}`}"></button>`).join("")}</div>`;
+    // A small copy of the shelf at the top, so each choice shows right away even though the sheet covers the real one.
+    const W = WOODS[S.shelf.wood], L = WALLS[S.shelf.wall], f = flock(S.shelf.who) || me();
+    let few = (f ? shelfList(f) : []).filter(cutout); if (few.length < 3) few = few.concat(birds().filter(b => cutout(b) && !few.includes(b))).slice(0, 3);
+    const peek = `<div class="case peek${S.shelf.move ? "" : " still"}" data-wall="${L[3]}" style="--wood:${W[1]};--wood-l:${W[2]};--wood-d:${W[3]};--wall:${L[1]};--pat:${L[2]}" aria-hidden="true">${bunting()}<div class="case-in"><div class="planks">${few.slice(0, 3).map((b, i) =>
+      `<span class="perch i${i} awake" style="--t:${3.2 + i * .4}s;--dl:-${i * .7}s"><span class="sh"></span><span class="b"><span class="bird"><img class="cut" src="${esc(cutout(b))}" alt=""></span></span><span class="tag">${esc(b.name)}</span></span>`).join("")}</div></div></div>`;
+    dlg.innerHTML = bar("Decorate the shelf") + `<div class="dlg-body">${peek}
       <div><span class="lbl">Shelf wood</span>${sw(WOODS, "wood", "wood-sw")}<p class="hint" id="woodName">${esc(WOODS[S.shelf.wood][0])}</p></div>
       <div><span class="lbl">Wallpaper</span>${sw(WALLS, "wall", "wall-sw")}<p class="hint" id="wallName">${esc(WALLS[S.shelf.wall][0])}</p></div>
+      <div><span class="lbl" id="smove">Let the birds move</span><div class="seg" role="group" aria-labelledby="smove"><button type="button" data-shelfmove="on" aria-pressed="${S.shelf.move}">On</button><button type="button" data-shelfmove="off" aria-pressed="${!S.shelf.move}">Off</button></div></div>
       <div><span class="lbl" id="ssort">Arrange the birds</span><div class="seg" role="group" aria-labelledby="ssort">${SHELF_SORTS.map(([v, l]) => `<button type="button" data-shelfsort="${v}" aria-pressed="${S.shelf.sort === v}">${esc(l)}</button>`).join("")}</div></div>
       <p class="hint" style="margin:0">These choices are saved on this phone.</p>
       <div class="btns"><button class="btn primary" type="button" data-close>Done</button></div></div>`;
   }
-  function saveShelf() { store.set("flocks.shelf", JSON.stringify({ wood: S.shelf.wood, wall: S.shelf.wall, sort: S.shelf.sort })); }
+  function saveShelf() { store.set("flocks.shelf", JSON.stringify({ wood: S.shelf.wood, wall: S.shelf.wall, sort: S.shelf.sort, move: S.shelf.move })); }
 
   // ---------- dialog ----------
-  const dlg = $("#dlg");
+  const dlg = $("#dlg"), toastEl = $("#toast");
   const dlgState = { kind: "", id: "", opener: null, noteStart: "", locked: false, preview: "" };
   function openDialog(kind, arg) {
     if (dlg.open) closeDialog(true);
@@ -1331,6 +1349,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     const opener = dlgState.opener;
     dlgState.kind = ""; dlgState.id = ""; dlgState.locked = false;
     if (dlg.open) dlg.close();
+    if (toastEl.parentNode !== document.body) document.body.appendChild(toastEl);
     dlg.innerHTML = "";
     document.documentElement.classList.remove("modal-open");
     if (!silent && opener && document.contains(opener)) opener.focus({ preventScroll: true });
@@ -1367,6 +1386,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     let src = b.source === "target" ? "Listed on Target.com in October 2026." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
     dlg.innerHTML = bar("", true) + `<div class="dlg-body">
       <div class="hero-wrap"><div class="hero" id="birdHero"></div><label class="cam" for="photoIn" id="camBtn"><span class="sr" id="camLbl">Add our photo</span>${ICON.camera}</label></div>
+      <div id="photoAsk"></div>
       <div class="bird-title"><h2 id="dlgTitle">${esc(b.name)}</h2><p class="meta">${esc(meta)}</p>${meta2 ? `<p class="meta" style="margin:0">${esc(meta2)}</p>` : ""}</div>
       ${b.about ? `<p class="about">${esc(b.about)}</p>` : ""}
       <div id="birdLive"></div>
@@ -1375,7 +1395,6 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
         <label class="btn" for="photoIn">${ICON.camera}<span id="photoBtnLbl">Add our photo</span></label>
         <button class="btn" type="button" id="delPhoto" hidden>Remove our photo</button></span>
         <input id="photoIn" type="file" accept="image/*" hidden></div>
-      <div id="photoAsk"></div>
       <p class="src">${esc(src)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${isTarget(url) ? "See it on Target" : "View source"}</a>` : ""}</p>
       ${b.source === "added" ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
     </div>`;
@@ -1408,7 +1427,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       const since = q && m.owned[b.id] && m.owned[b.id].at ? new Date(m.owned[b.id].at + "T12:00:00").toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : "";
       h += `<button class="btn big${q ? " leaf" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "\u2713 In my flock" : "I have it"}</button>`;
       h += `<div class="mine-row">${q ? `<div><span class="lbl" id="qtyLbl">How many?</span>
-          <div class="stepper" role="group" aria-labelledby="qtyLbl"><button type="button" data-step="-1" aria-label="One fewer">−</button><output aria-live="polite">${q}</output><button type="button" data-step="1" aria-label="One more">+</button></div></div>` : ""}
+          <div class="stepper" role="group" aria-labelledby="qtyLbl"><button type="button" data-step="-1" aria-label="One fewer"${q <= 1 ? " disabled" : ""}>−</button><output aria-live="polite">${q}</output><button type="button" data-step="1" aria-label="One more">+</button></div></div>` : ""}
           <button class="btn${w ? " wish-on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" style="align-self:flex-end">${ICON.heart(w)}${w ? "On my wish list" : "Add to wish list"}</button></div>
           ${since ? `<p class="hint" style="margin:0">In your flock since ${esc(since)}.</p>` : ""}`;
       const mine = m.gifts || {};
@@ -1433,12 +1452,12 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
         const el = $("#noteSaved"); if (ok && el && dlgState.id === bid) el.textContent = "Saved \u2713"; });
   }
 
-  const draft = { name: "", season: "christmas", year: String(new Date().getFullYear()), kind: "", body: BODY_SWATCHES[0], file: null, have: true };
+  const draft = { name: "", season: "", year: String(new Date().getFullYear()), kind: "", body: BODY_SWATCHES[0], file: null, have: true };
   function renderAddDialog() {
     dlg.innerHTML = bar("Add a missing bird") + `<form class="dlg-body" id="addForm" novalidate>
       <p class="hint" style="margin:0">Everyone will see it on the master list.</p>
-      <div class="field"><label for="a-name">Bird's name</label><input id="a-name" type="text" maxlength="60" required placeholder="Like Pep or Cauldy" value="${esc(draft.name)}" autofocus></div>
-      <div class="row2"><div class="field"><label for="a-season">Season</label><select id="a-season">${SEASONS.map(s => `<option value="${s.id}"${s.id === draft.season ? " selected" : ""}>${esc(s.label)}</option>`).join("")}</select></div>
+      <div class="field"><label for="a-name">Bird's name</label><input id="a-name" type="text" maxlength="60" required placeholder="Like Pep or Cauldy" value="${esc(draft.name)}"${draft.name ? "" : " autofocus"}></div>
+      <div class="row2"><div class="field"><label for="a-season">Season</label><select id="a-season">${draft.season ? "" : `<option value="" selected disabled>Pick one</option>`}${SEASONS.map(s => `<option value="${s.id}"${s.id === draft.season ? " selected" : ""}>${esc(s.label)}</option>`).join("")}</select></div>
         <div class="field"><label for="a-year">Year</label><input id="a-year" type="number" inputmode="numeric" min="2014" max="2099" value="${esc(draft.year)}"></div></div>
       <div class="field"><label for="a-kind">What it looks like (optional)</label><input id="a-kind" type="text" maxlength="80" placeholder="Like witch hat or apple picker" value="${esc(draft.kind)}"></div>
       <div class="field"><span class="lbl">Photo (optional)</span><div class="tool-row"><label class="btn" for="a-photo">${ICON.camera}<span>Choose a photo</span></label><span class="hint" id="a-photo-name" style="margin:0"></span></div><input id="a-photo" type="file" accept="image/*" hidden></div>
@@ -1487,7 +1506,8 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   // ---------- toast ----------
   let toastT = 0, toastAction = null;
   function toast(msg, action) {
-    const t = $("#toast");
+    // An open sheet sits in the top layer, so the toast goes inside it to stay visible (and its Undo tappable).
+    const t = toastEl, host = dlg.open ? dlg : document.body; if (t.parentNode !== host) host.appendChild(t);
     t.innerHTML = `<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
     t.firstChild.textContent = msg; t.hidden = false; toastAction = action || null;
     clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAction = null; }, action ? 5000 : 2600);
@@ -1520,7 +1540,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     // the name and year on a card open the bird too
     const t = e.target.closest("button, a, label") || e.target.closest(".card-body[data-open]"); if (!t) return;
     const d = t.dataset;
-    if (t.id === "toastAct") { const a = toastAction; $("#toast").hidden = true; toastAction = null; if (a) a.run(); return; }
+    if (t.id === "toastAct") { const a = toastAction; toastEl.hidden = true; toastAction = null; if (a) a.run(); return; }
     if (d.close !== undefined) { closeDialog(); return; }
     if (d.tab) {
       if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); return; }
@@ -1543,10 +1563,10 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     if (d.perch) { const id = d.perch; if (still.matches) { openDialog("bird", { id }); return; } play(t, "hop", 520); hearts(t); setTimeout(() => openDialog("bird", { id }), 380); return; }
     if (d.shelfwho) { S.shelf.who = d.shelfwho; renderShelf(); return; }
     if (t.id === "decorate") { openDialog("decorate"); return; }
-    if (d.wood || d.wall || d.shelfsort) {
-      if (d.wood) S.shelf.wood = d.wood; if (d.wall) S.shelf.wall = d.wall; if (d.shelfsort) S.shelf.sort = d.shelfsort;
+    if (d.wood || d.wall || d.shelfsort || d.shelfmove) {
+      if (d.wood) S.shelf.wood = d.wood; if (d.wall) S.shelf.wall = d.wall; if (d.shelfsort) S.shelf.sort = d.shelfsort; if (d.shelfmove) S.shelf.move = d.shelfmove === "on";
       saveShelf(); renderDecorate(); renderShelf();
-      const f = dlg.querySelector(d.wood ? `[data-wood="${d.wood}"]` : d.wall ? `[data-wall="${d.wall}"]` : `[data-shelfsort="${d.shelfsort}"]`); if (f) f.focus({ preventScroll: true });
+      const f = dlg.querySelector(d.wood ? `[data-wood="${d.wood}"]` : d.wall ? `[data-wall="${d.wall}"]` : d.shelfmove ? `[data-shelfmove="${d.shelfmove}"]` : `[data-shelfsort="${d.shelfsort}"]`); if (f) f.focus({ preventScroll: true });
       return;
     }
     if (d.have) { if (!needMe()) return; const m = me(); setOwned(d.have, qtyOf(m, d.have) ? 0 : 1, true); return; }
@@ -1556,17 +1576,17 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       toast(on && qtyOf(m, d.wish) ? "You already have this one, but it's on your wish list too." : on ? "On your wish list." + (names ? ` ${names} can see it.` : "") : "Taken off your wish list");
       return;
     }
-    if (d.step && dlgState.kind === "bird") { if (!needMe()) return; const m = me(); const q = Math.max(0, Math.min(99, qtyOf(m, dlgState.id) + Number(d.step))); setOwned(dlgState.id, q, false); return; }
+    if (d.step && dlgState.kind === "bird") { if (!needMe()) return; const m = me(); const q = Math.max(1, Math.min(99, qtyOf(m, dlgState.id) + Number(d.step))); if (q === qtyOf(m, dlgState.id)) return; setOwned(dlgState.id, q, false); return; }
     if (d.gift) { if (!needMe()) return; const m = me(); const who = d.giftfor || S.person; const on = !(m.gifts && m.gifts[who] && m.gifts[who][d.gift]); setGift(who, d.gift, on); return; }
     if (d.person) { S.person = d.person; renderFamily(); return; }
     if (d.swatch) { draft.body = d.swatch; dlg.querySelectorAll("[data-swatch]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); const a = $("#addArt"); if (a) { a.style.setProperty("--tint", soft(draft.body)); a.innerHTML = birdSVG({ body: draft.body }); } return; }
     if (d.become) { become(d.become); return; }
-    if (t.id === "addBird") { if (!api) return; if (d.name) draft.name = d.name; openDialog("add"); return; }
+    if (t.id === "addBird") { if (!api) return; if (d.name) draft.name = d.name; if (S.season) draft.season = S.season; openDialog("add"); return; }
     if (t.id === "showNew") { t.hidden = true; $("#newWrap").hidden = false; $("#w-new").focus(); return; }
     if (t.id === "welcomeAdd") { const v = $("#w-new").value; if (addPerson(v, true)) return; $("#w-new").focus(); return; }
     if (t.id === "addPerson") { const v = $("#s-new"); if (addPerson(v.value, false)) { toast(`${v.value.trim()} added`); v.value = ""; renderSettings(true); } return; }
     if (t.id === "saveName") { const m = me(); const v = $("#s-name").value.trim().slice(0, 30); if (!m || !v || !api) return; const fid = m.id, c = flockColor(m), o = m.order || 1; mutate(dd => OPS.saveFlock(dd, fid, v, c, o), () => api.saveFlock(fid, v, c, o)); toast("Name saved"); return; }
-    if (d.askswitch) { const f = flock(d.askswitch), m = me(); const box = $("#del-" + CSS.escape(d.askswitch)); if (!f || !box) return; box.innerHTML = `<div class="confirm">Only do this on ${esc(f.name)}'s own phone. This phone would show ${esc(f.name)}'s flock${m ? ` and the gifts ${esc(m.name)} is planning for ${esc(f.name)}` : ""}.<div class="btns"><button class="btn primary" type="button" data-become="${esc(f.id)}">Yes, this is ${esc(f.name)}'s phone</button><button class="btn" type="button" data-nodel="${esc(f.id)}">Cancel</button></div></div>`; return; }
+    if (d.askswitch) { const f = flock(d.askswitch), m = me(); const box = $("#del-" + CSS.escape(d.askswitch)); if (!f || !box) return; box.innerHTML = `<div class="confirm">Only do this on ${esc(f.name)}'s own phone. This phone would show ${esc(f.name)}'s flock${m ? `, including what ${esc(f.name)} is secretly getting for ${esc(m.name)}` : ""}.<div class="btns"><button class="btn primary" type="button" data-become="${esc(f.id)}">Yes, this is ${esc(f.name)}'s phone</button><button class="btn" type="button" data-nodel="${esc(f.id)}">Cancel</button></div></div>`; return; }
     if (d.askdel) { const f = flock(d.askdel); const box = $("#del-" + CSS.escape(d.askdel)); if (!f || !box) return; box.innerHTML = `<div class="confirm">This deletes ${esc(f.name)}'s whole flock, wish list and notes for everyone. It can't be undone.<div class="field"><label for="delName">Type ${esc(f.name)} to confirm</label><input id="delName" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"></div><p class="err" id="delErr" role="alert"></p><div class="btns"><button class="btn danger" type="button" data-dodel="${esc(f.id)}">Remove for good</button><button class="btn" type="button" data-nodel="${esc(f.id)}">Keep</button></div></div>`; $("#delName").focus(); return; }
     if (d.nodel) { const box = $("#del-" + CSS.escape(d.nodel)); if (box) box.innerHTML = ""; return; }
     if (d.dodel) {
@@ -1581,7 +1601,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     if (t.id === "forgetCode") { store.del("flocks.code"); store.del("flocks.snap.v2"); location.reload(); return; }
     if (t.id === "photoYes") { const id = dlgState.id, url = dlgState.preview; dlgState.preview = ""; $("#photoAsk").innerHTML = ""; if (url) uploadPhoto(id, null, url); return; }
     if (t.id === "photoNo") { dlgState.preview = ""; $("#photoAsk").innerHTML = ""; renderBirdHero(); return; }
-    if (t.id === "delPhoto") { $("#photoAsk").innerHTML = `<div class="confirm">Remove our photo? The Target or wiki photo comes back.<div class="btns"><button class="btn danger" type="button" id="delPhotoYes">Yes, remove</button><button class="btn" type="button" id="photoNo">Keep it</button></div></div>`; return; }
+    if (t.id === "delPhoto") { const body = dlg.querySelector(".dlg-body"); if (body) body.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" }); $("#photoAsk").innerHTML = `<div class="confirm">Remove our photo? The Target or wiki photo comes back.<div class="btns"><button class="btn danger" type="button" id="delPhotoYes">Yes, remove</button><button class="btn" type="button" id="photoNo">Keep it</button></div></div>`; return; }
     if (t.id === "delPhotoYes") { $("#photoAsk").innerHTML = ""; const id = dlgState.id; if (!api) return; api.deletePhoto(id).then(r => { if (r && r.error) throw r; delete S.photos[id]; remember(id, null); idb.del("photo:" + id); onPhoto(id); toast("Photo removed"); if (api.kind === "live") schedule(300); }).catch(() => toast("That didn't save. Try again.")); return; }
     if (t.id === "delBird") { $("#delWrap").innerHTML = `<div class="confirm">Remove this bird for everyone?<div class="btns"><button class="btn danger" type="button" id="delYes">Yes, remove it</button><button class="btn" type="button" id="delNo">Keep it</button></div></div>`; return; }
     if (t.id === "delNo") { renderBirdDialog(); return; }
@@ -1613,7 +1633,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
         if (dlgState.kind !== "bird" || dlgState.id !== id) return;
         dlgState.preview = url; renderBirdHero();
         $("#photoAsk").innerHTML = `<div class="confirm" style="background:var(--leaf-soft)">Use this photo? Everyone in the family will see it for this bird.<div class="btns"><button class="btn leaf" type="button" id="photoYes">Use this photo</button><button class="btn" type="button" id="photoNo">Cancel</button></div></div>`;
-        $("#photoAsk").scrollIntoView({ block: "nearest" });
+        const body = dlg.querySelector(".dlg-body"); if (body) body.scrollTo({ top: 0, behavior: still.matches ? "auto" : "smooth" });
       }).catch(() => toast("That photo couldn't be opened. Try another."));
     }
   });
@@ -1634,6 +1654,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     if (e.target.id === "addForm") {
       const name = draft.name.trim(); const err = $("#addErr");
       if (!name) { err.textContent = "Give the bird a name first."; $("#a-name").focus(); return; }
+      if (!draft.season) { err.textContent = "Pick the bird's season."; $("#a-season").focus(); return; }
       if (draft.year && !/^20\d{2}$/.test(draft.year)) { err.textContent = "Use a four-digit year like 2024, or leave it empty."; return; }
       const id = "added-" + slug(name) + "-" + rand(5);
       const rec = { name: name.slice(0, 60), season: draft.season, year: draft.year || "", kind: draft.kind.trim().slice(0, 80), body: draft.body, source: "added", addedBy: S.meId || "", addedOn: today() };

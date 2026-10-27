@@ -42,6 +42,9 @@ def main():
         done.pop(bid)
         if os.path.exists(os.path.join(OUT, bid + ".webp")): os.remove(os.path.join(OUT, bid + ".webp"))
     todo = [b for b, p in photos.items() if done.get(b) != p["v"] and b not in SKIP]
+    if not todo:
+        json.dump(done, open(idx_path, "w"), indent=0, sort_keys=True)
+        return print(f"nothing new, {len(done)} cutouts")
     session = new_session("isnet-general-use")
     for n, bid in enumerate(todo, 1):
         im = remove(Image.open(os.path.join(PHOTOS, bid + ".jpg")).convert("RGB"), session=session)
