@@ -18,7 +18,7 @@
 <script src="config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: compact app bar, tab views (bottom tab bar on phones), product-style bird cards on a mint ground.
    Plum ink, mint ground, peach and berry accents. Filled buttons use dark plum or deep green for contrast. */
@@ -26,7 +26,7 @@
   --bg: #EEF6F2;
   --surface: #FFFFFF;
   --surface-2: #E2EFE9;
-  --tile: #FFFFFF;
+  --tile: #EBEBEB;
   --ink: #2F2238;
   --muted: #5E5367;
   --line: #D2E2DB;
@@ -45,20 +45,20 @@
   --butter-soft: #FFF2CC;
   --focus: #2F2238;
   --shadow: 0 1px 0 rgba(47,34,56,.05), 0 6px 18px rgba(47,34,56,.07);
-  --display: "Baloo 2", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --display: "Fredoka", "Nunito", -apple-system, "Segoe UI", system-ui, sans-serif;
   --body: "Nunito", -apple-system, "Segoe UI", system-ui, sans-serif;
   --r: 20px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #F6F3F8; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
+    --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #EBEBEB; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
     --primary: #F3EEF7; --on-primary: #1A1828; --leaf: #7AD7A8; --leaf-fill: #7AD7A8; --on-leaf: #0F2419; --leaf-soft: #20392F; --berry: #FF8DB3; --berry-soft: #43243A; --on-berry: #2A0F1C;
     --peach: #FF9378; --peach-soft: #43292A; --butter-soft: #3B3424; --focus: #FFD166; --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.28);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #F6F3F8; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
+  --bg: #1A1828; --surface: #262439; --surface-2: #322F49; --tile: #EBEBEB; --ink: #F3EEF7; --muted: #BDB4CA; --line: #3B3756; --line-strong: #8A83A6;
   --primary: #F3EEF7; --on-primary: #1A1828; --leaf: #7AD7A8; --leaf-fill: #7AD7A8; --on-leaf: #0F2419; --leaf-soft: #20392F; --berry: #FF8DB3; --berry-soft: #43243A; --on-berry: #2A0F1C;
   --peach: #FF9378; --peach-soft: #43292A; --butter-soft: #3B3424; --focus: #FFD166; --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.28);
   color-scheme: dark;
@@ -409,7 +409,94 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   .brand b { font-size: 1.5rem; }
   .brand svg { width: 34px; height: 34px; }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } button:active { transform: none; } }
+/* ---- design pass, Oct 2026 ----
+   Spacing uses 4, 8, 12, 16, 24, 32 only. Type: Fredoka 600 for titles, Nunito for the rest,
+   five sizes (28, 22, 17, 15, 13px). Controls are soft fills with no outline; one strong button per screen.
+   Owned birds get a small green check on the photo instead of a green frame. */
+:root { --fs-0: 1.75rem; --fs-1: 1.375rem; --fs-2: 1.0625rem; --fs-3: .9375rem; --fs-4: .8125rem;
+  --ctl: 0 1px 2px rgba(47,34,56,.08), 0 2px 10px rgba(47,34,56,.06); }
+.brand b, .bird-title h2 { font-family: var(--display); font-weight: 600; font-size: var(--fs-0); letter-spacing: 0; }
+.sec-h h2, .panel h2, .empty h2, .shelf-empty h2, .dlg-bar h2, .person-head h2 { font-family: var(--display); font-weight: 600; font-size: var(--fs-1); }
+.card .nm, .row-b .nm, .gift .nm, .welcome-list button { font-family: var(--display); font-weight: 600; font-size: var(--fs-2); }
+.yr { font-family: var(--display); font-weight: 600; font-size: var(--fs-2); margin: 8px 0 0; }
+.yr span, .sec-h .count, .result-line, .card .meta, .row-b .meta, .gift .meta, .hint, .secret, .src, .shelf-note, .photo-tools .cap { font-size: var(--fs-3); font-weight: 600; }
+.tag, .stat span, .srow, .qty, .perch .x2 { font-size: var(--fs-4); font-weight: 700; }
+.tab, .chip, .btn, .have-btn, .pill-btn, .seg button, .person, .me-chip, .icon-btn, .link, .toast, .toast button, .check, .field label, .lbl, details.panel summary, details.fam > summary, .welcome-list button, .row-b .ans, .stepper output, .sign, .perch .tag, .np { font-weight: 700; }
+.chip, .have-btn, .pill-btn { font-size: var(--fs-3); }
+.bird-title .meta { font-weight: 600; }
+
+/* quiet controls: no outlines; white pills on the page, tinted pills on cards */
+.search, .icon-btn, .chip, .me-chip, .person, .welcome-list button { border-color: transparent; box-shadow: var(--ctl); }
+.search:focus-within { box-shadow: var(--ctl); }
+.have-btn, .heart, .pill-btn, .btn, .seg button, .swatches button { border-color: transparent; }
+.have-btn, .heart, .pill-btn, .btn, .seg button { background: var(--surface-2); }
+.toolbar .icon-btn, .shelf-head .icon-btn { background: var(--surface); }
+.chip[aria-pressed="true"], .person[aria-pressed="true"], .seg button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: transparent; box-shadow: none; }
+.btn.primary { background: var(--primary); color: var(--on-primary); }
+.btn.leaf { background: var(--leaf-fill); color: var(--on-leaf); }
+.btn.wish-on, .heart.on { background: var(--berry-soft); color: var(--berry); }
+.btn.danger { background: var(--berry-soft); color: var(--berry); }
+.have-btn.on, .pill-btn.on { background: var(--leaf-soft); color: var(--leaf); border-color: transparent; }
+.btn.primary, .btn.leaf, .btn.danger, .btn.wish-on, .heart.on { border-color: transparent; }
+.field input[type=text], .field input[type=number], .field select, .field textarea, .field input[type=password] { border-color: var(--line); }
+.swatches button { box-shadow: 0 0 0 1px var(--line); }
+.tab .n, .icon-btn .dot { display: none !important; }
+
+/* owned: a check stamp on the photo, not a green frame */
+.card.have::after { content: none; }
+.row-b.have { box-shadow: var(--shadow); }
+.card.have .tile::before, .row-b.have .thumb::before { content: ""; position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 50%; background: var(--leaf-fill); box-shadow: 0 2px 6px rgba(0,0,0,.18); z-index: 2; }
+.card.have .tile::after, .row-b.have .thumb::after { content: ""; position: absolute; right: 16.5px; bottom: 17px; width: 6px; height: 11px; border: solid var(--on-leaf); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); z-index: 3; }
+.row-b.have .thumb::before { right: 5px; bottom: 5px; width: 22px; height: 22px; }
+.row-b.have .thumb::after { right: 12.5px; bottom: 12px; width: 5px; height: 9px; border-width: 0 2px 2px 0; }
+
+/* spacing: one rhythm everywhere */
+[role="tabpanel"] > * + * { margin-top: 16px; }
+[role="tabpanel"] > .group, #birdsOut > .group { margin-top: 24px; }
+#birdsOut > .group:first-child { margin-top: 8px; }
+.group { gap: 12px; margin-bottom: 0; }
+.sec-h { margin: 0; }
+.grid { gap: 12px; }
+details.panel:not([open]) { gap: 0; }
+.meter { padding: 16px; gap: 12px; }
+.stats { gap: 8px; }
+
+/* photos: square, on the same light gray they were shot on */
+.hero { aspect-ratio: 1 / 1; width: min(100%, 46vh); max-height: none; margin-inline: auto; border-radius: 24px; }
+.hero-wrap { align-self: center; width: min(100%, 46vh); }
+.hero-wrap .hero { width: 100%; }
+
+/* the flock summary: how many, the newest arrivals, and the nearest full set */
+.flock-sum .fs-top { display: flex; align-items: center; gap: 12px; }
+.flock-sum .of b { color: var(--ink); font-size: var(--fs-2); font-weight: 700; }
+.flock-sum .fs-new { display: flex; align-items: center; gap: 12px; }
+.flock-sum .cap { color: var(--muted); font-weight: 600; font-size: var(--fs-4); }
+.flock-sum .big { display: block; font-family: var(--display); font-weight: 600; font-size: 2.5rem; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.flock-sum .of { color: var(--muted); font-weight: 600; font-size: var(--fs-3); }
+.flock-sum .stack { display: flex; flex: none; padding-left: 14px; }
+.flock-sum .stack span { width: 52px; height: 52px; margin-left: -14px; border-radius: 50%; background: var(--tile); border: 3px solid var(--surface); overflow: hidden; display: grid; place-items: center; position: relative; }
+.flock-sum .stack img { width: 100%; height: 100%; object-fit: cover; }
+.flock-sum .stack img.cut { object-fit: contain; padding: 3px; }
+.flock-sum .near { margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--leaf-soft); font-weight: 600; font-size: var(--fs-3); }
+.flock-sum .near b { font-weight: 800; }
+
+/* frosted tab bar on phones; the chosen tab is shown by its color */
+@media (max-width: 719px) {
+  .tabs { background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(20px); backdrop-filter: saturate(1.6) blur(20px); }
+  .tab { color: var(--muted); font-size: var(--fs-4); }
+  .tab[aria-selected="true"] { background: transparent; color: var(--primary); }
+  .tab[aria-selected="true"] svg { transform: scale(1.08); }
+  .card .nm { font-size: var(--fs-2); }
+  .brand b { font-size: 1.5rem; }
+}
+
+/* a little celebration when a bird joins your flock */
+.toast .t-cut { width: 44px; height: 44px; object-fit: contain; margin: -8px 0 -8px -6px; flex: none; animation: joy .6s cubic-bezier(.3,.7,.4,1) .05s; }
+.joy { animation: joy .6s cubic-bezier(.3,.7,.4,1); transform-origin: 50% 90%; }
+@keyframes joy { 0% { transform: none; } 15% { transform: scale(1.06, .92); } 45% { transform: translateY(-14px) scale(.96, 1.05); } 75% { transform: scale(1.04, .95); } 100% { transform: none; } }
+#dlgTitle:focus { outline: none; }
+.burst { position: fixed; z-index: 45; pointer-events: none; color: var(--berry); font-size: 1.1rem; animation: luv .9s ease-out forwards; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } button:active { transform: none; } }
 </style>
 </head>
 <body>
@@ -460,7 +547,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   "use strict";
 
   // Fonts arrive whenever they arrive; the app paints with system fonts first.
-  (() => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap"; document.head.appendChild(l); })();
+  (() => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap"; document.head.appendChild(l); })();
 
   // ---------- constants ----------
   const SEASONS = [
@@ -1175,6 +1262,14 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
       return `<div class="srow"><span class="l"><span class="sw" style="--c:${s.c}"></span>${esc(s.label)}</span><span class="mini" aria-hidden="true"><i style="width:${Math.round(100 * got / all.length)}%;background:${s.c}"></i></span><span class="n">${got}/${all.length}</span></div>`;
     }).join("")}</div>`;
   }
+  // The season-and-year set this person is nearest to finishing (and has started).
+  function closestSet(f) {
+    const sets = {};
+    for (const b of birds()) { const k = seasonOf(b).id + "|" + (b.year || ""); if (!b.year) continue; (sets[k] = sets[k] || { label: seasonOf(b).label + " " + b.year, all: 0, got: 0 }); sets[k].all++; if (qtyOf(f, b.id)) sets[k].got++; }
+    let best = null;
+    for (const k in sets) { const v = sets[k], left = v.all - v.got; if (v.got && left > 0 && v.all >= 3 && (!best || left < best.left || (left === best.left && v.got > best.got))) best = { label: v.label, left, got: v.got }; }
+    return best;
+  }
   function renderMine() {
     const el = $("#view-mine"); const m = me();
     if (!S.loaded) { el.innerHTML = loadingState(); return; }
@@ -1182,8 +1277,12 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     const ids = ownedIds(m), total = birds().length, pct = total ? Math.round(100 * ids.length / total) : 0;
     const extras = ids.reduce((n, id) => n + qtyOf(m, id), 0) - ids.length;
     const list = birds().filter(b => qtyOf(m, b.id));
-    paint(el, `<div class="meter"><div class="meter-top"><span>${esc(m.name)} has <b>${ids.length}</b> of ${total} birds</span><span class="pct">${pct}%</span></div><div class="bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
-        <div class="stats"><div class="stat leaf"><b>${ids.length}</b><span>collected</span></div><div class="stat"><b>${extras}</b><span>${extras === 1 ? "extra copy" : "extra copies"}</span></div><div class="stat berry"><b>${wishIds(m).length}</b><span>wished for</span></div></div>
+    const newest = list.slice().sort((a, b) => ((m.owned[b.id] || {}).at || "").localeCompare((m.owned[a.id] || {}).at || "")).filter(b => cutout(b) || repoPhoto(b)).slice(0, 5);
+    const near = closestSet(m), wishN = wishIds(m).length;
+    const small = [extras ? `${extras} ${extras === 1 ? "extra copy" : "extra copies"}` : "", wishN ? `${wishN} on the wish list` : ""].filter(Boolean).join(" \u00b7 ");
+    paint(el, `<div class="meter flock-sum"><div class="fs-top"><b class="big">${ids.length}</b><span class="of"><b>${ids.length === 1 ? "bird" : "birds"} in ${esc(m.name)}\u2019s flock</b>${small ? "<br>" + esc(small) : ""}</span></div>
+        ${newest.length ? `<div class="fs-new"><div class="stack" aria-hidden="true">${newest.map(b => `<span>${cutout(b) ? `<img class="cut" src="${esc(cutout(b))}" alt="" loading="lazy">` : `<img src="${esc(repoPhoto(b))}" alt="" loading="lazy">`}</span>`).join("")}</div><span class="cap">Newest arrivals</span></div>` : ""}
+        ${near ? `<p class="near">Closest to a full set: <b>${esc(near.label)}</b>, ${near.left} to go</p>` : ""}
         <details class="panel" style="box-shadow:none;padding:0"><summary>Collection by season</summary>${seasonBars(m)}</details></div>` +
       (list.length ? grouped(list, true) : emptyState("Your flock is waiting", "Go to All birds and tap \"I have it\" on each bird you own.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
   }
@@ -1341,7 +1440,8 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     else if (kind === "decorate") renderDecorate();
     document.documentElement.classList.add("modal-open");
     try { dlg.showModal(); } catch (e) { dlg.setAttribute("open", ""); }
-    const first = dlg.querySelector("[autofocus]") || dlg.querySelector(".x") || dlg.querySelector("button, input");
+    const title = kind === "welcome" && dlg.querySelector("#dlgTitle"); if (title) title.tabIndex = -1;
+    const first = dlg.querySelector("[autofocus]") || dlg.querySelector(".x") || title || dlg.querySelector("button, input");
     if (first) first.focus({ preventScroll: true });
   }
   function closeDialog(silent) {
@@ -1358,7 +1458,7 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
   dlg.addEventListener("click", e => { if (e.target === dlg && !dlgState.locked) closeDialog(); });
   dlg.addEventListener("close", () => {
     if (dlg.open || !dlgState.kind) return;   // the close event arrives late; ignore it if a dialog is open again
-    if (dlgState.locked) { try { dlg.showModal(); } catch (e) {} const f = dlg.querySelector("input, button"); if (f) f.focus(); }
+    if (dlgState.locked) { try { dlg.showModal(); } catch (e) {} const f = (dlgState.kind === "welcome" && dlg.querySelector("#dlgTitle")) || dlg.querySelector("input, button"); if (f) f.focus(); }
     else closeDialog();
   });
   let drag = null;
@@ -1505,11 +1605,11 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
 
   // ---------- toast ----------
   let toastT = 0, toastAction = null;
-  function toast(msg, action) {
+  function toast(msg, action, pic) {
     // An open sheet sits in the top layer, so the toast goes inside it to stay visible (and its Undo tappable).
     const t = toastEl, host = dlg.open ? dlg : document.body; if (t.parentNode !== host) host.appendChild(t);
-    t.innerHTML = `<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
-    t.firstChild.textContent = msg; t.hidden = false; toastAction = action || null;
+    t.innerHTML = `${pic ? `<img class="t-cut" src="${esc(pic)}" alt="" onerror="this.remove()">` : ""}<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
+    t.querySelector(".msg").textContent = msg; t.hidden = false; toastAction = action || null;
     clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAction = null; }, action ? 5000 : 2600);
   }
 
@@ -1522,7 +1622,26 @@ button:active, .btn:active, .pill-btn:active { transform: scale(.97); }
     const useAt = at || "";
     mutate(d => OPS.setOwned(d, fid, bid, q, useAt), () => api.setOwned(fid, bid, q, useAt));
     if (withUndo && prev && !q) toast(`${b ? b.name : "Bird"} removed from your flock`, { label: "Undo", run: () => setOwned(bid, prev, false, prevAt) });
-    else if (withUndo && !prev && q) toast(`${b ? b.name : "Bird"} added to your flock`);
+    else if (withUndo && !prev && q && b) celebrate(Object.assign({}, b, { id: bid }));
+  }
+  // A new bird hops on its photo, a few hearts float up, and the message shows the bird itself.
+  function celebrate(b) {
+    if (!b) return;
+    toast(`${b.name} joined your flock!`, null, cutout(b) || repoPhoto(b));
+    requestAnimationFrame(() => {
+      const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.querySelectorAll(`[data-have="${CSS.escape(b.id)}"]`).forEach(btn => {
+        const host = btn.closest(".card, .row-b, #birdLive"); const pic = host && host.querySelector(".tile img, .thumb img, .hero img");
+        if (!pic || still) return;
+        pic.classList.remove("joy"); void pic.offsetWidth; pic.classList.add("joy");
+        const r = pic.getBoundingClientRect(); if (!r.width) return;
+        for (let i = 0; i < 3; i++) {
+          const h = document.createElement("span"); h.className = "burst"; h.textContent = "\u2665"; h.setAttribute("aria-hidden", "true");
+          h.style.left = (r.left + r.width * (.3 + .2 * i)) + "px"; h.style.top = (r.top + r.height * .35) + "px"; h.style.animationDelay = i * 110 + "ms";
+          (dlg.open ? dlg : document.body).appendChild(h); setTimeout(() => h.remove(), 1300);
+        }
+      });
+    });
   }
   function setWish(bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setWish(d, fid, bid, on), () => api.setWish(fid, bid, on)); }
   function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setGift(d, fid, forId, bid, on), () => api.setGift(fid, forId, bid, on)); }
