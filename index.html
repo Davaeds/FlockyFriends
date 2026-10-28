@@ -494,6 +494,30 @@ details.panel:not([open]) { gap: 0; }
 .toast .t-cut { width: 44px; height: 44px; object-fit: contain; margin: -8px 0 -8px -6px; flex: none; animation: joy .6s cubic-bezier(.3,.7,.4,1) .05s; }
 .joy { animation: joy .6s cubic-bezier(.3,.7,.4,1); transform-origin: 50% 90%; }
 @keyframes joy { 0% { transform: none; } 15% { transform: scale(1.06, .92); } 45% { transform: translateY(-14px) scale(.96, 1.05); } 75% { transform: scale(1.04, .95); } 100% { transform: none; } }
+/* I'm at Target */
+.st-head { display: flex; flex-direction: column; gap: 8px; }
+.st-lead { font-weight: 700; font-size: var(--fs-3); color: var(--muted); }
+.st-head .search { max-width: none; }
+#storeOut > * + * { margin-top: 24px; }
+#storeOut .sec-h .av { width: 26px; height: 26px; font-size: var(--fs-4); }
+#storeOut .group > .secret, #storeOut .st-none { margin: 0; }
+.st-row { align-items: start; }
+.st-row .acts { flex-wrap: wrap; }
+.st-who { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-3); font-weight: 600; }
+.st-who li { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.st-who .who-n { color: var(--muted); min-width: 3.6em; }
+.st-who .yes { color: var(--leaf); font-weight: 700; }
+.st-who .want { color: var(--berry); font-weight: 700; }
+.st-who span:not(.av):not(.who-n) { color: var(--muted); }
+.st-more summary { gap: 8px; font-family: var(--display); font-weight: 600; font-size: var(--fs-2); }
+.st-more summary .count { margin-left: auto; color: var(--muted); font-family: var(--body); font-size: var(--fs-3); }
+.st-more[open] > .grid { margin-top: 4px; }
+.st-row .heart { flex: none; }
+.toast { width: max-content; }   /* centred with left: 50%, so without this it would wrap at half the screen */
+.toast .msg { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; }
+button { touch-action: manipulation; }
+@media (max-width: 719px) { .tab .short { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.1; text-align: center; } }
+@media (min-width: 720px) and (max-width: 1059px) { .tab .long { display: none; } .tab .short { display: block; } }
 #dlgTitle:focus { outline: none; }
 .burst { position: fixed; z-index: 45; pointer-events: none; color: var(--berry); font-size: 1.1rem; animation: luv .9s ease-out forwards; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } button:active { transform: none; } }
@@ -513,6 +537,7 @@ details.panel:not([open]) { gap: 0; }
     <button class="tab" role="tab" id="tab-mine" data-tab="mine" aria-controls="view-mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12.5h18c-.6 4.3-4.3 7.5-9 7.5s-8.4-3.2-9-7.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M5 15.5c2 .8 4.3 1.2 7 1.2s5-.4 7-1.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="9.5" cy="9.5" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="14.5" cy="9" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="long">My flock</span><span class="short">My flock</span><span class="n" id="n-mine" hidden></span></button>
     <button class="tab" role="tab" id="tab-wish" data-tab="wish" aria-controls="view-wish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20C6 16 3 12.6 3 9.3 3 6.4 5.2 4.2 7.9 4.2c1.7 0 3.1.9 4.1 2.3 1-1.4 2.4-2.3 4.1-2.3 2.7 0 4.9 2.2 4.9 5.1 0 3.3-3 6.7-9 10.7Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg><span class="long">My wish list</span><span class="short">Wishes</span><span class="n" id="n-wish" hidden></span></button>
     <button class="tab" role="tab" id="tab-shelf" data-tab="shelf" aria-controls="view-shelf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 18h19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M5.5 18v3M18.5 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M4 15.2c0-3.2 2.2-5.7 5.1-5.7 1.7 0 3.1.8 3.9 2.1l2 .4-1.6 1.4.1 1c0 2.4-2.2 3.6-4.8 3.6S4 17 4 15.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="18" cy="14.4" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="long">Shelf</span><span class="short">Shelf</span></button>
+    <button class="tab" role="tab" id="tab-store" data-tab="store" aria-controls="view-store"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.5h13.6l-1.1 10.6a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 11V7.5a3 3 0 0 1 6 0V11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span class="long">I’m at Target</span><span class="short">Target</span></button>
     <button class="tab" role="tab" id="tab-family" data-tab="family" aria-controls="view-family"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 9v11M4 13h16" stroke="currentColor" stroke-width="1.9"/><path d="M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9Zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="long">Family &amp; gifts</span><span class="short">Gifts</span></button>
   </nav>
 
@@ -531,6 +556,13 @@ details.panel:not([open]) { gap: 0; }
   <section id="view-mine" role="tabpanel" aria-labelledby="tab-mine" hidden></section>
   <section id="view-wish" role="tabpanel" aria-labelledby="tab-wish" hidden></section>
   <section id="view-shelf" role="tabpanel" aria-labelledby="tab-shelf" hidden></section>
+  <section id="view-store" role="tabpanel" aria-labelledby="tab-store" hidden>
+    <div class="st-head" id="storeHead" hidden>
+      <label class="st-lead" for="sq">Spotted a bird? See who already has it.</label>
+      <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><input id="sq" type="search" placeholder="Type its name" autocomplete="off" autocorrect="off" enterkeyhint="search"><button class="clear" type="button" id="sqClear" aria-label="Clear" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
+    </div>
+    <div id="storeOut"></div>
+  </section>
   <section id="view-family" role="tabpanel" aria-labelledby="tab-family" hidden></section>
 
   <footer>
@@ -569,7 +601,7 @@ details.panel:not([open]) { gap: 0; }
   const BODY_SWATCHES = ["#E0525B", "#F2A65A", "#FFD166", "#7CC6A4", "#6FB7E0", "#9C8BE0", "#F4A6C0", "#F5F1EA", "#8D7A6A", "#3A3245"];
   const SHOWS = [["", "All birds"], ["have", "I have"], ["need", "I still need"], ["wanted", "Someone wants"]];
   const SORTS = [["season", "By season"], ["name", "Name A to Z"], ["newest", "Newest first"], ["oldest", "Oldest first"]];
-  const TABS = ["birds", "mine", "wish", "shelf", "family"];
+  const TABS = ["birds", "mine", "wish", "shelf", "store", "family"];
   // Shelf looks. Wood: [face, top edge, shadow edge]. Walls: [colour, pattern colour, pattern].
   const WOODS = { oak: ["Honey oak", "#C98B4E", "#E3AE73", "#8E5A2B"], walnut: ["Walnut", "#7A4E2D", "#9C6A43", "#4E2F18"], white: ["Painted white", "#EFE8DF", "#FFFFFF", "#C9BBAA"],
                   blush: ["Blush pink", "#E7A3AF", "#F5C3CB", "#B96F7D"], sage: ["Sage", "#94B79C", "#B6D3BC", "#62836A"] };
@@ -708,12 +740,14 @@ details.panel:not([open]) { gap: 0; }
     photos: {},                        // id -> version (family photos)
     loaded: false,
     meId: store.get("flocks.me") || "",
-    tab: TABS.includes(store.get("flocks.tab")) ? store.get("flocks.tab") : "birds",
+    // The Target page is for the store: after a few hours away, open on All birds instead.
+    tab: (t => TABS.includes(t) && !(t === "store" && Date.now() - (Number(store.get("flocks.tab.at")) || 0) > 3 * 3600e3) ? t : "birds")(store.get("flocks.tab")),
     q: "", season: "", show: "", year: "", scroll: {}, sort: ["season", "name", "newest", "oldest"].includes(store.get("flocks.sort")) ? store.get("flocks.sort") : "season",
     person: "",
+    sq: "", storeSnap: null, got: new Map(),   // I'm at Target: search, the wish list as it was on arrival, birds marked "Got it" there
     shelf: (() => { let v = {}; try { v = JSON.parse(store.get("flocks.shelf") || "{}") || {}; } catch (e) {} return { who: "", wood: WOODS[v.wood] ? v.wood : "oak", wall: WALLS[v.wall] ? v.wall : "mint", sort: SHELF_SORTS.some(x => x[0] === v.sort) ? v.sort : "season", move: v.move !== false }; })(),
     mode: "starting",                  // starting | preview | live | need-code | locked | unset
-    netErr: false
+    netErr: false, waiting: false
   };
   let birdCache = null, flockCache = null;
   function birds() { if (!birdCache) birdCache = Object.entries(S.data.birds).map(([id, d]) => Object.assign({ id }, d)).filter(b => b && typeof b.name === "string"); return birdCache; }
@@ -764,9 +798,14 @@ details.panel:not([open]) { gap: 0; }
     async function rpc(fn, args) {
       const headers = { "Content-Type": "application/json", apikey: CFG.supabaseKey };
       if (/^eyJ/.test(CFG.supabaseKey)) headers.Authorization = "Bearer " + CFG.supabaseKey;
-      const res = await fetch(base + fn, { method: "POST", headers, body: JSON.stringify(Object.assign({ p_code: code }, args)) });
-      if (!res.ok) throw new Error("http " + res.status);
-      return res.json();
+      // Weak store signal can leave a request hanging, so give up after a while; unsent changes wait in the outbox.
+      const ctl = typeof AbortController === "function" ? new AbortController() : null;
+      const t = ctl && setTimeout(() => ctl.abort(), fn === "flocks_load" ? 20000 : 15000);
+      try {
+        const res = await fetch(base + fn, { method: "POST", headers, body: JSON.stringify(Object.assign({ p_code: code }, args)), signal: ctl ? ctl.signal : undefined });
+        if (!res.ok) { const er = new Error("http " + res.status); er.status = res.status; throw er; }
+        return await res.json();
+      } finally { if (t) clearTimeout(t); }
     }
     return {
       kind: "live",
@@ -854,12 +893,87 @@ details.panel:not([open]) { gap: 0; }
   let api = null, gen = 0, inflight = 0, lastSig = "", timer = 0;
   function schedule(ms) {
     clearTimeout(timer);
-    if (api && api.kind === "live" && document.visibilityState === "visible") timer = setTimeout(refresh, ms == null ? 30000 : ms);
+    if (api && api.kind === "live" && document.visibilityState === "visible") timer = setTimeout(refresh, ms == null ? (outbox.length ? 10000 : 30000) : ms);
   }
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") refresh(); else clearTimeout(timer); });
+  addEventListener("online", () => refresh());
+
+  // ---------- outbox ----------
+  // Ticks, hearts, gift plans and notes are kept on this phone first, then sent in order. With no signal
+  // (a store aisle) they wait here and go out once the database answers again, so nothing quietly
+  // disappears. Each one sets a single value, so sending one twice does no harm.
+  // The list lives in localStorage and is re-read before each use, because another window of the app on
+  // this phone (an Android tab next to the installed app) shares it. One window sends at a time.
+  const QUEUED = ["setOwned", "setWish", "setNote", "setGift", "addBird"], OUTBOX = "flocks.outbox.v1";
+  function readOutbox() {
+    let v = []; try { v = JSON.parse(store.get(OUTBOX) || "[]"); } catch (e) {}
+    return Array.isArray(v) ? v.filter(x => x && QUEUED.includes(x.k) && Array.isArray(x.a) && typeof x.id === "string") : [];
+  }
+  let outbox = readOutbox(), flushing = null;
+  function saveOutbox() { if (outbox.length) store.set(OUTBOX, JSON.stringify(outbox)); else store.del(OUTBOX); }
+  addEventListener("storage", e => { if (e.key === OUTBOX) { outbox = readOutbox(); lastSig = ""; renderBanner(); } });
+  // write("setWish", [flock, bird, true]), or a list of [k, a] pairs that belong together.
+  function write(k, a, failMsg) {
+    const list = Array.isArray(k) ? k : [[k, a]];
+    if (!api || api.kind !== "live") return mutate(d => list.forEach(([kk, aa]) => OPS[kk](d, ...aa)),
+      async () => { let r; for (const [kk, aa] of list) { r = await api[kk](...aa); if (r && r.error) break; } return r; }, failMsg);
+    if (!canWrite()) return Promise.resolve(false);
+    outbox = readOutbox();
+    list.forEach(([kk, aa]) => { OPS[kk](S.data, ...aa); outbox.push({ id: Date.now().toString(36) + rand(6), k: kk, a: aa }); });
+    dirty(); gen++;
+    lastSig = "";            // the screen now differs from the last server copy, so the next load always re-applies
+    saveOutbox();
+    onData();
+    flush();
+    return Promise.resolve(true);
+  }
+  const birdOf = x => { const id = x.k === "addBird" ? x.a[0] : x.k === "setGift" ? x.a[2] : x.a[1]; const b = S.data.birds[id] || (x.k === "addBird" && x.a[1]); return b && b.name ? b.name : "a bird"; };
+  // Take one change off the list (only that one: another window may have added more meanwhile).
+  function settle(x, why) {
+    outbox = readOutbox().filter(y => y.id !== x.id); saveOutbox();
+    if (why) { lastSig = ""; toast(why === "too_many" ? "That list is full." : `Couldn't save the change to ${birdOf(x)}. Check it and try again.`); }
+  }
+  function flush() {
+    if (flushing || !api || api.kind !== "live") return flushing || Promise.resolve();
+    if (!readOutbox().length) { outbox = []; return Promise.resolve(); }
+    const a = api;
+    const run = async () => {
+      let stuck = false, dropped = false;
+      inflight++;
+      try {
+        while (a === api) {
+          outbox = readOutbox(); const x = outbox[0]; if (!x) break;
+          let r;
+          try { r = await a[x.k](...x.a); }
+          catch (e) {
+            const st = e && e.status;
+            // A request the database will never take, or one it keeps refusing while everything else works,
+            // is set aside so it can't hold up the rest. No signal, or a database that isn't answering at all,
+            // never drops anything.
+            const never = st >= 400 && st < 500 && ![401, 403, 408, 429].includes(st);
+            if (st && !never && !S.netErr) { outbox = readOutbox(); const y = outbox.find(z => z.id === x.id); if (y) { y.n = (y.n || 0) + 1; saveOutbox(); if (y.n >= 3) { settle(x, "error"); dropped = true; continue; } } }
+            if (never) { settle(x, "error"); dropped = true; continue; }
+            stuck = true; break;
+          }
+          if (a !== api) break;
+          if (r && r.error && ["wrong", "locked", "unset"].includes(r.error)) { authProblem(r.error); break; }   // kept; it sends once the passcode works
+          settle(x, r && r.error); if (r && r.error) dropped = true;
+        }
+      } finally { inflight--; gen++; }
+      S.waiting = stuck && outbox.length > 0;
+      if (stuck) S.netErr = true;
+      renderBanner();
+      if (a === api) schedule(stuck ? null : dropped ? 50 : 600);
+    };
+    flushing = (navigator.locks && navigator.locks.request ? navigator.locks.request("flocks-outbox", run) : run())
+      .catch(() => {}).finally(() => { flushing = null; });
+    return flushing;
+  }
+
   async function refresh() {
     clearTimeout(timer);
     const a = api; if (!a) return;
+    if (outbox.length && a.kind === "live") { await flush(); if (a !== api) return; }
     const startGen = gen;
     try {
       const r = await a.load();
@@ -879,6 +993,8 @@ details.panel:not([open]) { gap: 0; }
     const next = { birds: {}, flocks: {} };
     (r.birds || []).forEach(x => { if (x && x.id && x.data) next.birds[x.id] = x.data; });
     (r.flocks || []).forEach(x => { if (x && x.id && x.data) next.flocks[x.id] = x.data; });
+    outbox = readOutbox();
+    for (const x of outbox) { try { OPS[x.k](next, ...x.a); } catch (e) {} }
     S.data = next; dirty();
     const ph = {}; (r.photos || []).forEach(p => { if (p && p.id) ph[p.id] = String(p.v); });
     for (const id in S.photos) if (S.photos[id] === "pending") ph[id] = "pending";
@@ -886,6 +1002,18 @@ details.panel:not([open]) { gap: 0; }
     S.loaded = true;
     if (persist && api && api.kind === "live") store.set("flocks.snap.v2", sig);
     onData();
+    if (persist) warmWishPhotos();
+  }
+  const warmed = new Set();
+  function warmWishPhotos() {
+    if (!api || api.kind !== "live" || !("serviceWorker" in navigator) || !navigator.serviceWorker.controller || navigator.onLine === false) return;
+    setTimeout(() => {
+      for (const b of birds()) {
+        if (!flocks().some(f => wants(f, b.id) && !qtyOf(f, b.id))) continue;
+        const u = repoPhoto(b); if (!u || warmed.has(u)) continue;
+        warmed.add(u); fetch(u, { priority: "low" }).catch(() => warmed.delete(u));
+      }
+    }, 3000);
   }
   function canWrite() {
     if (S.mode === "locked") { toast("Flocks is paused for a few minutes after too many wrong passcodes."); return false; }
@@ -1054,7 +1182,7 @@ details.panel:not([open]) { gap: 0; }
       if (fk) { const t = nn.querySelector(fk); if (t) t.focus({ preventScroll: true }); }
     });
   }
-  const FOCUS_ATTRS = ["data-have", "data-wish", "data-open", "data-step", "data-season", "data-gift", "data-person", "data-goto", "data-welcome", "data-perch", "data-shelfwho"];
+  const FOCUS_ATTRS = ["data-gotit", "data-have", "data-wish", "data-open", "data-step", "data-season", "data-gift", "data-person", "data-goto", "data-welcome", "data-perch", "data-shelfwho"];
   function focusKey(el) {
     if (!el || el === document.body) return null;
     if (el.id) return "#" + CSS.escape(el.id);
@@ -1098,7 +1226,8 @@ details.panel:not([open]) { gap: 0; }
       : `<div class="banner"><b>Preview.</b> This browser isn't letting Flocks save, so changes will disappear when the page closes.</div>`;
     else if (S.mode === "locked") h = `<div class="banner"><b>Too many wrong passcodes.</b> Flocks is paused for 15 minutes to keep it safe. Try again after that.</div>`;
     else if (S.mode === "unset") h = `<div class="banner"><b>Almost ready.</b> The family passcode hasn't been set yet. Ask whoever set up Flocks to finish the last step.</div>`;
-    else if (S.netErr) h = `<div class="banner"><b>Offline.</b> Showing the last saved copy. Changes will need a connection.</div>`;
+    else if (S.waiting && outbox.length) h = `<div class="banner"><b>${outbox.length} ${outbox.length === 1 ? "change" : "changes"} waiting to send.</b> ${outbox.length === 1 ? "It's" : "They're"} saved on this phone and will send when there's signal.</div>`;
+    else if (S.netErr) h = `<div class="banner"><b>Offline.</b> Showing the last saved copy. Changes are saved on this phone and send when you're back online.</div>`;
     el.innerHTML = h;
   }
   function renderTabs() {
@@ -1119,6 +1248,7 @@ details.panel:not([open]) { gap: 0; }
     else if (S.tab === "mine") renderMine();
     else if (S.tab === "wish") renderWish();
     else if (S.tab === "shelf") renderShelf();
+    else if (S.tab === "store") renderStore();
     else renderFamily();
   }
 
@@ -1332,6 +1462,122 @@ details.panel:not([open]) { gap: 0; }
     paint(el, h);
   }
 
+  // ---------- I'm at Target ----------
+  // One page for the store aisle: what you're hunting for, what the family wants (so you can grab a gift),
+  // and a quick "who has it?" check. Birds marked "Got it" stay on the page until you leave it, so a slip is easy to undo.
+  const byNewest = (a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0) || a.name.localeCompare(b.name);
+  function slotted(key, html) { slots.set(key, html); return `<article class="card" data-k="${esc(key)}" data-slot></article>`; }
+  function gotBtn(b, cls) {
+    const q = qtyOf(me(), b.id), sr = `<span class="sr">${esc(b.name)}: </span>`;
+    return `<button class="${cls}${q ? " on" : ""}" type="button" data-gotit="${esc(b.id)}" aria-pressed="${!!q}">${sr}${q ? "Got it ✓" : "Got it!"}</button>`;
+  }
+  // A big-photo card: for your own wishes it has "Got it!", for someone else's it has "I'm getting this".
+  function storeCard(key, b, f, noYear) {
+    const m = me(), q = qtyOf(m, b.id), art = artHTML(b, 320, "");
+    const meta = [seasonOf(b).label, noYear ? "" : b.year, b.price].filter(Boolean).join(" · ");
+    let tags = "", act;
+    if (!f) {
+      tags = others().filter(o => qtyOf(o, b.id) > 1).map(o => `<span class="tag got">${esc(o.name)} has a spare</span>`).join("");
+      act = gotBtn(b, "have-btn");
+    } else {
+      const got = !!(m.gifts && m.gifts[f.id] && m.gifts[f.id][b.id]);
+      if (q > 1) tags = `<span class="tag got">You have a spare</span>`;
+      act = `<button class="have-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}"><span class="sr">${esc(b.name)}: </span>${got ? "Getting it ✓" : "I’m getting this"}</button>`;
+    }
+    return `<article class="card${!f && q ? " have" : ""}" data-k="${esc(key)}">
+      <button class="tile${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+      <div class="card-body"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
+      <div class="card-actions">${act}</div></article>`;
+  }
+  // A search answer: who has this bird, who wants it, and the buttons that fit.
+  function storeRow(key, b) {
+    const m = me(), q = qtyOf(m, b.id), art = artHTML(b, 200, ""), gifts = m.gifts || {};
+    const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
+    const line = f => {
+      const you = f.id === m.id, fq = qtyOf(f, b.id), fw = wants(f, b.id), getting = !you && gifts[f.id] && gifts[f.id][b.id];
+      const st = fq ? `<b class="yes">${you ? "In your flock" : "Has it"}${fq > 1 ? ` (${fq})` : ""}</b>`
+        : fw ? `<b class="want">${you ? "On your wish list" : "Wants it"}</b>${getting ? "<span>(you’re getting it)</span>" : ""}`
+        : `<span>${you ? "Not in your flock" : "Doesn’t have it"}</span>`;
+      return `<li><span class="av sm" aria-hidden="true" style="${avStyle(flockColor(f))}">${initial(f.name)}</span><span class="who-n">${esc(you ? "You:" : f.name + ":")}</span>${st}</li>`;
+    };
+    const w = wants(m, b.id);
+    const acts = (!q || S.got.has(b.id) ? gotBtn(b, "have-btn") : "") + `<button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>` + others().filter(f => wants(f, b.id) && !qtyOf(f, b.id)).map(f => {
+      const got = !!(gifts[f.id] && gifts[f.id][b.id]);
+      return `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}">${ICON.gift}<span class="sr">${esc(b.name)}: </span>${got ? `Getting it for ${esc(f.name)} ✓` : `I’m getting this for ${esc(f.name)}`}</button>`;
+    }).join("");
+    return `<article class="row-b st-row${q ? " have" : ""}" data-k="${esc(key)}">
+      <button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+      <div><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>
+      <ul class="st-who">${[m].concat(others()).map(line).join("")}</ul>
+      ${acts ? `<div class="acts">${acts}</div>` : ""}</div></article>`;
+  }
+  function renderStore() {
+    if (S.tab !== "store") return;
+    store.set("flocks.tab.at", String(Date.now()));
+    const out = $("#storeOut"), m = me();
+    $("#storeHead").hidden = !(S.loaded && m);
+    $("#sqClear").hidden = !S.sq;
+    if (!S.loaded) { out.innerHTML = loadingState(); return; }
+    if (!m) { out.innerHTML = emptyState("Who's using this phone?", "Pick your name to see what to look for.", `<button class="btn primary" type="button" data-welcome>Pick my name</button>`); return; }
+    if (!S.storeSnap || S.storeSnap.who !== m.id) { S.storeSnap = { who: m.id, ids: new Set(wishIds(m).filter(id => !qtyOf(m, id))) }; S.got = new Map(); }
+    const q = S.sq.trim();
+    if (q) {
+      const hits = searchBirds(q);
+      if (hits.length) {
+        paint(out, `<p class="result-line">${hits.length} ${hits.length === 1 ? "bird matches" : "birds match"} “${esc(q)}”</p>
+          <div class="rows">${hits.slice(0, 20).map(b => slotted("s:" + b.id, storeRow("s:" + b.id, b))).join("")}</div>${hits.length > 20 ? `<p class="hint">Showing the first 20. Type more of the name to narrow it down.</p>` : ""}`);
+        return;
+      }
+      const near = closest(q);
+      paint(out, `<div class="empty">${MASCOT}<h2>No bird called \u201c${esc(q)}\u201d</h2><p>Check the spelling, or add it if it\u2019s new.</p>${near ? `<button class="btn primary" type="button" data-stry="${esc(near.name)}">Did you mean ${esc(near.name)}?</button>` : ""}
+        <button class="${near ? "link" : "btn primary"}" type="button" data-addbird data-name="${esc(nice(q).slice(0, 60))}">${near ? "Not it? " : ""}Add \u201c${esc(nice(q).slice(0, 40))}\u201d to the list</button></div>`);
+      return;
+    }
+    const all = birds(), head = (f, title, count) => `<div class="sec-h"><span class="av sm" aria-hidden="true" style="${avStyle(flockColor(f))}">${initial(f.name)}</span><h2>${esc(title)}</h2>${count ? `<span class="count">${esc(count)}</span>` : ""}</div>`;
+    const grid = (list, pre, f) => `<div class="grid">${list.map(b => slotted(pre + b.id, storeCard(pre + b.id, b, f, pre === "n:"))).join("")}</div>`;
+    const mine = all.filter(b => { const bq = qtyOf(m, b.id), w = wants(m, b.id); return (w && !bq) || (S.storeSnap.ids.has(b.id) && (bq || w)); }).sort(byNewest);
+    const left = mine.filter(b => !qtyOf(m, b.id)).length;
+    let h = `<section class="group">${head(m, "For you", mine.length ? (left ? `${left} to find` : "All found!") : "")}` +
+      (mine.length ? grid(mine, "m:", null) : `<p class="hint st-none">Nothing on your wish list yet. Tap the heart on a bird you’re hoping to find.</p>`) + `</section>`;
+    for (const f of others()) {
+      const list = all.filter(b => wants(f, b.id) && !qtyOf(f, b.id)).sort(byNewest);
+      h += `<section class="group">${head(f, "For " + f.name, list.length ? `${list.length} on ${f.name}’s list` : "")}` +
+        (list.length ? `<p class="secret">${ICON.lock}<span>Only you can see what you’re getting.</span></p>` + grid(list, "g:" + f.id + ":", f)
+          : `<p class="hint st-none">${esc(f.name)} hasn’t wished for any birds yet.</p>`) + `</section>`;
+    }
+    // The newest year's birds you don't have, for spotting something new on the shelf.
+    const yr = Math.max(0, ...all.map(b => parseInt(b.year, 10) || 0)), shown = new Set(mine.map(b => b.id)), order = Object.fromEntries(SEASONS.map((x, i) => [x.id, i]));
+    const fresh = yr ? all.filter(b => (parseInt(b.year, 10) || 0) === yr && !shown.has(b.id) && (!qtyOf(m, b.id) || S.got.has(b.id)))
+      .sort((a, b) => order[seasonOf(a).id] - order[seasonOf(b).id] || a.name.localeCompare(b.name)) : [];
+    if (fresh.length) h += `<details class="panel st-more"><summary>New in ${yr}, not in your flock yet<span class="count">${fresh.length}</span></summary>${grid(fresh, "n:", null)}</details>`;
+    paint(out, h);
+  }
+  // "Got it!" in the store puts the bird in your flock (and off your wish list). Tapping it again, or Undo, puts it back.
+  function gotIt(bid) {
+    const m = me(); if (!m || !api || !canWrite()) return;
+    const b = S.data.birds[bid]; if (!b) return;
+    const now = Date.now(); if (lastGot.id === bid && now - lastGot.t < 800) return;   // a double tap would undo itself
+    lastGot = { id: bid, t: now };
+    const q = qtyOf(m, bid);
+    if (q) {
+      if (!S.got.has(bid) && q > 1) { toast(`You have ${q} ${b.name} birds. Change how many on its page.`); return; }
+      putBack(bid, S.got.has(bid) ? S.got.get(bid) : !!(S.storeSnap && S.storeSnap.who === m.id && S.storeSnap.ids.has(bid)));
+      return;
+    }
+    const was = wants(m, bid);
+    S.got.set(bid, was);
+    setOwned(bid, 1, false);
+    celebrate(Object.assign({}, b, { id: bid }), { label: "Undo", run: () => putBack(bid, was) });
+  }
+  function putBack(bid, wished) {
+    const m = me(), b = S.data.birds[bid]; if (!m || !b || !qtyOf(m, bid) || !api || !canWrite()) return;
+    S.got.delete(bid);
+    write([["setOwned", [m.id, bid, 0, ""]]].concat(wished ? [["setWish", [m.id, bid, true]]] : []));
+    toast(wished ? `${b.name} is back on your wish list` : `${b.name} taken out of your flock`);
+  }
+  let lastGot = { id: "", t: 0 };
+  function leaveStore() { clearTimeout(sqTimer); S.storeSnap = null; S.got = new Map(); S.sq = ""; const i = $("#sq"); if (i) i.value = ""; }
+
   // ---------- shelf ----------
   function bunting() {
     // flag colours follow the time of year
@@ -1538,7 +1784,7 @@ details.panel:not([open]) { gap: 0; }
       <div class="who-line"><span class="k">In the flock of</span>${owners.length ? owners.map(chip).join("") : "<span>Nobody yet</span>"}</div></div>`;
     paint(el, h);
   }
-  let noteTimer = 0, qTimer = 0;
+  let noteTimer = 0, qTimer = 0, sqTimer = 0;
   function saveNoteNow() {
     clearTimeout(noteTimer);
     const n = $("#note"); const m = me(); if (!n || !m || dlgState.kind !== "bird") return;
@@ -1547,7 +1793,7 @@ details.panel:not([open]) { gap: 0; }
     const before = dlgState.noteStart;
     dlgState.noteStart = text;
     const fid = m.id, bid = dlgState.id;
-    mutate(d => OPS.setNote(d, fid, bid, text), () => api.setNote(fid, bid, text), "Your note didn't save. Check your connection; it will try again when you leave the note.")
+    write("setNote", [fid, bid, text], "Your note didn't save. Check your connection; it will try again when you leave the note.")
       .then(ok => { if (!ok && dlgState.kind === "bird" && dlgState.id === bid && dlgState.noteStart === text) dlgState.noteStart = before;
         const el = $("#noteSaved"); if (ok && el && dlgState.id === bid) el.textContent = "Saved \u2713"; });
   }
@@ -1579,7 +1825,7 @@ details.panel:not([open]) { gap: 0; }
     const body = `${m ? `<div class="field"><label for="s-name">Your name in Flocks</label><div class="tool-row"><input id="s-name" type="text" maxlength="30" value="${esc(m.name)}" style="flex:1"><button class="btn primary" type="button" id="saveName">Save</button></div></div>` : ""}
       <details class="fam"><summary>Family members</summary><div class="people-list">${all.map((f, i) => `<div class="row"><span class="av" style="${avStyle(flockColor(f, i))}">${initial(f.name)}</span><span class="nm">${esc(f.name)}${f.id === S.meId ? " (this phone)" : ""}</span>${f.id === S.meId ? "" : `<button class="btn" type="button" data-askswitch="${esc(f.id)}">Switch</button><button class="btn danger" type="button" data-askdel="${esc(f.id)}" aria-label="Remove ${esc(f.name)}">Remove</button>`}</div><div id="del-${esc(f.id)}"></div>`).join("")}</div>
       <div class="field" style="margin-top:12px"><label for="s-new">Add someone to the family</label><div class="tool-row"><input id="s-new" type="text" maxlength="30" placeholder="Their name" style="flex:1"><button class="btn" type="button" id="addPerson">Add</button></div></div></details>
-      ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.</p></div>` : ""}
+      ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.${outbox.length ? ` ${outbox.length} ${outbox.length === 1 ? "change hasn't" : "changes haven't"} sent yet; ${outbox.length === 1 ? "it sends" : "they send"} after you sign back in.` : ""}</p></div>` : ""}
       <p class="hint">Flocks keeps everyone's birds in one shared list. Photos come from Target's listings, the Target Birds fan wiki and resale listings. Any bird without one can get a family photo.</p>`;
     if (full) dlg.innerHTML = bar("Settings") + `<div class="dlg-body" id="settingsBody">${body}</div>`;
     else if (!$("#settingsBody .confirm") && !(document.activeElement && dlg.contains(document.activeElement) && document.activeElement.tagName === "INPUT")) {
@@ -1619,18 +1865,17 @@ details.panel:not([open]) { gap: 0; }
     const m = me(); if (!m || !api) return;
     if (!canWrite()) return;
     const prev = qtyOf(m, bid); const prevAt = prev && m.owned[bid] && m.owned[bid].at; const fid = m.id; const b = S.data.birds[bid];
-    const useAt = at || "";
-    mutate(d => OPS.setOwned(d, fid, bid, q, useAt), () => api.setOwned(fid, bid, q, useAt));
+    write("setOwned", [fid, bid, q, at || today()]);
     if (withUndo && prev && !q) toast(`${b ? b.name : "Bird"} removed from your flock`, { label: "Undo", run: () => setOwned(bid, prev, false, prevAt) });
     else if (withUndo && !prev && q && b) celebrate(Object.assign({}, b, { id: bid }));
   }
   // A new bird hops on its photo, a few hearts float up, and the message shows the bird itself.
-  function celebrate(b) {
+  function celebrate(b, action) {
     if (!b) return;
-    toast(`${b.name} joined your flock!`, null, cutout(b) || repoPhoto(b));
+    toast(`${b.name} joined your flock!`, action || null, cutout(b) || repoPhoto(b));
     requestAnimationFrame(() => {
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      document.querySelectorAll(`[data-have="${CSS.escape(b.id)}"]`).forEach(btn => {
+      document.querySelectorAll(`[data-have="${CSS.escape(b.id)}"], [data-gotit="${CSS.escape(b.id)}"]`).forEach(btn => {
         const host = btn.closest(".card, .row-b, #birdLive"); const pic = host && host.querySelector(".tile img, .thumb img, .hero img");
         if (!pic || still) return;
         pic.classList.remove("joy"); void pic.offsetWidth; pic.classList.add("joy");
@@ -1643,8 +1888,8 @@ details.panel:not([open]) { gap: 0; }
       });
     });
   }
-  function setWish(bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setWish(d, fid, bid, on), () => api.setWish(fid, bid, on)); }
-  function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; const fid = m.id; mutate(d => OPS.setGift(d, fid, forId, bid, on), () => api.setGift(fid, forId, bid, on)); }
+  function setWish(bid, on) { const m = me(); if (!m || !api) return; write("setWish", [m.id, bid, on]); }
+  function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; write("setGift", [m.id, forId, bid, on]); }
   function addPerson(name, becomeIt) {
     name = String(name || "").trim().slice(0, 30); if (!name || !api) return false;
     const id = "flock-" + slug(name).slice(0, 30) + "-" + rand(4);
@@ -1653,7 +1898,7 @@ details.panel:not([open]) { gap: 0; }
     if (becomeIt) become(id);
     return true;
   }
-  function become(id) { S.meId = id; store.set("flocks.me", id); S.person = ""; const m = me(); closeDialog(true); onData(); if (m) toast(`Hi ${m.name}!`); }
+  function become(id) { leaveStore(); S.meId = id; store.set("flocks.me", id); S.person = ""; const m = me(); closeDialog(true); onData(); if (m) toast(`Hi ${m.name}!`); }
 
   document.addEventListener("click", e => {
     // the name and year on a card open the bird too
@@ -1662,11 +1907,11 @@ details.panel:not([open]) { gap: 0; }
     if (t.id === "toastAct") { const a = toastAction; toastEl.hidden = true; toastAction = null; if (a) a.run(); return; }
     if (d.close !== undefined) { closeDialog(); return; }
     if (d.tab) {
-      if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); return; }
-      S.scroll[S.tab] = window.scrollY; S.tab = d.tab; store.set("flocks.tab", S.tab); renderTabs(); renderView();
+      if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); if (d.tab === "store" && !$("#storeHead").hidden) $("#sq").focus({ preventScroll: true }); return; }
+      S.scroll[S.tab] = window.scrollY; if (S.tab === "store") leaveStore(); S.tab = d.tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now())); renderTabs(); renderView();
       const y = S.scroll[S.tab] || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y })); return;
     }
-    if (d.goto) { S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
+    if (d.goto) { if (S.tab === "store" && d.goto !== "store") leaveStore(); S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
     if (d.welcome !== undefined) { openDialog("welcome"); return; }
     if (d.season !== undefined) { S.season = S.season === d.season ? "" : d.season; renderBirds(); return; }
     if (d.show !== undefined) { S.show = d.show; dlg.querySelectorAll("[data-show]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.show === S.show))); renderBirds(); return; }
@@ -1688,6 +1933,9 @@ details.panel:not([open]) { gap: 0; }
       const f = dlg.querySelector(d.wood ? `[data-wood="${d.wood}"]` : d.wall ? `[data-wall="${d.wall}"]` : d.shelfmove ? `[data-shelfmove="${d.shelfmove}"]` : `[data-shelfsort="${d.shelfsort}"]`); if (f) f.focus({ preventScroll: true });
       return;
     }
+    if (d.gotit) { if (!needMe()) return; gotIt(d.gotit); return; }
+    if (d.stry) { S.sq = d.stry; $("#sq").value = d.stry; renderStore(); return; }
+    if (t.id === "sqClear") { S.sq = ""; $("#sq").value = ""; renderStore(); $("#sq").focus(); return; }
     if (d.have) { if (!needMe()) return; const m = me(); setOwned(d.have, qtyOf(m, d.have) ? 0 : 1, true); return; }
     if (d.wish) {
       if (!needMe()) return; const m = me(); const on = !wants(m, d.wish); setWish(d.wish, on);
@@ -1700,7 +1948,7 @@ details.panel:not([open]) { gap: 0; }
     if (d.person) { S.person = d.person; renderFamily(); return; }
     if (d.swatch) { draft.body = d.swatch; dlg.querySelectorAll("[data-swatch]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); const a = $("#addArt"); if (a) { a.style.setProperty("--tint", soft(draft.body)); a.innerHTML = birdSVG({ body: draft.body }); } return; }
     if (d.become) { become(d.become); return; }
-    if (t.id === "addBird") { if (!api) return; if (d.name) draft.name = d.name; if (S.season) draft.season = S.season; openDialog("add"); return; }
+    if (t.id === "addBird" || d.addbird !== undefined) { if (!api) return; if (d.name) draft.name = d.name; if (S.season) draft.season = S.season; openDialog("add"); return; }
     if (t.id === "showNew") { t.hidden = true; $("#newWrap").hidden = false; $("#w-new").focus(); return; }
     if (t.id === "welcomeAdd") { const v = $("#w-new").value; if (addPerson(v, true)) return; $("#w-new").focus(); return; }
     if (t.id === "addPerson") { const v = $("#s-new"); if (addPerson(v.value, false)) { toast(`${v.value.trim()} added`); v.value = ""; renderSettings(true); } return; }
@@ -1727,7 +1975,7 @@ details.panel:not([open]) { gap: 0; }
     if (t.id === "delYes") { const id = dlgState.id; closeDialog(); mutate(dd => OPS.deleteBird(dd, id), () => api.deleteBird(id)); toast("Removed from the list"); return; }
   });
   document.addEventListener("keydown", e => {
-    if (e.target && e.target.id === "q" && e.key === "Enter") { e.preventDefault(); e.target.blur(); return; }
+    if (e.target && (e.target.id === "q" || e.target.id === "sq") && e.key === "Enter") { e.preventDefault(); e.target.blur(); return; }
     const tab = e.target.closest && e.target.closest('[role="tab"]');
     if (tab && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
       const tabs = [...document.querySelectorAll('[role="tab"]')]; const i = tabs.indexOf(tab);
@@ -1737,6 +1985,7 @@ details.panel:not([open]) { gap: 0; }
   document.addEventListener("input", e => {
     const id = e.target.id;
     if (id === "q") { S.q = e.target.value; $("#qClear").hidden = !S.q; clearTimeout(qTimer); qTimer = setTimeout(() => { renderBirds(); window.scrollTo({ top: 0 }); }, 120); }
+    else if (id === "sq") { S.sq = e.target.value; $("#sqClear").hidden = !S.sq; clearTimeout(sqTimer); sqTimer = setTimeout(renderStore, 120); }
     else if (id === "note") { clearTimeout(noteTimer); noteTimer = setTimeout(saveNoteNow, 1200); const el = $("#noteSaved"); if (el) el.textContent = ""; }
     else if (id === "a-name") draft.name = e.target.value;
     else if (id === "a-kind") draft.kind = e.target.value;
@@ -1778,7 +2027,7 @@ details.panel:not([open]) { gap: 0; }
       const id = "added-" + slug(name) + "-" + rand(5);
       const rec = { name: name.slice(0, 60), season: draft.season, year: draft.year || "", kind: draft.kind.trim().slice(0, 80), body: draft.body, source: "added", addedBy: S.meId || "", addedOn: today() };
       closeDialog();
-      const ok = await mutate(d => OPS.addBird(d, id, rec), () => api.addBird(id, rec));
+      const ok = await write("addBird", [id, rec]);
       const file = draft.file; draft.file = null;
       if (ok) { const own = draft.have && me(); toast(own ? `${name} is on the list and in your flock` : `${name} is on the list`); draft.name = ""; draft.kind = ""; if (own) setOwned(id, 1, false); if (file) uploadPhoto(id, file); }
     }
