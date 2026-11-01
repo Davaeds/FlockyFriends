@@ -1,0 +1,28 @@
+# Follows shop links in research/to-resolve.json to their Target product pages
+# and saves the result in research/resolved.json (used to add new birds).
+name: Resolve shop links
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["research/to-resolve.json", "tools/resolve_links.py"]
+permissions:
+  contents: write
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/resolve_links.py
+      - name: Commit results
+        run: |
+          git config user.name "flocks-photos[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/resolved.json
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          git commit -m "Resolve shop links"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
