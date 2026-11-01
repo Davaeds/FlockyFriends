@@ -1,21 +1,11 @@
 {
-  "note": "Shop links from hip2save.com/deals/target-wondershop-christmas-birds/ (Sep 7, 2026). tools/resolve_links.py follows each one to its Target page.",
+  "note": "Shop links from hip2save.com/deals/target-wondershop-christmas-birds/ (Sep 7, 2026). tools/resolve_links.py follows each one to its Target page. Second pass: also saves each page's description.",
   "links": {
     "Quill": "https://on.ltk.com/+i2qpMyfWQcFe3DZmLmVVeg",
     "Heddles": "https://on.ltk.com/+6noW90NXjOvSwtbOJnA9Jw",
-    "Bobbin": "https://on.ltk.com/+IVbg-y_DTeCdTqRuHBYceg",
     "Hytte": "https://on.ltk.com/+4uG_Zg8-_9cqJeppuKcpwA",
     "Dacha": "https://on.ltk.com/+a9StDL-B42DJmVV7PihPVQ",
     "Mokki": "https://on.ltk.com/+4ev_bQEy1MnNXxO0Ss2XpA",
-    "Chill": "https://on.ltk.com/+q4O9J3Q3_xy10vP9XFezVw",
-    "Sleet": "https://on.ltk.com/+Lq3r9tIiI8jeJWzrwRt63w",
-    "Squall": "https://on.ltk.com/+4z98vdFOpbwSnReuhzySZg",
-    "Pep": "https://on.ltk.com/+07y4HCuBRzlFWQ1WhRSeSQ",
-    "Vim": "https://on.ltk.com/+vwWThCzBUOi23ihE6S90jg",
-    "Ray": "https://on.ltk.com/+Jv0372T5YwKtg531O1AOpA",
-    "3-Pack Mini Santa Dress": "https://on.ltk.com/+JBRtotNipqmoMhIXa96neg",
-    "3-Pack Mini Snow and Sage": "https://on.ltk.com/+ayB46txidk4TM6ZGA4aoZg",
-    "3-Pack Mini Traditional": "https://on.ltk.com/+wFVS2I9UrOZh0uOKTz1c4A",
-    "3-Pack Mini Cozy Cottage": "https://on.ltk.com/+1U0HmexwDvnB4PKA6O9NBw"
+    "Chill": "https://on.ltk.com/+q4O9J3Q3_xy10vP9XFezVw"
   }
 }

@@ -54,6 +54,13 @@ def main():
             if html:
                 rec["title"] = meta(html, "og:title") or (re.search(r"<title>([^<]+)", html) or [None, ""])[1]
                 rec["img"] = meta(html, "og:image")
+                rec["desc"] = meta(html, "og:description") or meta(html, "description")
+                hl = re.findall(r'(?:Height|Dimensions \(Overall\))[^0-9<]{0,40}([0-9.]+ ?(?:Inches|inches|in))', html)
+                if hl: rec["height"] = hl[0]
+                bl = re.findall(r'"bullet_descriptions?"\s*:\s*\[([^\]]{0,3000})\]', html)
+                if bl: rec["bullets"] = re.sub(r"<[^>]+>", "", bl[0])[:1500]
+                dl = re.findall(r'"downstream_description"\s*:\s*"([^"]{0,2000})"', html)
+                if dl: rec["long"] = re.sub(r"<[^>]+>", " ", dl[0])[:1500]
                 if not rec["img"]:
                     m = re.search(r'https://target\.scene7\.com/is/image/Target/(GUEST_[0-9a-f-]{36})', html)
                     if m: rec["img"] = "https://target.scene7.com/is/image/Target/" + m.group(1)
