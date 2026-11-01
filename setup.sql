@@ -198,7 +198,7 @@ begin
      or p_season not in ('christmas','ornament','halloween','fall','muertos','valentine','spring','summer','patriotic','pride','stpatricks','other')
      or coalesce(p_year, '') !~ '^(|20[0-9]{2})$' or length(coalesce(p_kind, '')) > 80
      or p_body !~ '^#[0-9A-Fa-f]{6}$' or (coalesce(p_by, '') <> '' and not flocks_valid_id(p_by)) then return flocks_err('invalid'); end if;
-  if (select count(*) from flocks_birds where data->>'source' = 'added') >= 500 then return flocks_err('too_many'); end if;
+  if (select count(*) from flocks_birds where id like 'added-%') >= 500 then return flocks_err('too_many'); end if;
   insert into flocks_birds (id, data) values (p_id, jsonb_build_object('name', trim(p_name), 'season', p_season, 'year', coalesce(p_year, ''),
       'kind', trim(coalesce(p_kind, '')), 'body', p_body, 'source', 'added', 'addedBy', coalesce(p_by, ''), 'addedOn', to_char(now(), 'YYYY-MM-DD')))
     on conflict (id) do nothing;
@@ -210,7 +210,7 @@ language plpgsql security definer set search_path = public as $$
 declare a text := flocks_auth(p_code);
 begin
   if a <> 'ok' then return flocks_err(a); end if;
-  delete from flocks_birds where id = p_id and data->>'source' = 'added';
+  delete from flocks_birds where id = p_id and data->>'source' = 'added' and id like 'added-%';
   return json_build_object('ok', true);
 end $$;
 
@@ -680,12 +680,12 @@ insert into public.flocks_birds (id, data) values
   ('ray-2026', '{"name": "Ray", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#FFD166", "acc": "scarf", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-ray-39-fabric-bird-decor-wondershop-8482/-/A-95013835", "urlLabel": "See it on Target", "accent": "#6FB7E0", "img": "https://target.scene7.com/is/image/Target/GUEST_bd7dc8c6-f098-4493-8ada-a7a7810782c8", "about": "Cream bird in a blue beanie, blue ski goggles and silver hooded jacket. 7 in tall. (From Target''s product listing.)"}'::jsonb),
   ('sleet-2026', '{"name": "Sleet", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#F5F1EA", "acc": "snow", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-sleet-39-fabric-bird-decor-wondershop-8482/-/A-95013651", "urlLabel": "See it on Target", "accent": "#6FB7E0", "img": "https://target.scene7.com/is/image/Target/GUEST_8d1a3801-622a-4e51-8d93-111962819e17", "about": "White bird in a green beanie and scarf. 7 in tall. (From Target''s product listing.)"}'::jsonb),
   ('squall-2026', '{"name": "Squall", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#6FB7E0", "acc": "snow", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-squall-39-fabric-bird-decor-wondershop-8482/-/A-95013655", "urlLabel": "See it on Target", "accent": "#F5F1EA", "img": "https://target.scene7.com/is/image/Target/GUEST_5aa31333-3c48-4f37-84b2-3130c0eff63c", "about": "Beige sweater and beanie, holding square craft bells. 7 in tall. (From Target''s product listing.)"}'::jsonb),
-  ('quill-2026', '{"name": "Quill", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#6FAF6A", "acc": "bow", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-quill-39-fabric-bird-decor-wondershop-8482/-/A-95013647", "urlLabel": "See it on Target", "accent": "#7A2335", "img": "https://target.scene7.com/is/image/Target/GUEST_78dc28fb-1307-4dd7-91b0-5f7dbe7ccafa", "about": "Green bird with a green bow tie, a floral headband and a maroon jacket with stars. 6 in tall. (From Target''s product listing.)"}'::jsonb),
-  ('heddles-2026', '{"name": "Heddles", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#C9B8A6", "acc": "scarf", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-heddles-39-fabric-bird-decor-wondershop-8482/-/A-95013668", "urlLabel": "See it on Target", "accent": "#E0525B", "img": "https://target.scene7.com/is/image/Target/GUEST_3935e7af-b36a-455e-b87d-886b76838b7e", "about": "Wears a red plaid coat and a red neckband with a gold-tone bell and a green sprig. 6 in tall. (From Target''s product listing.)"}'::jsonb),
+  ('quill-2026', '{"name": "Quill", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#7A2335", "acc": "bow", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-quill-39-fabric-bird-decor-wondershop-8482/-/A-95013647", "urlLabel": "See it on Target", "accent": "#6FAF6A", "img": "https://target.scene7.com/is/image/Target/GUEST_78dc28fb-1307-4dd7-91b0-5f7dbe7ccafa", "about": "Maroon bird with a green front, a green bow tie, a poinsettia headband and gold stars. 6 in tall. (From Target''s product listing and photo.)"}'::jsonb),
+  ('heddles-2026', '{"name": "Heddles", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#E0525B", "acc": "scarf", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-heddles-39-fabric-bird-decor-wondershop-8482/-/A-95013668", "urlLabel": "See it on Target", "accent": "#2F3A5C", "img": "https://target.scene7.com/is/image/Target/GUEST_3935e7af-b36a-455e-b87d-886b76838b7e", "about": "Red bird in a red plaid coat with a red neckband, a gold-tone bell and a green sprig. 6 in tall. (From Target''s product listing.)"}'::jsonb),
   ('hytte-2026', '{"name": "Hytte", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#E0525B", "acc": "scarf", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-hytte-39-fabric-bird-decor-wondershop-8482/-/A-95013633", "urlLabel": "See it on Target", "accent": "#2F7A4F", "img": "https://target.scene7.com/is/image/Target/GUEST_22f27473-b19b-4469-8e96-e9b5360af303", "about": "Red bird in a red headscarf and green plaid scarf, holding a little Christmas tree. 5.75 in tall. (From Target''s product listing.)"}'::jsonb),
   ('dacha-2026', '{"name": "Dacha", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#A8D8B0", "acc": "beanie", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-dacha-39-fabric-bird-decor-wondershop-8482/-/A-95013643", "urlLabel": "See it on Target", "accent": "#E0525B", "img": "https://target.scene7.com/is/image/Target/GUEST_09b168ec-c438-4bc7-a520-e12bc00d106f", "about": "Light green bird in a red cap and red plaid scarf, holding flowers. 7 in tall. (From Target''s product listing.)"}'::jsonb),
   ('chill-2026', '{"name": "Chill", "season": "christmas", "year": "2026", "kind": "Fabric bird", "line": "Wondershop", "price": "$5", "source": "target", "body": "#F5F1EA", "acc": "snow", "url": "https://www.target.com/p/christmas-featherly-friends-8482-39-chill-39-fabric-bird-decor-wondershop-8482/-/A-95013604", "urlLabel": "See it on Target", "accent": "#2F7A4F", "img": "https://target.scene7.com/is/image/Target/GUEST_20dddfba-262f-4de3-9760-1bc71b4e3296", "about": "Cream bird in a beige jacket and green ski goggles, holding ski poles. 6 in tall. (From Target''s product listing.)"}'::jsonb)
-on conflict (id) do update set data = excluded.data, updated_at = now() where flocks_birds.data->>'source' is distinct from 'added';
+on conflict (id) do update set data = excluded.data, updated_at = now() where flocks_birds.data->>'source' is distinct from 'added' or flocks_birds.id not like 'added-%';
 
 -- The two starting flocks. Re-running never changes existing flocks.
 insert into public.flocks_flocks (id, data) values
@@ -707,7 +707,7 @@ begin
       ('rocker-2024'::text, null::text),
       ('tinsel-2026'::text, 'tinzel-2026'::text)) as t(o, n) loop
     if m.n is null then
-      delete from flocks_birds b where b.id = m.o and b.data->>'source' is distinct from 'added'
+      delete from flocks_birds b where b.id = m.o and (b.data->>'source' is distinct from 'added' or b.id not like 'added-%')
         and not exists (select 1 from flocks_flocks x where (x.data->'owned') ? m.o or (x.data->'wish') ? m.o or (x.data->'notes') ? m.o)
         and not exists (select 1 from flocks_photos p where p.id = m.o);
       continue;
@@ -733,6 +733,6 @@ begin
     end loop;
     update flocks_photos set id = m.n where id = m.o and not exists (select 1 from flocks_photos where id = m.n);
     delete from flocks_photos where id = m.o;
-    delete from flocks_birds where id = m.o and data->>'source' is distinct from 'added';
+    delete from flocks_birds where id = m.o and (data->>'source' is distinct from 'added' or id not like 'added-%');
   end loop;
 end $$;

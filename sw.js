@@ -4,7 +4,7 @@
 // - The photo and cutout lists show the saved copy at once and update in the background;
 //   saved photos and cutouts that are no longer listed are then thrown away.
 // - Everything else tries the network first, but uses the saved copy if the network
-//   takes longer than 3 seconds (weak signal in a store), fails, or sends an error page.
+//   takes longer than 3 seconds (weak signal in a store), fails, or sends an error or sign-in page.
 // - Only real answers from this site are saved: never a store Wi-Fi sign-in page,
 //   a redirect, or an error.
 const CACHE = "flocks-v3";
@@ -81,8 +81,8 @@ self.addEventListener("fetch", (e) => {
     const timer = setTimeout(() => fallback().then(finish), 3000);
     fresh.then((res) => {
       clearTimeout(timer);
-      if (res.ok) return finish(res);
-      fallback().then((hit) => finish(hit || res));   // an error page: the saved copy is better, if there is one
+      if (res.ok && fits(req, res)) return finish(res);
+      fallback().then((hit) => finish(hit || res));   // an error or sign-in page: the saved copy is better, if there is one
     }).catch(() => { clearTimeout(timer); fallback().then((hit) => { if (hit) finish(hit); else { done = true; resolve(Response.error()); } }); });
   }));
 });

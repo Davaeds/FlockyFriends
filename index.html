@@ -498,6 +498,14 @@ details.panel:not([open]) { gap: 0; }
 .st-head { display: flex; flex-direction: column; gap: 8px; }
 .st-lead { font-weight: 700; font-size: var(--fs-3); color: var(--muted); }
 .st-head .search { max-width: none; }
+.st-target { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--surface); border: 1.5px solid var(--line-strong); color: var(--ink); text-decoration: none; margin-bottom: 8px; }
+.st-target .st-t1 { font-family: var(--display); font-weight: 600; font-size: var(--fs-2); }
+.st-target .st-t2 { grid-column: 1; color: var(--muted); font-size: var(--fs-3); font-weight: 600; line-height: 1.35; }
+.st-target svg { grid-column: 2; grid-row: 1 / span 2; width: 22px; height: 22px; }
+.card-actions.two { flex-direction: column; align-items: stretch; }
+.st-stock { white-space: nowrap; background: transparent; }
+.st-stock svg { flex: none; }
+.card-actions .st-stock { justify-content: center; padding: 0 8px; gap: 5px; }
 #storeOut > * + * { margin-top: 24px; }
 #storeOut .sec-h .av { width: 26px; height: 26px; font-size: var(--fs-4); }
 #storeOut .group > .secret, #storeOut .st-none { margin: 0; }
@@ -558,6 +566,7 @@ button { touch-action: manipulation; }
   <section id="view-shelf" role="tabpanel" aria-labelledby="tab-shelf" hidden></section>
   <section id="view-store" role="tabpanel" aria-labelledby="tab-store" hidden>
     <div class="st-head" id="storeHead" hidden>
+      <a class="st-target" href="https://www.target.com/s?searchTerm=featherly+friends" target="_blank" rel="noopener"><span class="st-t1">What’s at my Target?</span><span class="st-t2">Opens Target. Pick your store if it asks, and each bird’s page shows if your store has it.</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <label class="st-lead" for="sq">Spotted a bird? See who already has it.</label>
       <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><input id="sq" type="search" placeholder="Type its name" autocomplete="off" autocorrect="off" enterkeyhint="search"><button class="clear" type="button" id="sqClear" aria-label="Clear" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
     </div>
@@ -566,7 +575,7 @@ button { touch-action: manipulation; }
   <section id="view-family" role="tabpanel" aria-labelledby="tab-family" hidden></section>
 
   <footer>
-    <p><strong>Where the bird list comes from.</strong> Every named bird on the Target Birds fan wiki's <a href="https://target-birds.fandom.com/wiki/All_Releases" target="_blank" rel="noopener">release list</a> (2016 to 2026), in the year and season the wiki gives, plus Target's newest birds that aren't on the wiki yet (<a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a>, October 2026). Early unnamed birds, ornaments, multi-packs and accessories are left out. Each bird's page says where its photo came from. If you spot one that's missing, add it from All birds.</p>
+    <p><strong>Where the bird list comes from.</strong> Every named bird on the Target Birds fan wiki's <a href="https://target-birds.fandom.com/wiki/All_Releases" target="_blank" rel="noopener">release list</a> (2016 to 2026), in the year and season the wiki gives, plus Target's newest birds that aren't on the wiki yet (<a href="https://www.target.com/s/featherly+friends" target="_blank" rel="noopener">Target.com</a>, checked November 2026). Early unnamed birds, ornaments, multi-packs and accessories are left out. Each bird's page says where its photo came from. If you spot one that's missing, add it from All birds.</p>
     <p>Featherly Friends, Wondershop, Hyde and EEK! Boutique and Spritz are Target brands. Flocks is a family tracker and is not made by Target.</p>
   </footer>
 </div>
@@ -974,6 +983,7 @@ button { touch-action: manipulation; }
     clearTimeout(timer);
     const a = api; if (!a) return;
     if (outbox.length && a.kind === "live") { await flush(); if (a !== api) return; }
+    if (a.kind === "live" && (!OFFICIAL || Date.now() - officialAt > 6 * 3600e3)) loadOfficial();
     const startGen = gen;
     try {
       const r = await a.load();
@@ -986,12 +996,31 @@ button { touch-action: manipulation; }
       if (!S.netErr) { S.netErr = true; renderBanner(); }
     } finally { if (a === api) schedule(); }
   }
+  // The official bird list ships with the site (birds.json), so new birds reach every phone without a database update.
+  // The database adds the birds the family added; a bird in both uses the birds.json copy.
+  let OFFICIAL = null, officialAt = 0, officialBusy = null, lastRaw = "", dbIds = new Set();
+  function loadOfficial() {
+    if (officialBusy) return officialBusy;
+    officialBusy = fetch("birds.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
+      if (!j || !Array.isArray(j.birds) || !j.birds.length) return;
+      const o = {};
+      j.birds.forEach(b => { if (b && typeof b.id === "string" && typeof b.name === "string") { const x = Object.assign({}, b); delete x.id; o[b.id] = x; } });
+      const changed = JSON.stringify(o) !== JSON.stringify(OFFICIAL);
+      OFFICIAL = o; officialAt = Date.now();
+      if (!changed || !lastRaw) return;
+      lastSig = "";   // the next apply always redraws
+      if (inflight === 0) { try { apply(JSON.parse(lastRaw), false); } catch (e) {} }
+    }).catch(() => {}).finally(() => { officialBusy = null; });
+    return officialBusy;
+  }
   function apply(r, persist) {
     const sig = JSON.stringify(r);
     if (sig === lastSig) return;
-    lastSig = sig;
+    lastSig = sig; lastRaw = sig;
     const next = { birds: {}, flocks: {} };
     (r.birds || []).forEach(x => { if (x && x.id && x.data) next.birds[x.id] = x.data; });
+    dbIds = new Set(Object.keys(next.birds));
+    if (OFFICIAL && configured) for (const id in OFFICIAL) next.birds[id] = OFFICIAL[id];
     (r.flocks || []).forEach(x => { if (x && x.id && x.data) next.flocks[x.id] = x.data; });
     outbox = readOutbox();
     for (const x of outbox) { try { OPS[x.k](next, ...x.a); } catch (e) {} }
@@ -1146,6 +1175,13 @@ button { touch-action: manipulation; }
     const prevV = S.photos[id], prevM = photoMem[id];
     failedImg.delete("f:" + id); remember(id, { v: "pending", url }); S.photos[id] = "pending"; onPhoto(id);
     try {
+      if (api.kind === "live" && OFFICIAL && OFFICIAL[id] && !dbIds.has(id)) {
+        const b = OFFICIAL[id], seasons = ["christmas","ornament","halloween","fall","muertos","valentine","spring","summer","patriotic","pride","stpatricks","other"];
+        const r0 = await api.addBird(id, { name: b.name.slice(0, 60), season: seasons.includes(b.season) ? b.season : "other", year: /^20\d\d$/.test(b.year || "") ? b.year : "",
+          kind: String(b.kind || "").slice(0, 80), body: /^#[0-9A-Fa-f]{6}$/.test(b.body || "") ? b.body : "#C9B8A6", addedBy: "" });
+        if (r0 && r0.error) throw r0;
+        dbIds.add(id);
+      }
       const r = await api.setPhoto(id, url);
       if (r && r.error) throw r;
       delete S.photos[id];   // the next load brings the real version
@@ -1466,6 +1502,13 @@ button { touch-action: manipulation; }
   // One page for the store aisle: what you're hunting for, what the family wants (so you can grab a gift),
   // and a quick "who has it?" check. Birds marked "Got it" stay on the page until you leave it, so a slip is easy to undo.
   const byNewest = (a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0) || a.name.localeCompare(b.name);
+  // Target doesn't share store stock with other apps, so these open Target's own page, which shows stock at the store you picked there.
+  const TARGET_SEARCH = "https://www.target.com/s?searchTerm=featherly+friends";
+  function stockUrl(b) {
+    const u = safeUrl(b.url);
+    return u && /^https:\/\/www\.target\.com\/p\//.test(u) && (parseInt(b.year, 10) || 0) >= new Date().getFullYear() - 1 ? u : "";
+  }
+  const stockLink = (b, u) => `<a class="pill-btn st-stock" href="${esc(u)}" target="_blank" rel="noopener">${ICON.ext}<span class="sr">${esc(b.name)}: </span>Check stock</a>`;
   function slotted(key, html) { slots.set(key, html); return `<article class="card" data-k="${esc(key)}" data-slot></article>`; }
   function gotBtn(b, cls) {
     const q = qtyOf(me(), b.id), sr = `<span class="sr">${esc(b.name)}: </span>`;
@@ -1484,10 +1527,11 @@ button { touch-action: manipulation; }
       if (q > 1) tags = `<span class="tag got">You have a spare</span>`;
       act = `<button class="have-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}"><span class="sr">${esc(b.name)}: </span>${got ? "Getting it ✓" : "I’m getting this"}</button>`;
     }
+    const su = stockUrl(b);
     return `<article class="card${!f && q ? " have" : ""}" data-k="${esc(key)}">
       <button class="tile${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
       <div class="card-body"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
-      <div class="card-actions">${act}</div></article>`;
+      <div class="card-actions${su ? " two" : ""}">${act}${su ? stockLink(b, su) : ""}</div></article>`;
   }
   // A search answer: who has this bird, who wants it, and the buttons that fit.
   function storeRow(key, b) {
@@ -1504,7 +1548,7 @@ button { touch-action: manipulation; }
     const acts = (!q || S.got.has(b.id) ? gotBtn(b, "have-btn") : "") + `<button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>` + others().filter(f => wants(f, b.id) && !qtyOf(f, b.id)).map(f => {
       const got = !!(gifts[f.id] && gifts[f.id][b.id]);
       return `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}">${ICON.gift}<span class="sr">${esc(b.name)}: </span>${got ? `Getting it for ${esc(f.name)} ✓` : `I’m getting this for ${esc(f.name)}`}</button>`;
-    }).join("");
+    }).join("") + (stockUrl(b) ? stockLink(b, stockUrl(b)) : "");
     return `<article class="row-b st-row${q ? " have" : ""}" data-k="${esc(key)}">
       <button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
       <div><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>
@@ -1729,7 +1773,7 @@ button { touch-action: manipulation; }
     const url = safeUrl(b.url);
     const meta = [seasonOf(b).label, b.kind, b.year].filter(Boolean).join(" · ");
     const meta2 = [b.line, b.price].filter(Boolean).join(" · ");
-    let src = b.source === "target" ? "Listed on Target.com in October 2026." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
+    let src = b.source === "target" ? "Listed on Target.com." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
     dlg.innerHTML = bar("", true) + `<div class="dlg-body">
       <div class="hero-wrap"><div class="hero" id="birdHero"></div><label class="cam" for="photoIn" id="camBtn"><span class="sr" id="camLbl">Add our photo</span>${ICON.camera}</label></div>
       <div id="photoAsk"></div>
@@ -1741,8 +1785,8 @@ button { touch-action: manipulation; }
         <label class="btn" for="photoIn">${ICON.camera}<span id="photoBtnLbl">Add our photo</span></label>
         <button class="btn" type="button" id="delPhoto" hidden>Remove our photo</button></span>
         <input id="photoIn" type="file" accept="image/*" hidden></div>
-      <p class="src">${esc(src)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${isTarget(url) ? "See it on Target" : "View source"}</a>` : ""}</p>
-      ${b.source === "added" ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
+      <p class="src">${esc(src)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${stockUrl(b) ? "Check stock at my Target" : isTarget(url) ? "See it on Target" : "View source"}</a>` : ""}</p>
+      ${b.source === "added" && /^added-/.test(b.id) ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
     </div>`;
     renderBirdHero(); renderBirdLive();
   }
@@ -2045,6 +2089,7 @@ button { touch-action: manipulation; }
     if (!configured) { start(makeLocal()); return; }
     const code = store.get("flocks.code");
     const snap = store.get("flocks.snap.v2");
+    loadOfficial();
     if (code && snap) { try { apply(JSON.parse(snap), false); } catch (e) {} }
     if (!code) { S.mode = "need-code"; openDialog("code"); return; }
     start(makeRemote(code));
