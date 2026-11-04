@@ -1,6 +1,6 @@
 {
  "note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
- "checked": "2026-11-04 04:21 UTC",
+ "checked": "2026-11-04 04:30 UTC",
  "birds": [
   {
    "name": "Ollie",
@@ -208,8 +208,5 @@
   "Freezy 2026 (back from 2022)",
   "Wafer 2026 (back from 2023)"
  ],
- "news": [
-  "https://hip2save.com/deals/target-wondershop-christmas-birds/: Quill, Heddles, Bobbin, Hytte, Dacha, Mokki, Chill, Sleet, Squall, Pep, Vim, Ray",
-  "https://hip2save.com/deals/target-holiday-birds/: Jackson, Ripley, Cauldy, Cathy, Flicker, Bonesly, Whip, Cider, Raker"
- ]
+ "news": []
 }
