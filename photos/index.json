@@ -245,6 +245,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_00aedeff-8252-44a2-8c9f-f6f3593bd9a4?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "bobbin-mini-2026": {
+  "v": "dcbf4db80f",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/42/BobbinOrnament.jpg/revision/latest?cb=20261101231925"
+ },
  "bonesly-2026": {
   "v": "4627d24218",
   "from": "target",
@@ -467,6 +473,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_20dddfba-262f-4de3-9760-1bc71b4e3296?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "chill-mini-2026": {
+  "v": "ebb9557af7",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c1/BrownTealOrnament.jpg/revision/latest?cb=20261101231701"
+ },
  "chip-2023": {
   "v": "0e619d7580",
   "from": "wiki",
@@ -617,6 +629,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_09b168ec-c438-4bc7-a520-e12bc00d106f?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "dacha-mini-2026": {
+  "v": "c82a3646a6",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8b/DachaOrnament.jpg/revision/latest?cb=20261101231607"
+ },
  "daisy-2018": {
   "v": "e82052dca4",
   "from": "wiki",
@@ -660,12 +678,6 @@
   "image": "https://static.wikia.nocookie.net/target-birds/images/e/ea/Dawkins.jpg/revision/latest?cb=20231111195640"
  },
  "dazzle-2019": {
-  "v": "667034d93f",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Dazzle",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/9/94/Dazzle.jpg/revision/latest?cb=20231111195657"
- },
- "dazzle-2026": {
   "v": "667034d93f",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Dazzle",
@@ -852,12 +864,6 @@
   "image": "https://static.wikia.nocookie.net/target-birds/images/6/64/Freda.webp/revision/latest?cb=20231107071148"
  },
  "freezy-2022": {
-  "v": "e127842218",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Freezy",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/e/e0/Freezy.jpg/revision/latest?cb=20231109183033"
- },
- "freezy-2026": {
   "v": "e127842218",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Freezy",
@@ -1138,6 +1144,12 @@
   "from": "target",
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_22f27473-b19b-4469-8e96-e9b5360af303?wid=800&hei=800&fmt=pjpeg&qlt=90"
+ },
+ "hytte-mini-2026": {
+  "v": "20b22bbc9f",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c9/HytteOrnament.jpg/revision/latest?cb=20261101231554"
  },
  "iskall-2022": {
   "v": "03c8dfbc5c",
@@ -1433,6 +1445,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_33d6755f-b5d8-4c34-9244-86b1ac41f94d?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "mokki-mini-2026": {
+  "v": "08810af656",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/a/a6/MokkiOrnament.jpg/revision/latest?cb=20261101231633"
+ },
  "moldy-2025": {
   "v": "9fd4ab1ce2",
   "from": "wiki",
@@ -1475,12 +1493,6 @@
   "page": "https://target-birds.fandom.com/wiki/Nieva",
   "image": "https://static.wikia.nocookie.net/target-birds/images/b/b5/Nieva.png/revision/latest?cb=20231112215713"
  },
- "nieva-2026": {
-  "v": "3aedb777ef",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Nieva",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/d/dd/S-l1200-6.jpg/revision/latest?cb=20240905194109"
- },
  "nippy-other": {
   "v": "2c23b2d9fb",
   "from": "wiki",
@@ -1522,12 +1534,6 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Parker",
   "image": "https://static.wikia.nocookie.net/target-birds/images/9/92/Parker.png/revision/latest?cb=20231112224936"
- },
- "parker-2026": {
-  "v": "b208a9df53",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Parker",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/2/23/2017-Target-Wondershop-FEATHERLY-FRIENDS-Bird-PARKER-NWT.webp/revision/latest?cb=20240905182346"
  },
  "patches-2018": {
   "v": "5039a899b4",
@@ -1576,6 +1582,12 @@
   "from": "target",
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_5b8ce707-83a8-4ebd-991a-0f8e9ed2e1a0?wid=800&hei=800&fmt=pjpeg&qlt=90"
+ },
+ "pep-mini-2026": {
+  "v": "2904fb298d",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/41/PepOrnament.jpg/revision/latest?cb=20261101231727"
  },
  "pepper-other": {
   "v": "c24a8bba66",
@@ -1709,6 +1721,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_78dc28fb-1307-4dd7-91b0-5f7dbe7ccafa?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "quill-mini-2026": {
+  "v": "4d03be760e",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/7/75/QuillOrnament.jpg/revision/latest?cb=20261101231909"
+ },
  "quincy-2017": {
   "v": "915f2ef3f5",
   "from": "wiki",
@@ -1745,6 +1763,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_bd7dc8c6-f098-4493-8ada-a7a7810782c8?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "ray-mini-2026": {
+  "v": "67b23bbcf5",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c6/Rayornament.jpg/revision/latest?cb=20261102025121"
+ },
  "razzle-2019": {
   "v": "f9a07dda04",
   "from": "wiki",
@@ -1756,12 +1780,6 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Recuerdo",
   "image": "https://static.wikia.nocookie.net/target-birds/images/5/5f/Recuerdo.webp/revision/latest?cb=20250224051031"
- },
- "rime-2026": {
-  "v": "0557ef47d8",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Rime",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/2/27/Rime.jpg/revision/latest?cb=20240115030229"
  },
  "rime-other": {
   "v": "0557ef47d8",
@@ -1776,12 +1794,6 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_bf5f9c26-f01f-40a3-987f-ce105557da25?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "rocky-2020": {
-  "v": "d08516a9fb",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Rocky",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/b/bd/Rocky.jpg/revision/latest?cb=20240116205159"
- },
- "rocky-2026": {
   "v": "d08516a9fb",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Rocky",
@@ -1882,12 +1894,6 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Scout",
   "image": "https://static.wikia.nocookie.net/target-birds/images/4/46/Scout.jpg/revision/latest?cb=20231112231017"
- },
- "scout-2026": {
-  "v": "6a7c4b8790",
-  "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Scout",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/4/44/S-l1600-2.webp/revision/latest?cb=20240904171213"
  },
  "scraps-2018": {
   "v": "3bbc0b58d9",
@@ -2110,6 +2116,12 @@
   "from": "target",
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_5aa31333-3c48-4f37-84b2-3130c0eff63c?wid=800&hei=800&fmt=pjpeg&qlt=90"
+ },
+ "squall-mini-2026": {
+  "v": "b20eb1d004",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/b/bf/SuqallOrnament.jpg/revision/latest?cb=20261101231854"
  },
  "star-2022": {
   "v": "f75d15b4eb",
@@ -2387,13 +2399,13 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_19c180d0-778e-4418-853f-4cbc91469fae?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
- "wafer-2023": {
-  "v": "18a7b7503b",
+ "vim-mini-2026": {
+  "v": "73a32a04f6",
   "from": "wiki",
-  "page": "https://target-birds.fandom.com/wiki/Wafer",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/0/02/Wafer.webp/revision/latest?cb=20231106203524"
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8d/VimOrnament.jpg/revision/latest?cb=20261101231838"
  },
- "wafer-2026": {
+ "wafer-2023": {
   "v": "18a7b7503b",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Wafer",
@@ -2493,6 +2505,9 @@
   "aurum-2025": [
    "wiki: nothing"
   ],
+  "heddles-mini-2026": [
+   "wiki: nothing"
+  ],
   "levi-2026": [
    "wiki: nothing"
   ],
@@ -2508,6 +2523,9 @@
   "skelly-2025": [
    "wiki: nothing",
    "resale: HTTPError HTTP Error 403: Forbidden"
+  ],
+  "sleet-mini-2026": [
+   "wiki: nothing"
   ],
   "sparkle-mini-2024": [
    "wiki: nothing"

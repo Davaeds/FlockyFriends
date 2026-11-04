@@ -6976,118 +6976,6 @@
    "https://www.target.com/p/christmas-featherly-friends-8482-39-chill-39-fabric-bird-decor-wondershop-8482/-/A-95013604"
   ]
  },
- "scout-2026": {
-  "name": "Scout",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/44/S-l1600-2.webp/revision/latest?cb=20240904171213",
-  "wpage": "https://target-birds.fandom.com/wiki/Scout",
-  "wiki": [
-   "Scout (Christmas 2026)",
-   "Scout (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "parker-2026": {
-  "name": "Parker",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/2/23/2017-Target-Wondershop-FEATHERLY-FRIENDS-Bird-PARKER-NWT.webp/revision/latest?cb=20240905182346",
-  "wpage": "https://target-birds.fandom.com/wiki/Parker",
-  "wiki": [
-   "Parker (Christmas 2026)",
-   "Parker (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "nieva-2026": {
-  "name": "Nieva",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/d/dd/S-l1200-6.jpg/revision/latest?cb=20240905194109",
-  "wpage": "https://target-birds.fandom.com/wiki/Nieva",
-  "wiki": [
-   "Nieva (Christmas 2026)",
-   "Nieva (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "dazzle-2026": {
-  "name": "Dazzle",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/9/94/Dazzle.jpg/revision/latest?cb=20231111195657",
-  "wpage": "https://target-birds.fandom.com/wiki/Dazzle",
-  "wiki": [
-   "Dazzle (Christmas 2026)",
-   "Dazzle (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "rocky-2026": {
-  "name": "Rocky",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/b/bd/Rocky.jpg/revision/latest?cb=20240116205159",
-  "wpage": "https://target-birds.fandom.com/wiki/Rocky",
-  "wiki": [
-   "Rocky (Christmas 2026)",
-   "Rocky (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "rime-2026": {
-  "name": "Rime",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/2/27/Rime.jpg/revision/latest?cb=20240115030229",
-  "wpage": "https://target-birds.fandom.com/wiki/Rime",
-  "wiki": [
-   "Rime (Christmas 2026)",
-   "Rime (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "freezy-2026": {
-  "name": "Freezy",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/e/e0/Freezy.jpg/revision/latest?cb=20231109183033",
-  "wpage": "https://target-birds.fandom.com/wiki/Freezy",
-  "wiki": [
-   "Freezy (Christmas 2026)",
-   "Freezy (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
- "wafer-2026": {
-  "name": "Wafer",
-  "year": "2026",
-  "season": "christmas",
-  "img": "",
-  "wimg": "https://static.wikia.nocookie.net/target-birds/images/0/02/Wafer.webp/revision/latest?cb=20231106203524",
-  "wpage": "https://target-birds.fandom.com/wiki/Wafer",
-  "wiki": [
-   "Wafer (Christmas 2026)",
-   "Wafer (2026)"
-  ],
-  "pages": [],
-  "strict": true
- },
  "ollie-2026": {
   "name": "Ollie",
   "year": "2026",
@@ -7129,6 +7017,186 @@
    "Levi ( 2026)",
    "Levi (2026)",
    "Levi"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "dacha-mini-2026": {
+  "name": "Dacha Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/8/8b/DachaOrnament.jpg/revision/latest?cb=20261101231607",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Dacha Mini (Christmas 2026)",
+   "Dacha Mini (2026)",
+   "Dacha Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "mokki-mini-2026": {
+  "name": "Mokki Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/a/a6/MokkiOrnament.jpg/revision/latest?cb=20261101231633",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Mokki Mini (Christmas 2026)",
+   "Mokki Mini (2026)",
+   "Mokki Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "hytte-mini-2026": {
+  "name": "Hytte Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/c/c9/HytteOrnament.jpg/revision/latest?cb=20261101231554",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Hytte Mini (Christmas 2026)",
+   "Hytte Mini (2026)",
+   "Hytte Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "sleet-mini-2026": {
+  "name": "Sleet Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Sleet Mini (Christmas 2026)",
+   "Sleet Mini (2026)",
+   "Sleet Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "chill-mini-2026": {
+  "name": "Chill Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/c/c1/BrownTealOrnament.jpg/revision/latest?cb=20261101231701",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Chill Mini (Christmas 2026)",
+   "Chill Mini (2026)",
+   "Chill Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "squall-mini-2026": {
+  "name": "Squall Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/b/bf/SuqallOrnament.jpg/revision/latest?cb=20261101231854",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Squall Mini (Christmas 2026)",
+   "Squall Mini (2026)",
+   "Squall Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "bobbin-mini-2026": {
+  "name": "Bobbin Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/42/BobbinOrnament.jpg/revision/latest?cb=20261101231925",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Bobbin Mini (Christmas 2026)",
+   "Bobbin Mini (2026)",
+   "Bobbin Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "heddles-mini-2026": {
+  "name": "Heddles Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Heddles Mini (Christmas 2026)",
+   "Heddles Mini (2026)",
+   "Heddles Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "quill-mini-2026": {
+  "name": "Quill Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/7/75/QuillOrnament.jpg/revision/latest?cb=20261101231909",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Quill Mini (Christmas 2026)",
+   "Quill Mini (2026)",
+   "Quill Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "ray-mini-2026": {
+  "name": "Ray Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/c/c6/Rayornament.jpg/revision/latest?cb=20261102025121",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Ray Mini (Christmas 2026)",
+   "Ray Mini (2026)",
+   "Ray Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "vim-mini-2026": {
+  "name": "Vim Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/8/8d/VimOrnament.jpg/revision/latest?cb=20261101231838",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Vim Mini (Christmas 2026)",
+   "Vim Mini (2026)",
+   "Vim Mini"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "pep-mini-2026": {
+  "name": "Pep Mini",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/41/PepOrnament.jpg/revision/latest?cb=20261101231727",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Pep Mini (Christmas 2026)",
+   "Pep Mini (2026)",
+   "Pep Mini"
   ],
   "pages": [],
   "strict": false
