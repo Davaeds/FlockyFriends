@@ -55,7 +55,7 @@ def og_image(url):
         re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image', html)
     return m.group(1).replace("&amp;", "&") if m else ""
 
-def wiki_lead_image(titles, name, year):
+def wiki_lead_image(titles, name, year, search=True):
     """Return (image_url, page_url) for the first wiki page found among titles, else by search."""
     def from_titles(ts):
         r = api({"action": "query", "titles": "|".join(ts[:20]), "redirects": 1, "prop": "pageimages",
@@ -74,7 +74,7 @@ def wiki_lead_image(titles, name, year):
                     return src, WIKI + "/wiki/" + urllib.parse.quote(title.replace(" ", "_"))
         return None
     hit = from_titles(titles)
-    if hit: return hit
+    if hit or not search: return hit
     # fall back to the wiki's own search, accepting only a page named after this bird
     r = api({"action": "query", "list": "search", "srsearch": name, "srlimit": 10, "srnamespace": 0})
     base = name.lower()
@@ -119,7 +119,7 @@ def main():
         attempts = []
         if s.get("img"): attempts.append(("target", lambda s=s: (target_url(s["img"]), "")))
         if s.get("wimg"): attempts.append(("wiki", lambda s=s: (s["wimg"], s.get("wpage", ""))))
-        if s.get("wiki"): attempts.append(("wiki", lambda s=s: wiki_lead_image(s["wiki"], s["name"], s["year"])))
+        if s.get("wiki"): attempts.append(("wiki", lambda s=s: wiki_lead_image(s["wiki"], s["name"], s["year"], search=not s.get("strict"))))
         for p in s["pages"]:
             if "target.com/p/" in p: attempts.append(("target", lambda p=p: (og_image(p), p)))
         for p in s["pages"]:

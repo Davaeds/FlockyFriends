@@ -1,0 +1,6 @@
+{
+ "note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
+ "checked": "",
+ "birds": [],
+ "news": []
+}

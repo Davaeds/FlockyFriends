@@ -1,0 +1,51 @@
+# Every 3 days: looks for Featherly Friends birds that aren't on the list yet
+# (fan wiki release list, plus recent hip2save.com articles about Target's
+# birds), finds a real photo for each, and saves them in new-birds.json.
+# The app keeps them hidden until Ethan adds them on his phone.
+# Also runs by hand from the Actions tab ("Check for new birds" > Run workflow).
+name: Check for new birds
+on:
+  schedule:
+    - cron: "23 13 */3 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: photos
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pillow==10.4.0
+      - name: Copy the fan wiki
+        run: |
+          python tools/wiki_dump.py || echo "Couldn't copy the wiki this time; using the last copy."
+          python tools/wiki_birds.py
+      - name: Look for new birds
+        id: find
+        run: |
+          python tools/find_new_birds.py | tee find.log
+          echo "need=$(grep '^NEED_PHOTOS=' find.log | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+      - name: Photos for new birds
+        if: steps.find.outputs.need != ''
+        env:
+          NEED: ${{ steps.find.outputs.need }}
+        run: |
+          python tools/fetch_photos.py --only "$NEED"
+          pip install --quiet "rembg[cpu]==2.0.86"
+          python tools/make_cutouts.py
+      - name: Commit
+        run: |
+          git config user.name "flocks-photos[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add new-birds.json research/news-seen.json research/wiki-pages.json research/wiki-birds.json tools/photo-sources.json photos cutouts
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          n=$(python -c "import json;print(len(json.load(open('new-birds.json'))['birds']))")
+          git commit -m "Check for new birds ($n waiting for Ethan)"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
