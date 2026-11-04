@@ -502,6 +502,11 @@ details.panel:not([open]) { gap: 0; }
 .st-target .st-t1 { font-family: var(--display); font-weight: 600; font-size: var(--fs-2); }
 .st-target .st-t2 { grid-column: 1; color: var(--muted); font-size: var(--fs-3); font-weight: 600; line-height: 1.35; }
 .st-target svg { grid-column: 2; grid-row: 1 / span 2; width: 22px; height: 22px; }
+.nb-list .gift { align-items: start; }
+.nb-src { margin: 2px 0 0; color: var(--muted); font-size: var(--fs-3); font-weight: 600; }
+.nb-list .seg { margin-top: 8px; }
+.nb-src a { color: var(--ink); font-weight: 800; text-underline-offset: 3px; }
+.nb-list .seg button { min-width: 72px; }
 .card-actions.two { flex-direction: column; align-items: stretch; }
 .st-stock { white-space: nowrap; background: transparent; }
 .st-stock svg { flex: none; }
@@ -795,7 +800,7 @@ button { touch-action: manipulation; }
     },
     deleteFlock(d, fid) { delete d.flocks[fid]; for (const F of Object.values(d.flocks)) if (F.gifts && F.gifts[fid]) { F.gifts = Object.assign({}, F.gifts); delete F.gifts[fid]; } },
     addBird(d, id, rec) { if (!d.birds[id]) d.birds[id] = rec; },
-    deleteBird(d, id) { if (d.birds[id] && d.birds[id].source === "added") delete d.birds[id]; }
+    deleteBird(d, id) { if (d.birds[id] && (d.birds[id].source === "added" || (WAITING[id] && !(OFFICIAL && OFFICIAL[id])))) delete d.birds[id]; }
   };
 
   // ---------- backends ----------
@@ -998,20 +1003,94 @@ button { touch-action: manipulation; }
   }
   // The official bird list ships with the site (birds.json), so new birds reach every phone without a database update.
   // The database adds the birds the family added; a bird in both uses the birds.json copy.
-  let OFFICIAL = null, officialAt = 0, officialBusy = null, lastRaw = "", dbIds = new Set();
+  // new-birds.json holds birds the automatic check found. They stay hidden until Ethan adds them on his phone,
+  // which puts them in the database; then every phone shows them with the details from this file.
+  let OFFICIAL = null, officialAt = 0, officialBusy = null, lastRaw = "", dbIds = new Set(), WAITING = {}, waitingChecked = "";
   function loadOfficial() {
     if (officialBusy) return officialBusy;
-    officialBusy = fetch("birds.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
+    const waiting = fetch("new-birds.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null);
+    officialBusy = fetch("birds.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(async j => {
+      const nb = await waiting;
+      if (nb && Array.isArray(nb.birds)) {
+        const w = {};
+        nb.birds.forEach(b => { if (b && typeof b.id === "string" && !/^added-/.test(b.id) && typeof b.name === "string") { const x = Object.assign({}, b); delete x.id; w[b.id] = x; } });
+        if (Object.keys(w).some(id => !(id in WAITING))) approvalAsked = false;   // something new: ask again
+        WAITING = w; waitingChecked = typeof nb.checked === "string" ? nb.checked : "";
+      }
       if (!j || !Array.isArray(j.birds) || !j.birds.length) return;
       const o = {};
       j.birds.forEach(b => { if (b && typeof b.id === "string" && typeof b.name === "string") { const x = Object.assign({}, b); delete x.id; o[b.id] = x; } });
-      const changed = JSON.stringify(o) !== JSON.stringify(OFFICIAL);
+      const changed = JSON.stringify(o) !== JSON.stringify(OFFICIAL) || !officialAt;
       OFFICIAL = o; officialAt = Date.now();
       if (!changed || !lastRaw) return;
       lastSig = "";   // the next apply always redraws
       if (inflight === 0) { try { apply(JSON.parse(lastRaw), false); } catch (e) {} }
-    }).catch(() => {}).finally(() => { officialBusy = null; });
+    }).catch(() => {}).finally(() => { officialBusy = null; askApproval(); });
     return officialBusy;
+  }
+
+  // ---------- new birds waiting for Ethan ----------
+  // Only the phone opened once with ?approver=on is asked, each time the app opens, until every waiting bird is added or skipped.
+  const APPROVER = "flocks.approver", SKIPPED = "flocks.nbskip.v1";
+  let approvalAsked = false, hiddenAt = 0;
+  // A Home Screen app often resumes instead of reloading: away for an hour or more counts as opening it again.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") hiddenAt = Date.now();
+    else if (hiddenAt && Date.now() - hiddenAt > 3600e3) { approvalAsked = false; setTimeout(() => askApproval(), 1500); }
+  });
+  const isApprover = () => store.get(APPROVER) === "1";
+  function skippedIds() { try { const a = JSON.parse(store.get(SKIPPED) || "[]"); return new Set(Array.isArray(a) ? a : []); } catch (e) { return new Set(); } }
+  const skipKey = b => b.id + ":" + (b.source || "");
+  function waitingNow(includeSkipped) {
+    const sk = includeSkipped ? new Set() : skippedIds();
+    return Object.keys(WAITING).map(id => Object.assign({ id }, WAITING[id]))
+      .filter(b => !dbIds.has(b.id) && !S.data.birds[b.id] && !b.hidden && !sk.has(skipKey(b)));
+  }
+  // News finds and possible re-releases need a look, so they start on Skip; so do birds skipped before.
+  function defaultChoice(b) { return b.source === "news" || b.maybe || sameNameAdded(b) || skippedIds().has(skipKey(b)) ? "skip" : "add"; }
+  function askApproval(force) {
+    if (!isApprover() || !api || api.kind !== "live" || S.mode !== "live" || !S.loaded || !OFFICIAL) return;
+    if ((approvalAsked && !force) || dlgState.kind || dlg.open) return;
+    if (!waitingNow(!!force).length) { if (force) toast(`No new birds waiting.${waitingChecked ? " Last check: " + waitingChecked.split(" ")[0] + "." : ""}`); return; }
+    approvalAsked = true;
+    openDialog("approve", { all: !!force });
+  }
+  const nbChoice = new Map();
+  function sameNameAdded(b) {
+    const n = fold(b.name).replace(/[^a-z0-9]/g, "");
+    return birds().find(x => x.source === "added" && /^added-/.test(x.id) && fold(x.name).replace(/[^a-z0-9]/g, "") === n && (!x.year || x.year === b.year));
+  }
+  function renderApprove(all) {
+    const list = waitingNow(all);
+    if (!list.length) { closeDialog(true); return; }
+    list.forEach(b => { if (!nbChoice.has(b.id)) nbChoice.set(b.id, defaultChoice(b)); });
+    const adds = list.filter(b => nbChoice.get(b.id) === "add").length;
+    dlg.innerHTML = bar("New birds found") + `<div class="dlg-body">
+      <p style="margin:0">The automatic check found ${list.length === 1 ? "a bird that isn’t" : list.length + " birds that aren’t"} on the list yet. Nobody else sees ${list.length === 1 ? "it" : "them"} until you add ${list.length === 1 ? "it" : "them"}.</p>
+      <ul class="gift-list nb-list">${list.map(b => {
+        const art = artHTML(b, 160, b.name), dup = sameNameAdded(b), who = dup && flocks().find(f => f.id === dup.addedBy);
+        const meta = [seasonOf(b).label, b.year, b.kind].filter(Boolean).join(" · "), c = nbChoice.get(b.id), url = safeUrl(b.url);
+        return `<li class="gift"><span class="thumb${art.photo ? "" : " nophoto"}">${art.html}</span><div>
+          <p class="nm">${esc(b.name)}</p><p class="meta">${esc(meta)}</p>
+          <p class="nb-src">${b.source === "news" ? "From a shopping article, so check the name." : "Listed on the fan wiki."}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${esc(b.urlLabel || "Source")}</a>` : ""}</p>
+          ${b.maybe ? `<p class="nb-src"><b>${esc(b.maybe)}</b></p>` : ""}
+          ${dup ? `<p class="nb-src"><b>${esc(who ? who.name : "Someone")} already added a “${esc(dup.name)}”.</b></p>` : ""}
+          <div class="seg" role="group" aria-label="${esc(b.name)}"><button type="button" data-nb="${esc(b.id)}" data-v="add" aria-pressed="${c === "add"}">Add</button><button type="button" data-nb="${esc(b.id)}" data-v="skip" aria-pressed="${c === "skip"}">Skip</button></div>
+        </div></li>`; }).join("")}</ul>
+      <div class="btns"><button class="btn primary" type="button" id="nbGo">${nbGoLabel(adds)}</button><button class="btn" type="button" id="nbLater">Ask me later</button></div>
+      <p class="hint" style="margin:0">Skipped birds won’t come up again on this phone. You can see them again in settings.</p></div>`;
+  }
+  const nbGoLabel = n => n ? `Add ${n} to everyone’s list` : "Skip these";
+  function finishApproval() {
+    const list = waitingNow(dlgState.all), sk = skippedIds(), adds = [];
+    list.forEach(b => { if (nbChoice.get(b.id) === "add") { adds.push(b); sk.delete(skipKey(b)); } else sk.add(skipKey(b)); });
+    store.set(SKIPPED, JSON.stringify([...sk]));
+    if (adds.length && !canWrite()) return;
+    closeDialog(true);
+    if (adds.length) {
+      write(adds.map(b => { const r = Object.assign({}, b); delete r.id; r.addedBy = ""; return ["addBird", [b.id, r]]; }));
+      toast(`Added ${adds.map(b => b.name).join(", ")}. Everyone sees ${adds.length === 1 ? "it" : "them"} next time they open Flocks.`);
+    } else toast(list.length === 1 ? "Skipped. It won’t come up again on this phone." : "Skipped. They won’t come up again on this phone.");
   }
   function apply(r, persist) {
     const sig = JSON.stringify(r);
@@ -1021,6 +1100,7 @@ button { touch-action: manipulation; }
     (r.birds || []).forEach(x => { if (x && x.id && x.data) next.birds[x.id] = x.data; });
     dbIds = new Set(Object.keys(next.birds));
     if (OFFICIAL && configured) for (const id in OFFICIAL) next.birds[id] = OFFICIAL[id];
+    if (configured) for (const id in WAITING) if (dbIds.has(id) && !(OFFICIAL && OFFICIAL[id])) next.birds[id] = WAITING[id];
     (r.flocks || []).forEach(x => { if (x && x.id && x.data) next.flocks[x.id] = x.data; });
     outbox = readOutbox();
     for (const x of outbox) { try { OPS[x.k](next, ...x.a); } catch (e) {} }
@@ -1246,6 +1326,7 @@ button { touch-action: manipulation; }
     if (dlgState.kind === "bird") renderBirdLive();
     if (dlgState.kind === "settings") renderSettings(false);
     if (S.loaded && !me() && flocks().length && S.mode !== "need-code" && dlgState.kind !== "welcome" && dlgState.kind !== "code") openDialog("welcome");
+    askApproval();
   }
   function onPhoto(id) {
     renderView();
@@ -1728,6 +1809,7 @@ button { touch-action: manipulation; }
     else if (kind === "code") renderCode(arg && arg.err);
     else if (kind === "welcome") renderWelcome();
     else if (kind === "decorate") renderDecorate();
+    else if (kind === "approve") { dlgState.all = !!(arg && arg.all); nbChoice.clear(); renderApprove(dlgState.all); }
     document.documentElement.classList.add("modal-open");
     try { dlg.showModal(); } catch (e) { dlg.setAttribute("open", ""); }
     const title = kind === "welcome" && dlg.querySelector("#dlgTitle"); if (title) title.tabIndex = -1;
@@ -1743,6 +1825,7 @@ button { touch-action: manipulation; }
     dlg.innerHTML = "";
     document.documentElement.classList.remove("modal-open");
     if (!silent && opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    if (!approvalAsked) setTimeout(() => askApproval(), 350);
   }
   dlg.addEventListener("cancel", e => { e.preventDefault(); if (!dlgState.locked) closeDialog(); });
   dlg.addEventListener("click", e => { if (e.target === dlg && !dlgState.locked) closeDialog(); });
@@ -1773,7 +1856,7 @@ button { touch-action: manipulation; }
     const url = safeUrl(b.url);
     const meta = [seasonOf(b).label, b.kind, b.year].filter(Boolean).join(" · ");
     const meta2 = [b.line, b.price].filter(Boolean).join(" · ");
-    let src = b.source === "target" ? "Listed on Target.com." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
+    let src = b.source === "target" ? "Listed on Target.com." : b.source === "wiki" ? "Listed on the Target Birds fan wiki." : b.source === "news" ? "Named in a shopping article; not on the fan wiki yet." : b.source === "press" ? "Mentioned in news coverage." : b.source === "added" ? "Added by the family." : "Seen only in resale listings, so not confirmed.";
     dlg.innerHTML = bar("", true) + `<div class="dlg-body">
       <div class="hero-wrap"><div class="hero" id="birdHero"></div><label class="cam" for="photoIn" id="camBtn"><span class="sr" id="camLbl">Add our photo</span>${ICON.camera}</label></div>
       <div id="photoAsk"></div>
@@ -1786,7 +1869,7 @@ button { touch-action: manipulation; }
         <button class="btn" type="button" id="delPhoto" hidden>Remove our photo</button></span>
         <input id="photoIn" type="file" accept="image/*" hidden></div>
       <p class="src">${esc(src)}${url ? ` <a href="${esc(url)}" target="_blank" rel="noopener">${stockUrl(b) ? "Check stock at my Target" : isTarget(url) ? "See it on Target" : "View source"}</a>` : ""}</p>
-      ${b.source === "added" && /^added-/.test(b.id) ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
+      ${(b.source === "added" && /^added-/.test(b.id)) || (isApprover() && WAITING[b.id] && !(OFFICIAL && OFFICIAL[b.id])) ? `<div id="delWrap"><button class="btn danger" type="button" id="delBird">Remove this bird from the list</button></div>` : ""}
     </div>`;
     renderBirdHero(); renderBirdLive();
   }
@@ -1869,6 +1952,7 @@ button { touch-action: manipulation; }
     const body = `${m ? `<div class="field"><label for="s-name">Your name in Flocks</label><div class="tool-row"><input id="s-name" type="text" maxlength="30" value="${esc(m.name)}" style="flex:1"><button class="btn primary" type="button" id="saveName">Save</button></div></div>` : ""}
       <details class="fam"><summary>Family members</summary><div class="people-list">${all.map((f, i) => `<div class="row"><span class="av" style="${avStyle(flockColor(f, i))}">${initial(f.name)}</span><span class="nm">${esc(f.name)}${f.id === S.meId ? " (this phone)" : ""}</span>${f.id === S.meId ? "" : `<button class="btn" type="button" data-askswitch="${esc(f.id)}">Switch</button><button class="btn danger" type="button" data-askdel="${esc(f.id)}" aria-label="Remove ${esc(f.name)}">Remove</button>`}</div><div id="del-${esc(f.id)}"></div>`).join("")}</div>
       <div class="field" style="margin-top:12px"><label for="s-new">Add someone to the family</label><div class="tool-row"><input id="s-new" type="text" maxlength="30" placeholder="Their name" style="flex:1"><button class="btn" type="button" id="addPerson">Add</button></div></div></details>
+      ${isApprover() && api && api.kind === "live" ? `<div class="field"><span class="lbl">New birds</span><p class="hint" style="margin:0 0 8px">This phone asks you before birds the automatic check finds go on everyone’s list.${waitingChecked ? ` Last check: ${esc(waitingChecked.split(" ")[0])}.` : ""}</p><div class="tool-row"><button class="btn" type="button" id="nbReview">Review new birds</button><button class="btn" type="button" id="nbStop">Stop asking here</button></div></div>` : ""}
       ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.${outbox.length ? ` ${outbox.length} ${outbox.length === 1 ? "change hasn't" : "changes haven't"} sent yet; ${outbox.length === 1 ? "it sends" : "they send"} after you sign back in.` : ""}</p></div>` : ""}
       <p class="hint">Flocks keeps everyone's birds in one shared list. Photos come from Target's listings, the Target Birds fan wiki and resale listings. Any bird without one can get a family photo.</p>`;
     if (full) dlg.innerHTML = bar("Settings") + `<div class="dlg-body" id="settingsBody">${body}</div>`;
@@ -2009,6 +2093,16 @@ button { touch-action: manipulation; }
       if (!self && dlgState.kind === "settings") renderSettings(true);
       return;
     }
+    if (d.nb && dlgState.kind === "approve") {
+      nbChoice.set(d.nb, d.v);
+      dlg.querySelectorAll(`[data-nb="${CSS.escape(d.nb)}"]`).forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === d.v)));
+      const go = $("#nbGo"); if (go) go.textContent = nbGoLabel(waitingNow(dlgState.all).filter(b => nbChoice.get(b.id) === "add").length);
+      return;
+    }
+    if (t.id === "nbGo") { finishApproval(); return; }
+    if (t.id === "nbLater") { closeDialog(); return; }
+    if (t.id === "nbReview") { closeDialog(true); approvalAsked = false; askApproval(true); return; }
+    if (t.id === "nbStop") { store.del(APPROVER); renderSettings(true); toast("This phone won’t ask about new birds anymore."); return; }
     if (t.id === "forgetCode") { store.del("flocks.code"); store.del("flocks.snap.v2"); location.reload(); return; }
     if (t.id === "photoYes") { const id = dlgState.id, url = dlgState.preview; dlgState.preview = ""; $("#photoAsk").innerHTML = ""; if (url) uploadPhoto(id, null, url); return; }
     if (t.id === "photoNo") { dlgState.preview = ""; $("#photoAsk").innerHTML = ""; renderBirdHero(); return; }
@@ -2016,7 +2110,7 @@ button { touch-action: manipulation; }
     if (t.id === "delPhotoYes") { $("#photoAsk").innerHTML = ""; const id = dlgState.id; if (!api) return; api.deletePhoto(id).then(r => { if (r && r.error) throw r; delete S.photos[id]; remember(id, null); idb.del("photo:" + id); onPhoto(id); toast("Photo removed"); if (api.kind === "live") schedule(300); }).catch(() => toast("That didn't save. Try again.")); return; }
     if (t.id === "delBird") { $("#delWrap").innerHTML = `<div class="confirm">Remove this bird for everyone?<div class="btns"><button class="btn danger" type="button" id="delYes">Yes, remove it</button><button class="btn" type="button" id="delNo">Keep it</button></div></div>`; return; }
     if (t.id === "delNo") { renderBirdDialog(); return; }
-    if (t.id === "delYes") { const id = dlgState.id; closeDialog(); mutate(dd => OPS.deleteBird(dd, id), () => api.deleteBird(id)); toast("Removed from the list"); return; }
+    if (t.id === "delYes") { const id = dlgState.id; if (WAITING[id]) { const sk = skippedIds(); sk.add(skipKey(Object.assign({ id }, WAITING[id]))); store.set(SKIPPED, JSON.stringify([...sk])); } closeDialog(); mutate(dd => OPS.deleteBird(dd, id), () => api.deleteBird(id)); toast("Removed from the list"); return; }
   });
   document.addEventListener("keydown", e => {
     if (e.target && (e.target.id === "q" || e.target.id === "sq") && e.key === "Enter") { e.preventDefault(); e.target.blur(); return; }
@@ -2085,6 +2179,13 @@ button { touch-action: manipulation; }
     refresh();
   }
   function boot() {
+    const qs = new URLSearchParams(location.search);
+    if (qs.has("approver")) {
+      const on = qs.get("approver") !== "off";
+      if (on) store.set(APPROVER, "1"); else store.del(APPROVER);
+      qs.delete("approver"); history.replaceState(null, "", location.pathname + (qs.toString() ? "?" + qs : "") + location.hash);
+      setTimeout(() => toast(on ? "This phone will ask you about new birds." : "This phone won’t ask about new birds anymore."), 600);
+    }
     renderTabs(); renderView();
     if (!configured) { start(makeLocal()); return; }
     const code = store.get("flocks.code");
