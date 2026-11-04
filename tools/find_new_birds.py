@@ -42,10 +42,15 @@ def slug(s):
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
 
-def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,application/xml,*/*"})
-    with urllib.request.urlopen(req, timeout=25) as r:
-        return r.read().decode("utf-8", "replace")
+def get(url, tries=3):
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,application/xml,*/*"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.read().decode("utf-8", "replace")
+        except Exception:
+            if i == tries - 1: raise
+            time.sleep(5 * (i + 1))
 
 def season_of(*texts):
     for t in texts:
@@ -78,9 +83,9 @@ def main():
     def add(rec, photo):
         key = (norm(rec["name"]), rec["year"])
         if key in have or norm(rec["name"]) in skip_names: return
-        if key in wait_keys:   # seen before: a wiki listing beats a news mention
+        if key in wait_keys:   # seen before: the wiki's latest details win over older ones and over a news mention
             old = wait_keys[key]
-            if old["source"] == "news" and rec["source"] == "wiki":
+            if rec["source"] == "wiki":
                 rec["id"], rec["found"] = old["id"], old["found"]
                 waiting[waiting.index(old)] = rec; wait_keys[key] = rec; sources[rec["id"]] = photo
             return
@@ -91,12 +96,20 @@ def main():
         sources[rec["id"]] = photo
 
     # 1. the fan wiki's release list
+    back, back_keys = [], set()
     for it in json.load(open(P("research", "wiki-birds.json")))["birds"]:
         if not it["named"] or it["rerelease"] or it["kind"] not in ("bird", "mini", "set") or not re.fullmatch(r"20\d\d", it["year"] or ""):
             continue
         season = it["season"] if it["season"] in BODY else "other"
+        if it["kind"] == "mini" and not re.search(r"\bmini$", it["name"], re.I): it = dict(it, name=it["name"] + " Mini")   # same naming as earlier minis
+        # A bird from an earlier year, listed again (Target re-releases favourites): the wiki shows its old photo.
+        earlier = [b for b in listed if norm(b["name"]) == norm(it["name"]) and b["season"] == season and b["year"] != it["year"]]
+        cb = re.search(r"cb=(20\d\d)", it.get("image") or "")
+        if earlier and (not cb or cb.group(1) < it["year"]):
+            back.append(f"{it['name']} {it['year']} (back from {earlier[0]['year']})"); back_keys.add((norm(it["name"]), it["year"])); continue
         page = WIKI + it["page"].replace(" ", "_") if it.get("page") else WIKI + "All_Releases"
         kind = {"mini": "Mini", "set": "Two-bird set"}.get(it["kind"], it.get("look") or "")
+        if it["season"] == "hanukkah": kind = "Hanukkah"
         rec = {"name": it["name"], "season": season, "year": it["year"], "kind": kind[:80], "source": "wiki", "body": BODY[season],
                "url": page, "urlLabel": "Fan wiki", "about": f"Listed on the Target Birds fan wiki ({SEASON_LABEL[season]} {it['year']}).".replace(" )", ")").replace("( ", "("),
                "found": now.strftime("%Y-%m-%d")}
@@ -114,13 +127,16 @@ def main():
         for loc, lm in maps:
             if dt.datetime.fromisoformat(lm.strip().replace("Z", "+00:00")) < cutoff: continue
             time.sleep(1)
-            for u, ulm in re.findall(r"<loc>\s*([^<\s]+)\s*</loc>\s*<lastmod>([^<]+)</lastmod>", get(loc)):
+            try: smap = get(loc)
+            except Exception as e: news_log.append(f"{loc}: {type(e).__name__}"); continue
+            for u, ulm in re.findall(r"<loc>\s*([^<\s]+)\s*</loc>\s*<lastmod>([^<]+)</lastmod>", smap):
                 if dt.datetime.fromisoformat(ulm.strip().replace("Z", "+00:00")) < cutoff: continue
                 if re.search(r"featherly|(target|wondershop|spritz|hyde|eek)[a-z-]*-birds?\b|birds?-(at-)?target", u): urls.append((u, ulm.strip()))
         for u, ulm in urls:
             if seen.get(u) == ulm: continue
             time.sleep(1)
-            page = get(u)
+            try: page = get(u)
+            except Exception as e: news_log.append(f"{u}: {type(e).__name__}"); continue
             seen[u] = ulm
             if "featherly" not in page.lower(): news_log.append(f"{u}: no Featherly Friends"); continue
             pub = re.search(r'article:published_time"\s+content="(\d{4})', page)
@@ -150,14 +166,25 @@ def main():
     except Exception as e:
         news_log.append(f"news check failed: {type(e).__name__} {str(e)[:120]}")
 
+    waiting[:] = [w for w in waiting if (norm(w["name"]), w["year"]) not in back_keys]
+    # Birds that left the waiting list without joining the main list (e.g. they turned out to be re-releases): drop their photos too.
+    official = {b["id"] for b in listed}
+    for gone in {w["id"] for w in state.get("birds", [])} - {w["id"] for w in waiting} - official:
+        sources.pop(gone, None)
+        for d, ext in (("photos", ".jpg"), ("cutouts", ".webp")):
+            idx = load(P(d, "index.json"), None)
+            if idx is not None and gone in idx:
+                idx.pop(gone); open(P(d, "index.json"), "w").write(json.dumps(idx, indent=1 if d == "photos" else 0, ensure_ascii=False))
+            if os.path.exists(P(d, gone + ext)): os.remove(P(d, gone + ext))
     state = {"note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
-             "checked": now.strftime("%Y-%m-%d %H:%M UTC"), "birds": waiting, "news": news_log[-40:]}
+             "checked": now.strftime("%Y-%m-%d %H:%M UTC"), "birds": waiting, "rereleases": back, "news": news_log[-40:]}
     open(P("new-birds.json"), "w").write(json.dumps(state, indent=1, ensure_ascii=False) + "\n")
     open(P("research", "news-seen.json"), "w").write(json.dumps(dict(sorted(seen.items())), indent=1) + "\n")
     open(P("tools", "photo-sources.json"), "w").write(json.dumps(sources, indent=1, ensure_ascii=False))
     photos = load(P("photos", "index.json"), {})
     need = [w["id"] for w in waiting if w["id"] not in photos]
     print(f"waiting: {len(waiting)} ({len(found)} new this time): " + ", ".join(f"{w['name']} {w['season']} {w['year']} [{w['source']}]" for w in waiting))
+    print("re-releases skipped: " + (", ".join(back) or "none"))
     print("\n".join(news_log))
     print("NEED_PHOTOS=" + ",".join(need))
 
