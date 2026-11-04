@@ -31,8 +31,12 @@ SEASON_LABEL = {"christmas": "Christmas", "halloween": "Halloween", "fall": "Har
                 "spring": "Easter", "summer": "Summer", "patriotic": "Patriotic", "pride": "Pride", "stpatricks": "Saint Patrick's Day", "other": ""}
 BODY = {"christmas": "#E0525B", "halloween": "#F2873A", "fall": "#C9A227", "muertos": "#8A5CC9", "valentine": "#F4A6C0", "spring": "#9C8BE0",
         "summer": "#3BA7D9", "patriotic": "#3E5BA9", "pride": "#F2795D", "stpatricks": "#2FA35B", "other": "#C9B8A6"}
-NOT_A_BIRD = re.compile(r"\b(\d+\s*-?\s*(pk|pack|pc|piece)|pack|set|mini|minis|ornament|mug|tree|bundle|garland|stand|camper|house|sign|pillow|"
-                        r"target|amazon|walmart|shop|here|deal|deals|sale|coupon|app|circle|redcard|gift card|featherly friends)\b", re.I)
+NOT_A_BIRD = re.compile(r"\b(\d+\s*-?\s*(pk|pack|pc|piece)s?|packs?|sets?|minis?|ornaments?|mugs?|trees?|bundles?|garlands?|stands?|campers?|houses?|signs?|pillows?|"
+                        r"targets?|amazon|walmart|shop|shopping|here|deals?|sales?|coupons?|apps?|circle|redcard|gift|gifts|ideas?|cards?|featherly|friends|"
+                        r"buy|now|check|price|prices|more|view|see|get|spritz|wondershop|hyde|eek|boutique|bullseye|collection|decor|figurines?|birds?|"
+                        r"christmas|halloween|holiday|easter|valentine|valentines|harvest|pride|summer|squad)\b", re.I)
+PACKS = re.compile(r"\b(\d+\s*-?\s*(pk|pack|pc|piece)s?|packs?|sets?|minis?|ornaments?|mugs?|bundles?|garlands?|campers?|stands?|houses?)\b", re.I)
+NAME_OK = re.compile(r"[A-Z][a-zA-Zé'’.]+(?: [A-Z][a-zA-Zé'’.]+)?")
 
 def norm(s):
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
@@ -72,7 +76,11 @@ def main():
     sources = json.load(open(P("tools", "photo-sources.json")))
     listed = birds["birds"]
     have = {(norm(b["name"]), b["year"]) for b in listed}
+    for old in birds.get("merged", {}):   # e.g. bonjour-2024, merged into cherie-2024
+        m = re.match(r"(.+)-(20\d\d)$", old)
+        if m: have.add((norm(m.group(1)), m.group(2)))
     names_any = {norm(b["name"]) for b in listed}
+    known_any = names_any | {norm(re.sub(r"-(20\d\d|other)$", "", o)) for o in birds.get("merged", {})}
     ids = {b["id"] for b in listed} | set(birds.get("merged", {}))
     skip_names = {norm(x) for x in excluded.get("names", []) + excluded.get("wiki_unnamed_left_out", [])}
     # Birds already on the list leave the waiting list; the rest stay as they were found.
@@ -96,7 +104,7 @@ def main():
         sources[rec["id"]] = photo
 
     # 1. the fan wiki's release list
-    back, back_keys = [], set()
+    back, back_keys = [], {}
     for it in json.load(open(P("research", "wiki-birds.json")))["birds"]:
         if not it["named"] or it["rerelease"] or it["kind"] not in ("bird", "mini", "set") or not re.fullmatch(r"20\d\d", it["year"] or ""):
             continue
@@ -105,14 +113,16 @@ def main():
         # A bird from an earlier year, listed again (Target re-releases favourites): the wiki shows its old photo.
         earlier = [b for b in listed if norm(b["name"]) == norm(it["name"]) and b["season"] == season and b["year"] != it["year"]]
         cb = re.search(r"cb=(20\d\d)", it.get("image") or "")
-        if earlier and (not cb or cb.group(1) < it["year"]):
-            back.append(f"{it['name']} {it['year']} (back from {earlier[0]['year']})"); back_keys.add((norm(it["name"]), it["year"])); continue
+        if earlier and cb and cb.group(1) < it["year"]:   # the wiki shows the old photo: same bird back again
+            back.append(f"{it['name']} {it['year']} (back from {earlier[0]['year']})"); back_keys[(norm(it["name"]), it["year"])] = earlier[0]["id"]; continue
         page = WIKI + it["page"].replace(" ", "_") if it.get("page") else WIKI + "All_Releases"
         kind = {"mini": "Mini", "set": "Two-bird set"}.get(it["kind"], it.get("look") or "")
         if it["season"] == "hanukkah": kind = "Hanukkah"
+        maybe = f"A bird called {earlier[0]['name']} came out in {earlier[0]['year']}. This may be the same bird back again." if earlier and not cb else ""
         rec = {"name": it["name"], "season": season, "year": it["year"], "kind": kind[:80], "source": "wiki", "body": BODY[season],
                "url": page, "urlLabel": "Fan wiki", "about": f"Listed on the Target Birds fan wiki ({SEASON_LABEL[season]} {it['year']}).".replace(" )", ")").replace("( ", "("),
                "found": now.strftime("%Y-%m-%d")}
+        if maybe: rec["maybe"] = maybe
         titles = [f"{it['name']} ({SEASON_LABEL[season]} {it['year']})", f"{it['name']} ({it['year']})"] + ([it["name"]] if norm(it["name"]) not in names_any else [])
         add(rec, {"name": it["name"], "year": it["year"], "season": season, "img": "", "wimg": it.get("image", ""), "wpage": page,
                   "wiki": titles, "pages": [], "strict": norm(it["name"]) in names_any})
@@ -143,20 +153,27 @@ def main():
             year = pub.group(1) if pub else now.strftime("%Y")
             title = html.unescape((re.search(r"<title>([^<]+)", page) or [None, ""])[1])
             body = page.split("</article>")[0]
-            names = []
-            for href, text in re.findall(r'<a\s[^>]*href="([^"]+)"[^>]*>(.*?)</a>', body, re.S):
-                if not re.search(r"ltk\.com|target\.com|rstyle\.me|go\.skimresources|howl\.me|shopstyle", href): continue
-                text = html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
+            dashed, bare = [], []
+            for href, text in re.findall(r"""<a\s[^>]*href=["']([^"']+)["'][^>]*>(.*?)</a>""", body, re.S):
+                if not re.search(r"ltk\.com|liketk\.it|target\.com|rstyle\.me|go\.skimresources|howl\.me|shopstyle", href): continue
+                text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", text))).strip()
                 m = re.search(r"Featherly Friends?\S*\s*[–—-]\s*(.+)$", text)
-                if m: cand, ctx = m.group(1).strip(), text
-                elif re.fullmatch(r"[A-Z][A-Za-z'’.]+(?: [A-Z][A-Za-z'’.]+)?", text): cand, ctx = text, ""
-                else: continue
-                if NOT_A_BIRD.search(cand) or NOT_A_BIRD.search(ctx.replace("Featherly Friends", "")) or len(cand) > 30: continue
-                names.append((cand.strip(" '’\""), season_of(ctx, title, u)))
+                if m:
+                    ctx = text
+                    if PACKS.search(ctx[:m.start(1)]): continue   # a 3-pack, set or ornament, not a single bird
+                    for part in re.split(r"\s*(?:&|,|\band\b|/)\s*", m.group(1)):
+                        part = re.sub(r"\(.*?\)|\[.*?\]|\$\s?\d[\d.,]*|\b(?:bird|birds|decor|figurine)\b.*$", "", part, flags=re.I).strip(" '‘’\"“”.:;!-–")
+                        if NAME_OK.fullmatch(part) and not NOT_A_BIRD.search(part): dashed.append((part, season_of(ctx, title, u)))
+                elif NAME_OK.fullmatch(text) and not NOT_A_BIRD.search(text):
+                    bare.append((text, season_of(title, u)))
+            # bare one- or two-word links count only in an article that also names birds the long way (a lineup post)
+            names = dashed + (bare if dashed else [])
             news_log.append(f"{u}: {', '.join(n for n, _ in names) or 'no names'}")
-            for name, season in names:
-                prev = str(int(year) - 1)
-                if any(norm(b["name"]) == norm(name) and b["year"] == prev and b["season"] == season for b in listed): continue   # last year's bird, back in stock
+            for name, season in dict(names).items():   # one entry per name
+                near = {str(int(year) + d) for d in (-1, 0, 1)}
+                if any(norm(b["name"]) == norm(name) and b["year"] in near for b in listed + waiting): continue   # known, or the article's year is off by one
+                if norm(name) in known_any: continue   # an older bird back in stock (a new bird reusing a name shows up on the wiki)
+                if any(norm(w) in known_any for w in name.split()[:1]) and " " in name: continue   # "Quill Elf": a known bird plus a description
                 rec = {"name": name, "season": season, "year": year, "kind": "", "source": "news", "body": BODY[season], "url": u,
                        "urlLabel": "hip2save article", "about": f"Named in the hip2save.com article “{title.split(' | ')[0].strip()}”. Not on the fan wiki yet.",
                        "found": now.strftime("%Y-%m-%d")}
@@ -166,23 +183,19 @@ def main():
     except Exception as e:
         news_log.append(f"news check failed: {type(e).__name__} {str(e)[:120]}")
 
-    waiting[:] = [w for w in waiting if (norm(w["name"]), w["year"]) not in back_keys]
-    # Birds that left the waiting list without joining the main list (e.g. they turned out to be re-releases): drop their photos too.
-    official = {b["id"] for b in listed}
-    for gone in {w["id"] for w in state.get("birds", [])} - {w["id"] for w in waiting} - official:
-        sources.pop(gone, None)
-        for d, ext in (("photos", ".jpg"), ("cutouts", ".webp")):
-            idx = load(P(d, "index.json"), None)
-            if idx is not None and gone in idx:
-                idx.pop(gone); open(P(d, "index.json"), "w").write(json.dumps(idx, indent=1 if d == "photos" else 0, ensure_ascii=False))
-            if os.path.exists(P(d, gone + ext)): os.remove(P(d, gone + ext))
+    # Never drop a waiting bird (Ethan may have added it already); hide it from the question instead.
+    for w in waiting:
+        key = (norm(w["name"]), w["year"])
+        if key in back_keys: w["hidden"] = "re-release of " + back_keys[key]
+        elif w["source"] == "news" and w.get("found", "9999") < (now - dt.timedelta(days=90)).strftime("%Y-%m-%d"): w["hidden"] = "not on the fan wiki after 90 days"
+        elif w.get("hidden", "").startswith("not on the fan wiki") and w["source"] == "wiki": w.pop("hidden")
     state = {"note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
              "checked": now.strftime("%Y-%m-%d %H:%M UTC"), "birds": waiting, "rereleases": back, "news": news_log[-40:]}
     open(P("new-birds.json"), "w").write(json.dumps(state, indent=1, ensure_ascii=False) + "\n")
     open(P("research", "news-seen.json"), "w").write(json.dumps(dict(sorted(seen.items())), indent=1) + "\n")
     open(P("tools", "photo-sources.json"), "w").write(json.dumps(sources, indent=1, ensure_ascii=False))
     photos = load(P("photos", "index.json"), {})
-    need = [w["id"] for w in waiting if w["id"] not in photos]
+    need = [w["id"] for w in waiting if w["id"] not in photos and not w.get("hidden")]
     print(f"waiting: {len(waiting)} ({len(found)} new this time): " + ", ".join(f"{w['name']} {w['season']} {w['year']} [{w['source']}]" for w in waiting))
     print("re-releases skipped: " + (", ".join(back) or "none"))
     print("\n".join(news_log))

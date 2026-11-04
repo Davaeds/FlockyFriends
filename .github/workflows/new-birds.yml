@@ -13,6 +13,9 @@ permissions:
 concurrency:
   group: photos
   cancel-in-progress: false
+defaults:
+  run:
+    shell: bash   # stops on a failing step even inside a pipe (| tee)
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -48,4 +51,5 @@ jobs:
           if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
           n=$(python -c "import json;print(len(json.load(open('new-birds.json'))['birds']))")
           git commit -m "Check for new birds ($n waiting for Ethan)"
-          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep 5; done
+          exit 1

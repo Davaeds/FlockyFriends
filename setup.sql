@@ -210,7 +210,7 @@ language plpgsql security definer set search_path = public as $$
 declare a text := flocks_auth(p_code);
 begin
   if a <> 'ok' then return flocks_err(a); end if;
-  delete from flocks_birds where id = p_id and data->>'source' = 'added' and id like 'added-%';
+  delete from flocks_birds where id = p_id and data->>'source' = 'added';
   return json_build_object('ok', true);
 end $$;
 
