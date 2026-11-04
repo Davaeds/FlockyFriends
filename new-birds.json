@@ -1,6 +1,152 @@
 {
  "note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
- "checked": "",
- "birds": [],
- "news": []
+ "checked": "2026-11-04 04:14 UTC",
+ "birds": [
+  {
+   "name": "Scout",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Scout",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "scout-2026"
+  },
+  {
+   "name": "Parker",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Parker",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "parker-2026"
+  },
+  {
+   "name": "Nieva",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Nieva",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "nieva-2026"
+  },
+  {
+   "name": "Dazzle",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Dazzle",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "dazzle-2026"
+  },
+  {
+   "name": "Rocky",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Rocky",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "rocky-2026"
+  },
+  {
+   "name": "Rime",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Rime",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "rime-2026"
+  },
+  {
+   "name": "Freezy",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Freezy",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "freezy-2026"
+  },
+  {
+   "name": "Wafer",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/Wafer",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "wafer-2026"
+  },
+  {
+   "name": "Ollie",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#E0525B",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
+   "found": "2026-11-04",
+   "id": "ollie-2026"
+  },
+  {
+   "name": "Elka",
+   "season": "other",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#C9B8A6",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (2026).",
+   "found": "2026-11-04",
+   "id": "elka-2026"
+  },
+  {
+   "name": "Levi",
+   "season": "other",
+   "year": "2026",
+   "kind": "",
+   "source": "wiki",
+   "body": "#C9B8A6",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "about": "Listed on the Target Birds fan wiki (2026).",
+   "found": "2026-11-04",
+   "id": "levi-2026"
+  }
+ ],
+ "news": [
+  "news check failed: TimeoutError The read operation timed out"
+ ]
 }

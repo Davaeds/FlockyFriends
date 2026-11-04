@@ -6975,5 +6975,162 @@
   "pages": [
    "https://www.target.com/p/christmas-featherly-friends-8482-39-chill-39-fabric-bird-decor-wondershop-8482/-/A-95013604"
   ]
+ },
+ "scout-2026": {
+  "name": "Scout",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/44/S-l1600-2.webp/revision/latest?cb=20240904171213",
+  "wpage": "https://target-birds.fandom.com/wiki/Scout",
+  "wiki": [
+   "Scout (Christmas 2026)",
+   "Scout (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "parker-2026": {
+  "name": "Parker",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/2/23/2017-Target-Wondershop-FEATHERLY-FRIENDS-Bird-PARKER-NWT.webp/revision/latest?cb=20240905182346",
+  "wpage": "https://target-birds.fandom.com/wiki/Parker",
+  "wiki": [
+   "Parker (Christmas 2026)",
+   "Parker (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "nieva-2026": {
+  "name": "Nieva",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/d/dd/S-l1200-6.jpg/revision/latest?cb=20240905194109",
+  "wpage": "https://target-birds.fandom.com/wiki/Nieva",
+  "wiki": [
+   "Nieva (Christmas 2026)",
+   "Nieva (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "dazzle-2026": {
+  "name": "Dazzle",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/9/94/Dazzle.jpg/revision/latest?cb=20231111195657",
+  "wpage": "https://target-birds.fandom.com/wiki/Dazzle",
+  "wiki": [
+   "Dazzle (Christmas 2026)",
+   "Dazzle (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "rocky-2026": {
+  "name": "Rocky",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/b/bd/Rocky.jpg/revision/latest?cb=20240116205159",
+  "wpage": "https://target-birds.fandom.com/wiki/Rocky",
+  "wiki": [
+   "Rocky (Christmas 2026)",
+   "Rocky (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "rime-2026": {
+  "name": "Rime",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/2/27/Rime.jpg/revision/latest?cb=20240115030229",
+  "wpage": "https://target-birds.fandom.com/wiki/Rime",
+  "wiki": [
+   "Rime (Christmas 2026)",
+   "Rime (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "freezy-2026": {
+  "name": "Freezy",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/e/e0/Freezy.jpg/revision/latest?cb=20231109183033",
+  "wpage": "https://target-birds.fandom.com/wiki/Freezy",
+  "wiki": [
+   "Freezy (Christmas 2026)",
+   "Freezy (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "wafer-2026": {
+  "name": "Wafer",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/0/02/Wafer.webp/revision/latest?cb=20231106203524",
+  "wpage": "https://target-birds.fandom.com/wiki/Wafer",
+  "wiki": [
+   "Wafer (Christmas 2026)",
+   "Wafer (2026)"
+  ],
+  "pages": [],
+  "strict": true
+ },
+ "ollie-2026": {
+  "name": "Ollie",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Ollie (Christmas 2026)",
+   "Ollie (2026)",
+   "Ollie"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "elka-2026": {
+  "name": "Elka",
+  "year": "2026",
+  "season": "other",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/0/0f/Elka.jpg/revision/latest?cb=20261101225844",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Elka ( 2026)",
+   "Elka (2026)",
+   "Elka"
+  ],
+  "pages": [],
+  "strict": false
+ },
+ "levi-2026": {
+  "name": "Levi",
+  "year": "2026",
+  "season": "other",
+  "img": "",
+  "wimg": "",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [
+   "Levi ( 2026)",
+   "Levi (2026)",
+   "Levi"
+  ],
+  "pages": [],
+  "strict": false
  }
 }
