@@ -1,6 +1,6 @@
 {
  "note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
- "checked": "2026-11-10 20:30 UTC",
+ "checked": "2026-11-13 20:33 UTC",
  "birds": [
   {
    "name": "Ollie",
