@@ -1337,6 +1337,12 @@
   "page": "https://target-birds.fandom.com/wiki/Laspell",
   "image": "https://static.wikia.nocookie.net/target-birds/images/2/23/Lapell.jpg/revision/latest?cb=20240111073346"
  },
+ "levi-2026": {
+  "v": "dc21adaaf1",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/0/00/Levi.jpg/revision/latest?cb=20261116034204"
+ },
  "lewis-2025": {
   "v": "3545411a95",
   "from": "wiki",
@@ -2506,9 +2512,6 @@
    "wiki: nothing"
   ],
   "heddles-mini-2026": [
-   "wiki: nothing"
-  ],
-  "levi-2026": [
    "wiki: nothing"
   ],
   "loop-mini-2022": [
