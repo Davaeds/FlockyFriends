@@ -246,10 +246,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_00aedeff-8252-44a2-8c9f-f6f3593bd9a4?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "bobbin-mini-2026": {
-  "v": "dcbf4db80f",
+  "v": "44f78eaf95",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/4/42/BobbinOrnament.jpg/revision/latest?cb=20261101231925"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/1/12/TraditionalFabricPack.jpg/revision/latest?cb=20261101231622"
  },
  "bonesly-2026": {
   "v": "4627d24218",
@@ -474,10 +474,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_20dddfba-262f-4de3-9760-1bc71b4e3296?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "chill-mini-2026": {
-  "v": "ebb9557af7",
+  "v": "02bb652f07",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c1/BrownTealOrnament.jpg/revision/latest?cb=20261101231701"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/5/5c/SnowSagePack.jpg/revision/latest?cb=20261101231643"
  },
  "chip-2023": {
   "v": "0e619d7580",
@@ -630,10 +630,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_09b168ec-c438-4bc7-a520-e12bc00d106f?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "dacha-mini-2026": {
-  "v": "c82a3646a6",
+  "v": "b11741548d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8b/DachaOrnament.jpg/revision/latest?cb=20261101231607"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4a/CozyCottagePack.jpg/revision/latest?cb=20261101231740"
  },
  "daisy-2018": {
   "v": "e82052dca4",
@@ -1091,6 +1091,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_3935e7af-b36a-455e-b87d-886b76838b7e?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "heddles-mini-2026": {
+  "v": "44f78eaf95",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/1/12/TraditionalFabricPack.jpg/revision/latest?cb=20261101231622"
+ },
  "heiress-2025": {
   "v": "e59aeec5e6",
   "from": "wiki",
@@ -1146,10 +1152,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_22f27473-b19b-4469-8e96-e9b5360af303?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "hytte-mini-2026": {
-  "v": "20b22bbc9f",
+  "v": "b11741548d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c9/HytteOrnament.jpg/revision/latest?cb=20261101231554"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4a/CozyCottagePack.jpg/revision/latest?cb=20261101231740"
  },
  "iskall-2022": {
   "v": "03c8dfbc5c",
@@ -1452,10 +1458,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_33d6755f-b5d8-4c34-9244-86b1ac41f94d?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "mokki-mini-2026": {
-  "v": "08810af656",
+  "v": "b11741548d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/a/a6/MokkiOrnament.jpg/revision/latest?cb=20261101231633"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4a/CozyCottagePack.jpg/revision/latest?cb=20261101231740"
  },
  "moldy-2025": {
   "v": "9fd4ab1ce2",
@@ -1590,10 +1596,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_5b8ce707-83a8-4ebd-991a-0f8e9ed2e1a0?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "pep-mini-2026": {
-  "v": "2904fb298d",
+  "v": "37612f656d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/4/41/PepOrnament.jpg/revision/latest?cb=20261101231727"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8a/SantaDressPack.png/revision/latest?cb=20261101231236"
  },
  "pepper-other": {
   "v": "c24a8bba66",
@@ -1728,10 +1734,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_78dc28fb-1307-4dd7-91b0-5f7dbe7ccafa?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "quill-mini-2026": {
-  "v": "4d03be760e",
+  "v": "44f78eaf95",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/7/75/QuillOrnament.jpg/revision/latest?cb=20261101231909"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/1/12/TraditionalFabricPack.jpg/revision/latest?cb=20261101231622"
  },
  "quincy-2017": {
   "v": "915f2ef3f5",
@@ -1770,10 +1776,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_bd7dc8c6-f098-4493-8ada-a7a7810782c8?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "ray-mini-2026": {
-  "v": "67b23bbcf5",
+  "v": "37612f656d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c6/Rayornament.jpg/revision/latest?cb=20261102025121"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8a/SantaDressPack.png/revision/latest?cb=20261101231236"
  },
  "razzle-2019": {
   "v": "f9a07dda04",
@@ -1973,6 +1979,12 @@
   "page": "",
   "image": "https://target.scene7.com/is/image/Target/GUEST_8d1a3801-622a-4e51-8d93-111962819e17?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
+ "sleet-mini-2026": {
+  "v": "02bb652f07",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/5/5c/SnowSagePack.jpg/revision/latest?cb=20261101231643"
+ },
  "smidgen-2025": {
   "v": "a0a45dd8c1",
   "from": "wiki",
@@ -2124,10 +2136,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_5aa31333-3c48-4f37-84b2-3130c0eff63c?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "squall-mini-2026": {
-  "v": "b20eb1d004",
+  "v": "02bb652f07",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/b/bf/SuqallOrnament.jpg/revision/latest?cb=20261101231854"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/5/5c/SnowSagePack.jpg/revision/latest?cb=20261101231643"
  },
  "star-2022": {
   "v": "f75d15b4eb",
@@ -2406,10 +2418,10 @@
   "image": "https://target.scene7.com/is/image/Target/GUEST_19c180d0-778e-4418-853f-4cbc91469fae?wid=800&hei=800&fmt=pjpeg&qlt=90"
  },
  "vim-mini-2026": {
-  "v": "73a32a04f6",
+  "v": "37612f656d",
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
-  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8d/VimOrnament.jpg/revision/latest?cb=20261101231838"
+  "image": "https://static.wikia.nocookie.net/target-birds/images/8/8a/SantaDressPack.png/revision/latest?cb=20261101231236"
  },
  "wafer-2023": {
   "v": "18a7b7503b",
@@ -2511,9 +2523,6 @@
   "aurum-2025": [
    "wiki: nothing"
   ],
-  "heddles-mini-2026": [
-   "wiki: nothing"
-  ],
   "loop-mini-2022": [
    "wiki: nothing"
   ],
@@ -2526,9 +2535,6 @@
   "skelly-2025": [
    "wiki: nothing",
    "resale: HTTPError HTTP Error 403: Forbidden"
-  ],
-  "sleet-mini-2026": [
-   "wiki: nothing"
   ],
   "sparkle-mini-2024": [
    "wiki: nothing"
