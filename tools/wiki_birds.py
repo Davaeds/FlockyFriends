@@ -47,11 +47,19 @@ def main():
             parts = [x.strip() for x in g.split("|")]
             f = re.sub(r"^(File|Image):", "", parts[0], flags=re.I).strip()
             caps = [strip_links(re.sub(r"^link=", "", x)) for x in parts[1:]] + re.findall(r"\[\[([^|\]]+)", g)
-            for it in items:
-                if it["year"] == year and it["season"] == season and not it.get("file"):
-                    keys = {it["display"], it["page"], it["display"].split(" (")[0]}
-                    if any(c in keys for c in caps if c):
-                        it["file"] = f
+            # only items listed under this same heading: an ornament gallery named "Dacha" is not the Dacha mini
+            here = [it for it in items if it["year"] == year and it["season"] == season and it["sub"] == sub and not it.get("file")]
+            for it in here:
+                keys = {it["display"], it["page"], it["display"].split(" (")[0]}
+                if any(c in keys for c in caps if c):
+                    it["file"] = f
+            # a mini sold only in a 3-pack: "Cozy Cottage 3 pack (Dacha, Mokki and Hytte)" shows the whole pack
+            for it in here:
+                if it["kind"] == "mini" and not it.get("file"):
+                    for c in caps:
+                        m = re.search(r"\bpack\b.*\(([^)]*)\)", c or "", re.I)
+                        if m and it["name"] in [x.strip() for x in re.split(r",|\band\b", m.group(1))]:
+                            it["file"] = f; it["pack_photo"] = True; break
     in_gal = False
     for line in text.splitlines():
         if re.match(r"\s*<gallery", line, re.I): in_gal = True; gallery = []; line = re.sub(r".*?<gallery[^>]*>", "", line, flags=re.I)
@@ -88,7 +96,7 @@ def main():
         kind = KEEP[sub]
         named = not UNNAMED.search(name) or (kind == "mini" and not UNNAMED.search(re.sub(r"\s+Mini$", "", name)))
         items.append({"name": name, "display": display, "page": page if page in pages else "", "year": year, "season": season,
-                      "kind": kind, "look": look, "rerelease": rerelease, "first_year": orig_year, "named": bool(named)})
+                      "kind": kind, "sub": sub, "look": look, "rerelease": rerelease, "first_year": orig_year, "named": bool(named)})
     for it in items:
         p = pages.get(it["page"])
         box = infobox(p["text"]) if p else {}
