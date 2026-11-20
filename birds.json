@@ -990,7 +990,8 @@
    "source": "wiki",
    "body": "#9C8BE0",
    "acc": "",
-   "accent": "#E0525B"
+   "accent": "#E0525B",
+   "about": "The photo shows Aurum with Cantante and Spella."
   },
   {
    "id": "glaze-mini-2025",
@@ -1748,7 +1749,8 @@
    "source": "wiki",
    "body": "#9C8BE0",
    "acc": "",
-   "accent": "#E0525B"
+   "accent": "#E0525B",
+   "about": "Sold in a 3-pack of minis; the photo shows the whole pack (with Capster Mini and Merry Mini)."
   },
   {
    "id": "ubuntu-mini-2024",
@@ -2980,7 +2982,8 @@
    "source": "wiki",
    "body": "#8D7A6A",
    "acc": "",
-   "accent": "#E0525B"
+   "accent": "#E0525B",
+   "about": "Sold in a 3-pack with Purl Mini and Weft Mini; the photo shows the whole pack."
   },
   {
    "id": "purl-mini-2022",
@@ -2991,7 +2994,8 @@
    "source": "wiki",
    "body": "#7CC6A4",
    "acc": "",
-   "accent": "#E0525B"
+   "accent": "#E0525B",
+   "about": "Sold in a 3-pack with Loop Mini and Weft Mini; the photo shows the whole pack."
   },
   {
    "id": "weft-mini-2022",
@@ -3002,7 +3006,8 @@
    "source": "wiki",
    "body": "#8D7A6A",
    "acc": "",
-   "accent": "#E0525B"
+   "accent": "#E0525B",
+   "about": "Sold in a 3-pack with Loop Mini and Purl Mini; the photo shows the whole pack."
   },
   {
    "id": "beau-2021",
@@ -4928,7 +4933,7 @@
    "accent": "#8A5CC9",
    "url": "https://www.ebay.com/itm/167910168944",
    "urlLabel": "Source",
-   "about": "Re-released in 2025 in the 2017 Anniversary 3-pack."
+   "about": "Re-released in 2025 in the 2017 Anniversary 3-pack. The photo shows the 2017 Halloween birds; Skelly is on the left."
   },
   {
    "id": "stitch-2017",
@@ -5793,6 +5798,52 @@
    "acc": "",
    "accent": "#F5F1EA",
    "about": "Blue bird in a chef's hat and a “Love You a Latke” apron, holding a plate of latkes. Hanukkah 2026 bird. (Look described from its photo.)"
+  },
+  {
+   "id": "ollie-2026",
+   "name": "Ollie",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "Collector Set bird",
+   "line": "Wondershop",
+   "source": "wiki",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "body": "#E0525B",
+   "acc": "",
+   "accent": "#2F7A4F",
+   "about": "New in 2026, sold only in the 10-bird Christmas Collector Set (Scout, Parker, Nieva, Dazzle, Rocky, Rime, Freezy, Snowman, Wafer and Ollie). The photo shows the whole set."
+  },
+  {
+   "id": "snowman-2026",
+   "name": "Snowman",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "Collector Set bird",
+   "line": "Wondershop",
+   "source": "wiki",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "body": "#F5F1EA",
+   "acc": "",
+   "accent": "#E0525B",
+   "about": "In the 10-bird 2026 Christmas Collector Set (Scout, Parker, Nieva, Dazzle, Rocky, Rime, Freezy, Snowman, Wafer and Ollie). The fan wiki lists this bird only as “Snowman”, so its real name may differ. The photo shows the whole set."
+  },
+  {
+   "id": "toy-shop-2026",
+   "name": "Toy Shop",
+   "season": "christmas",
+   "year": "2026",
+   "kind": "Display with Santa and Elf birds",
+   "line": "Wondershop",
+   "price": "$25",
+   "source": "wiki",
+   "url": "https://target-birds.fandom.com/wiki/All_Releases",
+   "urlLabel": "Fan wiki",
+   "body": "#E0525B",
+   "acc": "",
+   "accent": "#2F7A4F",
+   "about": "Wooden toy shop display that comes with two birds: one dressed as Santa in an apron and one dressed as a green elf. Neither bird has a name."
   }
  ],
  "flocks": [

@@ -1238,8 +1238,8 @@
   "year": "2025",
   "season": "christmas",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/5/58/2025AurumCantanteSpella.webp/revision/latest?cb=20251114223110",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Aurum",
    "Aurum (Christmas 2025)",
@@ -2197,8 +2197,8 @@
   "year": "2024",
   "season": "christmas",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/6/66/Brights.webp/revision/latest?cb=20240902021405",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Sparkle Mini",
    "Sparkle Mini (Christmas 2024)",
@@ -3768,8 +3768,8 @@
   "year": "2022",
   "season": "christmas",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Loop Mini",
    "Loop Mini (Christmas 2022)",
@@ -3782,8 +3782,8 @@
   "year": "2022",
   "season": "christmas",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Purl Mini",
    "Purl Mini (Christmas 2022)",
@@ -3796,8 +3796,8 @@
   "year": "2022",
   "season": "christmas",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Weft Mini",
    "Weft Mini (Christmas 2022)",
@@ -6206,8 +6206,8 @@
   "year": "2017",
   "season": "halloween",
   "img": "",
-  "wimg": "",
-  "wpage": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/3/38/Halloween2017Birds.png/revision/latest?cb=20231120204734",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
   "wiki": [
    "Skelly",
    "Skelly (Halloween 2017)",
@@ -6981,15 +6981,11 @@
   "year": "2026",
   "season": "christmas",
   "img": "",
-  "wimg": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/9/96/ChristmasCollector26.jpg/revision/latest?cb=20261102030306",
   "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
-  "wiki": [
-   "Ollie (Christmas 2026)",
-   "Ollie (2026)",
-   "Ollie"
-  ],
+  "wiki": [],
   "pages": [],
-  "strict": false
+  "strict": true
  },
  "elka-2026": {
   "name": "Elka",
@@ -7186,6 +7182,28 @@
    "Pep Mini (Christmas 2026)",
    "Pep Mini (2026)"
   ],
+  "pages": [],
+  "strict": true
+ },
+ "snowman-2026": {
+  "name": "Snowman",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/9/96/ChristmasCollector26.jpg/revision/latest?cb=20261102030306",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [],
+  "pages": [],
+  "strict": true
+ },
+ "toy-shop-2026": {
+  "name": "Toy Shop",
+  "year": "2026",
+  "season": "christmas",
+  "img": "",
+  "wimg": "https://static.wikia.nocookie.net/target-birds/images/c/c4/ToyShop.jpg/revision/latest?cb=20261101231715",
+  "wpage": "https://target-birds.fandom.com/wiki/All_Releases",
+  "wiki": [],
   "pages": [],
   "strict": true
  }
