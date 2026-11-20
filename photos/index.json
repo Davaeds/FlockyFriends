@@ -101,6 +101,12 @@
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
   "image": "https://static.wikia.nocookie.net/target-birds/images/5/5d/Astra.jpg/revision/latest?cb=20260216010406"
  },
+ "aurum-2025": {
+  "v": "fcda2c2342",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/5/58/2025AurumCantanteSpella.webp/revision/latest?cb=20251114223110"
+ },
  "avi-2023": {
   "v": "902b7cb708",
   "from": "wiki",
@@ -1373,6 +1379,12 @@
   "page": "https://target-birds.fandom.com/wiki/Loop",
   "image": "https://static.wikia.nocookie.net/target-birds/images/2/21/Loop.png/revision/latest?cb=20231109183526"
  },
+ "loop-mini-2022": {
+  "v": "0e929626cd",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741"
+ },
  "lucky-2020": {
   "v": "395d546cb6",
   "from": "wiki",
@@ -1540,6 +1552,12 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Olive",
   "image": "https://static.wikia.nocookie.net/target-birds/images/3/3e/Olive.jpg/revision/latest?cb=20240115231501"
+ },
+ "ollie-2026": {
+  "v": "f9f50c0b74",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/9/96/ChristmasCollector26.jpg/revision/latest?cb=20261102030306"
  },
  "parker-2017": {
   "v": "6303c8a754",
@@ -1714,6 +1732,12 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Purl",
   "image": "https://static.wikia.nocookie.net/target-birds/images/c/c0/Purl.webp/revision/latest?cb=20231109183627"
+ },
+ "purl-mini-2022": {
+  "v": "0e929626cd",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741"
  },
  "queen-2025": {
   "v": "19ec01af80",
@@ -1955,6 +1979,12 @@
   "page": "https://target-birds.fandom.com/wiki/All_Releases",
   "image": "https://static.wikia.nocookie.net/target-birds/images/b/b2/Silbador.jpg/revision/latest?cb=20231112212443"
  },
+ "skelly-2025": {
+  "v": "567b2d5eb3",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/3/38/Halloween2017Birds.png/revision/latest?cb=20231120204734"
+ },
  "skipster-2026": {
   "v": "5e741df493",
   "from": "wiki",
@@ -2021,6 +2051,12 @@
   "page": "https://target-birds.fandom.com/wiki/Snoozer",
   "image": "https://static.wikia.nocookie.net/target-birds/images/a/ab/Snoozer.jpg/revision/latest?cb=20231112225017"
  },
+ "snowman-2026": {
+  "v": "f9f50c0b74",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/9/96/ChristmasCollector26.jpg/revision/latest?cb=20261102030306"
+ },
  "soarin-2023": {
   "v": "f06b2f9604",
   "from": "wiki",
@@ -2050,6 +2086,12 @@
   "from": "wiki",
   "page": "https://target-birds.fandom.com/wiki/Sorrel",
   "image": "https://static.wikia.nocookie.net/target-birds/images/a/a0/Sorrel.jpg/revision/latest?cb=20240323105226"
+ },
+ "sparkle-mini-2024": {
+  "v": "c5e2d6379e",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/6/66/Brights.webp/revision/latest?cb=20240902021405"
  },
  "sparkles-2024": {
   "v": "441d4bbbaa",
@@ -2279,6 +2321,12 @@
   "page": "https://target-birds.fandom.com/wiki/Toots",
   "image": "https://static.wikia.nocookie.net/target-birds/images/6/65/Toots.webp/revision/latest?cb=20250102043351"
  },
+ "toy-shop-2026": {
+  "v": "dc3c40de67",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/c/c4/ToyShop.jpg/revision/latest?cb=20261101231715"
+ },
  "trapper-2016": {
   "v": "129e2a3158",
   "from": "wiki",
@@ -2441,6 +2489,12 @@
   "page": "https://target-birds.fandom.com/wiki/Weft",
   "image": "https://static.wikia.nocookie.net/target-birds/images/8/84/Weft.png/revision/latest?cb=20231109183909"
  },
+ "weft-mini-2022": {
+  "v": "0e929626cd",
+  "from": "wiki",
+  "page": "https://target-birds.fandom.com/wiki/All_Releases",
+  "image": "https://static.wikia.nocookie.net/target-birds/images/4/4b/Weft_Mini_set.png/revision/latest?cb=20260716134741"
+ },
  "wheatly-other": {
   "v": "02cbe2ebb1",
   "from": "wiki",
@@ -2519,28 +2573,5 @@
   "page": "https://target-birds.fandom.com/wiki/Zipp",
   "image": "https://static.wikia.nocookie.net/target-birds/images/0/08/Zipp.png/revision/latest?cb=20231108195307"
  },
- "_missing": {
-  "aurum-2025": [
-   "wiki: nothing"
-  ],
-  "loop-mini-2022": [
-   "wiki: nothing"
-  ],
-  "ollie-2026": [
-   "wiki: nothing"
-  ],
-  "purl-mini-2022": [
-   "wiki: nothing"
-  ],
-  "skelly-2025": [
-   "wiki: nothing",
-   "resale: HTTPError HTTP Error 403: Forbidden"
-  ],
-  "sparkle-mini-2024": [
-   "wiki: nothing"
-  ],
-  "weft-mini-2022": [
-   "wiki: nothing"
-  ]
- }
+ "_missing": {}
 }
