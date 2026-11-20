@@ -16,6 +16,26 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <script src="config.js"></script>
+<script>
+// The app dresses for the time of year. ?season=halloween (etc.) previews another season on this page only.
+(function () {
+  var d = new Date(), m = d.getMonth() + 1, day = d.getDate(), s;
+  if ((m === 11 && day >= 15) || m === 12 || (m === 1 && day <= 6)) s = "christmas";
+  else if (m === 1) s = "winter";
+  else if (m === 2 && day <= 14) s = "valentine";
+  else if (m === 3 && day <= 17) s = "stpatricks";
+  else if (m <= 5) s = "spring";
+  else if (m === 7 && day <= 4) s = "patriotic";
+  else if (m <= 8) s = "summer";
+  else if (m === 9) s = "fall";
+  else if (m === 10) s = "halloween";
+  else if (m === 11 && day <= 2) s = "muertos";
+  else s = "harvest";
+  var q = /[?&]season=([a-z]+)/.exec(location.search);
+  if (q) s = q[1];
+  document.documentElement.setAttribute("data-season", s);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap">
@@ -687,6 +707,253 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
 .top { min-height: 116px; padding-bottom: 48px; }
 .page-h h2:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } button:active { transform: none; } }
+/* ---- seasons pass, Nov 2026 ----
+   The whole app dresses for the time of year: <html data-season="..."> is set before anything draws
+   (Christmas from mid November to Epiphany, then winter, Valentine's, St. Patrick's, spring, summer,
+   the Fourth, fall, Halloween, Día de Muertos, harvest). Seasons change colours and the little props in the
+   header; birds are always real photos. Also here: the small delights (wax-seal "I have it", blooming heart,
+   "Full house" birdhouses, wooden toast, lantern tabs, twig progress bars, ribbons, copy tags, greeting). */
+
+/* ===== small delights, every season ===== */
+:root { --seal: #B8892B; --seal-d: #8C6519; --gold: #C99A2E; --glow: #FFD98A; }
+/* 1. "I have it": a wax seal presses in, and the button turns solid green */
+.have-btn, .btn.big[data-have] { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.have-btn.on, .btn.big.leaf[data-have] { background: var(--leaf-fill) !important; color: var(--on-leaf) !important; }
+.have-btn.on::before, .btn.big.leaf[data-have]::before { content: ""; flex: none; width: 22px; height: 22px; border-radius: 50%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m7 12.5 3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat,
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--seal) 70%, #fff), var(--seal) 55%, var(--seal-d));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--seal) 55%, transparent), 0 1px 2px rgba(0,0,0,.3); }
+@supports not (color: color-mix(in srgb, red, red)) {
+  .have-btn.on::before, .btn.big.leaf[data-have]::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m7 12.5 3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat var(--seal); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  [data-season="christmas"] .card, [data-season="christmas"] .panel, [data-season="christmas"] .nest-sum, [data-season="christmas"] .page-h, [data-season="christmas"] .empty, [data-season="christmas"] .row-b { box-shadow: 0 0 0 1px #E3CFA6, var(--shadow) !important; }
+  .heart.on { box-shadow: 0 2px 8px rgba(180,36,58,.35); }
+}
+.stamp::before { animation: stamp .55s cubic-bezier(.2,.9,.3,1.2); }
+.stamp { animation: squash .45s ease-out; }
+@keyframes stamp { 0% { transform: scale(2.2) rotate(-25deg); opacity: 0; } 55% { transform: scale(.85) rotate(6deg); opacity: 1; } 100% { transform: none; } }
+@keyframes squash { 0% { transform: none; } 30% { transform: scale(1.05, .9); } 60% { transform: scale(.98, 1.03); } 100% { transform: none; } }
+
+/* 2. the heart blooms: outline when off, a full berry heart when on */
+.heart { position: relative; overflow: visible; color: var(--berry) !important; background: var(--surface-2); }
+.heart.on { background: var(--berry) !important; color: #fff !important; box-shadow: 0 2px 8px color-mix(in srgb, var(--berry) 40%, transparent); }
+.heart.bloom svg { animation: bloom .5s cubic-bezier(.2,.9,.3,1.3); }
+@keyframes bloom { 0% { transform: scale(.4); } 55% { transform: scale(1.3); } 100% { transform: none; } }
+.leafy { position: absolute; left: 50%; top: 50%; width: 10px; height: 6px; border-radius: 0 100% 0 100%; background: var(--leaf-fill); pointer-events: none; animation: leafy .8s ease-out forwards; }
+.leafy.r { --dx: 22px; --rot: 160deg; background: var(--holly, var(--leaf-fill)); }
+@keyframes leafy { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx, -22px)), -34px) rotate(var(--rot, -160deg)); opacity: 0; } }
+
+/* 3. a finished season: brass "Full house" plaque, bunting along the roof, a gold progress bar */
+.house .plaque { display: none; }
+.house.full .plaque { display: block; position: absolute; left: 50%; bottom: 9%; transform: translateX(-50%) rotate(-2deg); padding: 1px 8px; border-radius: 6px; z-index: 2;
+  background: linear-gradient(180deg, #F3D27A, #C99A2E); color: #4A3307; font-weight: 800; font-size: .72rem; white-space: nowrap; box-shadow: 0 2px 0 #8C6519, 0 3px 6px rgba(0,0,0,.25); }
+.house.full .flags { position: absolute; left: 6%; right: 6%; top: 30px; height: 14px; z-index: 2; pointer-events: none; animation: drop .7s cubic-bezier(.3,.8,.4,1.2) both;
+  background: conic-gradient(from 150deg at 50% 0, transparent 0 60deg, var(--f, #F3D27A) 0 0) 0 0 / 16px 14px repeat-x; filter: drop-shadow(0 2px 1px rgba(0,0,0,.2)); }
+.house.full .flags::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: #6E4626; border-radius: 2px; }
+@keyframes drop { from { transform: translateY(-12px); opacity: 0; } }
+.house.full .prog i { background: linear-gradient(90deg, #E9C35E, #C99A2E) !important; }
+.house.full .h-count { color: #8C6519; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .house.full .h-count { color: #F2D58A; } }
+
+/* 4. the toast is a little wooden plank, with the bird perched on top */
+.toast { background: linear-gradient(180deg, #A9734A, #7E512E); color: #FFF6E3; border-radius: 14px; box-shadow: inset 0 2px 0 rgba(255,255,255,.18), 0 4px 0 #5A381C, 0 14px 30px rgba(40,20,5,.35);
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 18px), linear-gradient(180deg, #A9734A, #7E512E); }
+.toast:has(.t-cut) { padding-left: 74px; overflow: visible; }
+.toast .t-cut { position: absolute; left: 10px; bottom: 22px; width: 58px; height: 64px; margin: 0; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 3px 2px rgba(0,0,0,.3)); }
+.toast button { color: #FFE3A3; }
+.toast .t-cut.ph { width: 52px; height: 52px; bottom: 24px; object-fit: cover; border-radius: 10px; border: 3px solid #FFF6E3; transform: rotate(-4deg); background: #EBEBEB; }
+
+/* 5. tabs: the chosen one has a little lit lantern above it, and hops when picked */
+@media (max-width: 719px) {
+  .tab[aria-selected="true"] svg { background: none !important; padding: 0 !important; margin: 0 !important; }
+  .tab::before { content: ""; position: absolute; top: -1px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--glow); opacity: 0; transform: scale(.4); transition: opacity .2s, transform .2s; }
+  .tab[aria-selected="true"]::before { opacity: 1; transform: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--glow) 30%, transparent), 0 0 12px 3px color-mix(in srgb, var(--glow) 60%, transparent); }
+  .tab[aria-selected="true"] { color: var(--glow) !important; }
+  .tab::before { top: auto; bottom: 3px; width: 18px; height: 3px; margin-left: -9px; border-radius: 2px; }
+}
+@media (max-width: 380px) { .tab .short { white-space: nowrap; font-size: 12.5px; letter-spacing: -.01em; } }
+@media (min-width: 400px) and (max-width: 719px) { .tab { font-size: 14px !important; } }
+.tab svg.hop { animation: tabhop .45s cubic-bezier(.3,.7,.4,1.3); }
+@keyframes tabhop { 0% { transform: none; } 35% { transform: translateY(-6px) scale(1.12); } 70% { transform: translateY(1px) scale(.97); } 100% { transform: none; } }
+
+/* 6. progress bars are a twig, with a leaf at the tip */
+.prog, .bar, .mini { overflow: visible; position: relative; }
+.prog i, .bar i, .mini i { position: relative; }
+.prog i:not([style*="width:0%"])::after, .bar i::after { content: ""; position: absolute; right: -5px; top: 50%; width: 11px; height: 7px; margin-top: -6px; border-radius: 0 100% 0 100%; background: var(--tip, var(--leaf-fill)); transform: rotate(-20deg); box-shadow: 0 1px 1px rgba(0,0,0,.15); }
+.prog i[style*="width:100%"]::after, .bar i[style*="width: 100%"]::after { display: none; }
+
+/* 9 / 10. friendly empty states with a real bird; loading shows bobbing acorns (ornaments at Christmas) */
+.empty .mascot { animation: perk 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes perk { 0%, 100% { transform: none; } 50% { transform: rotate(-3deg) translateY(-2px); } }
+.bobs { display: flex; gap: 14px; height: 54px; align-items: flex-end; }
+.bobs i { position: relative; display: block; width: 22px; height: 26px; border-radius: 45% 45% 50% 50% / 40% 40% 60% 60%; background: radial-gradient(circle at 35% 30%, #D9A066, #A86A32 70%); animation: bob 1.1s ease-in-out infinite; }
+.bobs i::before { content: ""; position: absolute; left: -3px; right: -3px; top: -6px; height: 11px; border-radius: 50% 50% 30% 30%; background: #6E4626; }
+.bobs i:nth-child(2) { animation-delay: .15s; } .bobs i:nth-child(3) { animation-delay: .3s; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.empty.loading p { display: none; }
+
+/* 12. buttons sink a little when pressed */
+.btn, .chip, .pill-btn, .have-btn, .heart, .person, .crumb { transition: transform .08s ease, box-shadow .08s ease; }
+.house:active .box { transform: translateY(2px); box-shadow: inset 0 -3px 0 rgba(0,0,0,.14), 0 4px 10px rgba(60,35,10,.16); }
+
+/* 13. a planned gift is tied with a bow and a dashed ribbon */
+.gift { position: relative; align-items: start; }
+.gift .thumb { width: 72px; height: 72px; }
+.gift.getting::before { content: ""; position: absolute; left: -10px; top: 12px; bottom: 12px; width: 4px; border-radius: 2px; background: repeating-linear-gradient(180deg, var(--berry) 0 7px, transparent 7px 11px); }
+.pill-btn.on svg.bow, .have-btn.on svg.bow { color: inherit; }
+
+/* 14. extra copies hang on a small wooden tag */
+.qty, .perch .x2 { background: linear-gradient(180deg, #B9854F, #83552C) !important; color: #FFF6E3 !important; border-radius: 5px !important; padding: 1px 8px !important; box-shadow: 0 2px 3px rgba(0,0,0,.25); transform: rotate(5deg); overflow: visible; }
+.qty { top: 20px !important; }
+.qty::before, .perch .x2::before { content: ""; position: absolute; left: 50%; top: -11px; width: 1.5px; height: 11px; background: #7A5434; }
+.qty::after, .perch .x2::after { content: ""; position: absolute; left: calc(50% - 2px); top: 2px; width: 4px; height: 4px; border-radius: 50%; background: rgba(60,30,10,.45); }
+.card > .qty { top: 22px !important; }
+
+/* 15. a small hello in the header */
+.brand-wrap { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.hello { margin: 0 0 0 4px; font-weight: 800; font-size: var(--fs-3); color: var(--hello, #3E2A18); text-shadow: 0 1px 0 rgba(255,255,255,.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hello:empty { display: none; }
+.hello { align-self: flex-start; padding: 2px 10px; border-radius: 999px; background: var(--surface); box-shadow: 0 0 0 1px var(--line), 0 2px 6px rgba(40,30,20,.15); text-shadow: none !important; position: relative; z-index: 1; }
+.scene .t1 path:nth-child(-n+2), .scene .snowy path:nth-child(-n+2) { display: none; }
+.top { min-height: 128px; padding-bottom: 54px; }
+#logo { width: 46px; height: 52px; object-fit: contain; object-position: 50% 100%; flex: none; filter: drop-shadow(0 2px 2px rgba(60,35,10,.3)); margin: -6px 0 -4px; }
+
+/* rough spots */
+.search input:focus-visible { outline: none; }
+.search:focus-within { box-shadow: 0 0 0 2px var(--primary), var(--ctl) !important; }
+.flock-sum .stack span { border-radius: 14px; margin-left: -10px; width: 54px; height: 54px; }
+.flock-sum .stack img.cut { padding: 4px 2px 0; object-position: 50% 100%; }
+.flock-sum .fs-new .cap { margin-left: 0; }
+
+/* the current season's collection leads, with a ribbon */
+.house.now .h-name::after { content: "In season"; display: block; width: fit-content; margin: 4px auto 0; padding: 1px 9px; border-radius: 999px; background: var(--berry); color: #fff; font-family: var(--body); font-weight: 800; font-size: .72rem; }
+
+/* ===== night woods extras (dark mode, every season) ===== */
+.scene .moon { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .scene .sun { display: none; } :root:not([data-theme="light"]) .scene .moon { display: inline; } :root:not([data-theme="light"]) { --hello: #F4ECDC; } :root:not([data-theme="light"]) .hello { text-shadow: 0 1px 2px rgba(0,0,0,.6); } }
+:root[data-theme="dark"] .scene .sun { display: none; } :root[data-theme="dark"] .scene .moon { display: inline; }
+.scene .moon { fill: #F6EFD6; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .scene .ff circle { transform-box: fill-box; transform-origin: center; transform: scale(1.5); animation-duration: 7s; }
+  :root:not([data-theme="light"]) .case-in { box-shadow: inset 0 60px 80px -30px rgba(255,196,110,.28), inset 0 -40px 60px -20px rgba(0,0,0,.35), inset 0 0 0 2px rgba(0,0,0,.2); }
+  :root:not([data-theme="light"]) .case { filter: brightness(.86) saturate(.95); }
+}
+@supports (color: color-mix(in srgb, red, red)) { @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .case-in { background-color: color-mix(in srgb, var(--wall) 45%, #1E1810); } } }
+
+/* ===== seasonal header props (all hidden unless their season is on) ===== */
+.scene .xmas, .scene .snowy, .scene .pump, .scene .leaves, .scene .tulips, .scene .hearts, .scene .clovers, .scene .stars, .scene .marig { display: none; }
+.snowfall { display: none; }
+
+/* ===== CHRISTMAS ===== */
+:root[data-season="christmas"] {
+  --bg: #F8F2E7; --surface: #FFFDF8; --surface-2: #F2E9DA; --ink: #2B1C14; --muted: #6C5848; --line: #EADFCB; --line-strong: #B39B7C;
+  --primary: #1D5A3C; --on-primary: #FFF9EE; --leaf: #1E6B42; --leaf-fill: #217A4A; --on-leaf: #FFFFFF; --leaf-soft: #E0EEDF;
+  --berry: #B4243A; --berry-soft: #F9E0E1; --on-berry: #FFFFFF; --butter-soft: #FBEFD0; --focus: #1D5A3C;
+  --seal: #B4243A; --seal-d: #7E1526; --holly: #1E6B42; --tip: #C8283E; --glow: #FFD98A;
+  --bar1: #1F5B3E; --bar2: #123D29;
+  --sky1: #D5E6F0; --sky2: #F8F2E7; --h1c: #F4F8FA; --t1c: #3F7A58; --h2c: #FFFFFF; --t2c: #24563C; --sun: #FFF1C9; --trunk: #6E4A2E;
+  --leafpat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg stroke='%231D5A3C' stroke-opacity='.05' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M30 20v20M20 30h20M23 23l14 14M37 23 23 37'/%3E%3Cpath d='M104 92v14M97 99h14M99 94l10 10M109 94l-10 10'/%3E%3C/g%3E%3Cg fill='%23B4243A' fill-opacity='.07'%3E%3Ccircle cx='96' cy='30' r='3'/%3E%3Ccircle cx='38' cy='112' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+  --hello: #1D3B2A;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-season="christmas"]:not([data-theme="light"]) {
+    --bg: #0F1820; --surface: #17232D; --surface-2: #213140; --ink: #F6EFE3; --muted: #B9B1A3; --line: #2A3B48; --line-strong: #7D8E99;
+    --primary: #F2D58A; --on-primary: #1B1A10; --leaf: #8FD3A6; --leaf-fill: #2E7D50; --on-leaf: #FFFFFF; --leaf-soft: #1D3528;
+    --berry: #FF8C9C; --berry-soft: #43222B; --butter-soft: #39331F; --focus: #F2D58A; --seal: #D2384F; --seal-d: #8E1A2C; --holly: #6CC08C; --tip: #FF6B7F;
+    --bar1: #183B2A; --bar2: #0D2619;
+    --sky1: #0B1730; --sky2: #0F1820; --h1c: #B7C6D4; --t1c: #1F3D2D; --h2c: #D5E0EA; --t2c: #183324; --trunk: #3B2A1A;
+    --leafpat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg stroke='%23FFFFFF' stroke-opacity='.04' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M30 20v20M20 30h20M23 23l14 14M37 23 23 37'/%3E%3Cpath d='M104 92v14M97 99h14M99 94l10 10M109 94l-10 10'/%3E%3C/g%3E%3C/svg%3E");
+    --hello: #F6EFE3;
+  }
+}
+:root[data-season="christmas"][data-theme="dark"] {
+  --bg: #0F1820; --surface: #17232D; --surface-2: #213140; --ink: #F6EFE3; --muted: #B9B1A3; --line: #2A3B48; --line-strong: #7D8E99;
+  --primary: #F2D58A; --on-primary: #1B1A10; --leaf: #8FD3A6; --leaf-fill: #2E7D50; --on-leaf: #FFFFFF; --leaf-soft: #1D3528;
+  --berry: #FF8C9C; --berry-soft: #43222B; --butter-soft: #39331F; --focus: #F2D58A; --seal: #D2384F; --seal-d: #8E1A2C; --holly: #6CC08C; --tip: #FF6B7F;
+  --bar1: #183B2A; --bar2: #0D2619; --sky1: #0B1730; --sky2: #0F1820; --h1c: #B7C6D4; --t1c: #1F3D2D; --h2c: #D5E0EA; --t2c: #183324; --trunk: #3B2A1A; --hello: #F6EFE3;
+}
+[data-season="christmas"] .scene .xmas, [data-season="christmas"] .scene .snowy, [data-season="winter"] .scene .snowy { display: inline; }
+[data-season="christmas"] .scene .shroom, [data-season="winter"] .scene .shroom { display: none; }
+[data-season="christmas"] .scene .ff, [data-season="winter"] .scene .ff { display: none; }
+.scene .snowy path { fill: #fff; }
+.scene .bulb { animation: twinkle 2.4s ease-in-out infinite; }
+.scene .bulb:nth-child(3n) { animation-delay: -.8s; } .scene .bulb:nth-child(3n+1) { animation-delay: -1.6s; }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.scene .wire { fill: none; stroke: #2E3B2F; stroke-width: 1.1; }
+[data-season="christmas"] .snowfall, [data-season="winter"] .snowfall { display: block; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,.95) 1.3px, transparent 1.8px), radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1.4px);
+  background-size: 64px 64px, 38px 38px; background-position: 0 0, 19px 11px; animation: snow 14s linear infinite; opacity: .9; }
+@keyframes snow { to { transform: translateY(128px); } }
+.snowfall { inset: -128px 0 0 !important; will-change: transform; background-size: 64px 64px, 32px 32px !important; }
+.scene .xmas .gifts { transform: translate(0, -6px) scale(1.8); transform-box: fill-box; transform-origin: 50% 100%; }
+[data-season="christmas"] dialog.sheet { border-top: 4px solid var(--berry); }
+[data-season="christmas"] .bird-title h2::after { content: ""; display: inline-block; width: 22px; height: 16px; margin-left: 8px; vertical-align: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 20'%3E%3Cpath d='M12 11C7 13 3 11 1 7c3 0 4-2 6-1 0-2 2-3 4-2 0 3 1 5 1 7z' fill='%231E6B42'/%3E%3Cpath d='M14 11c4 2 8 1 11-3-3-1-4-3-6-2 0-2-2-3-4-2 0 3 0 5-1 7z' fill='%23287F4F'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%23D52B3E'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%23C0202F'/%3E%3Ccircle cx='13.5' cy='9.5' r='2.6' fill='%23E2384A'/%3E%3C/svg%3E") center / contain no-repeat; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"])[data-season="christmas"] .snowfall { filter: drop-shadow(0 0 1px rgba(80,110,140,.5)); } }
+:root[data-theme="light"][data-season="christmas"] .snowfall { filter: drop-shadow(0 0 1px rgba(80,110,140,.5)); }
+/* the sign wears a snow cap and a sprig of holly */
+[data-season="christmas"] .brand b { position: relative; background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 16px), linear-gradient(180deg, #C2373F, #8E1E29); box-shadow: 0 3px 0 #5E1219, 0 8px 16px rgba(60,10,10,.25); }
+[data-season="christmas"] .brand b::before { content: ""; position: absolute; left: -3px; right: -3px; top: -6px; height: 11px; border-radius: 10px 10px 8px 8px;
+  background: radial-gradient(circle at 15% 100%, transparent 4px, #fff 4.5px) 0 0 / 18px 100% repeat-x; filter: drop-shadow(0 1px 1px rgba(0,0,0,.15)); }
+[data-season="christmas"] .brand b::after { content: ""; position: absolute; right: -9px; top: -10px; width: 26px; height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 20'%3E%3Cpath d='M12 11C7 13 3 11 1 7c3 0 4-2 6-1 0-2 2-3 4-2 0 3 1 5 1 7z' fill='%231E6B42'/%3E%3Cpath d='M14 11c4 2 8 1 11-3-3-1-4-3-6-2 0-2-2-3-4-2 0 3 0 5-1 7z' fill='%23287F4F'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%23D52B3E'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%23C0202F'/%3E%3Ccircle cx='13.5' cy='9.5' r='2.6' fill='%23E2384A'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* tab bar: evergreen with a candy-cane edge */
+@media (min-width: 720px) { [data-season="christmas"] .tabs { position: relative; } }
+@media (max-width: 719px) {
+  [data-season="christmas"] .tabs { border-top: 0; }
+  [data-season="christmas"] .tabs::after { content: ""; position: absolute; left: 22px; right: 22px; top: 0; height: 4px; border-radius: 0 0 4px 4px; background: repeating-linear-gradient(-45deg, #E2384A 0 6px, #fff 6px 12px); opacity: .9; }
+  [data-season="christmas"] .tab { color: rgba(246,240,226,.86); }
+}
+/* birdhouses get snowy roofs; progress bars become candy canes with a berry on the tip */
+[data-season="christmas"] .house .roof, [data-season="winter"] .house .roof { background-image: linear-gradient(180deg, #fff 0 34%, rgba(255,255,255,.75) 34% 40%, transparent 40%), repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.12) 9px 11px); }
+[data-season="christmas"] .prog i, [data-season="christmas"] .bar i { background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,.38) 0 4px, transparent 4px 9px); }
+[data-season="christmas"] .prog i:not([style*="width:0%"])::after, [data-season="christmas"] .bar i::after { width: 9px; height: 9px; border-radius: 50%; right: -4px; margin-top: -4.5px; transform: none; background: radial-gradient(circle at 35% 30%, #FF6B7F, #B4243A 70%); }
+[data-season="christmas"] .bobs i { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FF8A98, #B4243A 70%); }
+[data-season="christmas"] .bobs i:nth-child(2) { background: radial-gradient(circle at 35% 30%, #FFE7A3, #C99A2E 70%); }
+[data-season="christmas"] .bobs i:nth-child(3) { background: radial-gradient(circle at 35% 30%, #8FE0B0, #217A4A 70%); }
+[data-season="christmas"] .bobs i::before { left: 7px; right: 7px; top: -5px; height: 6px; border-radius: 2px; background: #C9B37A; }
+/* section titles get a sprig of holly; cards a whisper of gold */
+[data-season="christmas"] .sec-h:not(:has(.sw)) h2::before, [data-season="christmas"] .panel > h2:first-child::before { content: ""; display: inline-block; width: 22px; height: 16px; margin-right: 6px; vertical-align: -1px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 20'%3E%3Cpath d='M12 11C7 13 3 11 1 7c3 0 4-2 6-1 0-2 2-3 4-2 0 3 1 5 1 7z' fill='%231E6B42'/%3E%3Cpath d='M14 11c4 2 8 1 11-3-3-1-4-3-6-2 0-2-2-3-4-2 0 3 0 5-1 7z' fill='%23287F4F'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%23D52B3E'/%3E%3Ccircle cx='16' cy='14' r='3' fill='%23C0202F'/%3E%3Ccircle cx='13.5' cy='9.5' r='2.6' fill='%23E2384A'/%3E%3C/svg%3E") center / contain no-repeat; }
+[data-season="christmas"] .heads h2::before { display: none; }
+[data-season="christmas"] .card, [data-season="christmas"] .panel, [data-season="christmas"] .nest-sum, [data-season="christmas"] .page-h, [data-season="christmas"] .empty, [data-season="christmas"] .row-b { box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 28%, var(--line)), var(--shadow); }
+/* the toast plank gets a dusting of snow */
+[data-season="christmas"] .toast::before, [data-season="winter"] .toast::before { content: ""; position: absolute; left: 6px; right: 6px; top: -4px; height: 8px; border-radius: 8px; background: radial-gradient(circle at 10px 100%, transparent 3px, #fff 3.5px) 0 0 / 20px 100% repeat-x; pointer-events: none; }
+/* the shelf hangs a garland */
+[data-season="christmas"] .case::before { content: ""; position: absolute; left: 10px; right: 10px; top: 3px; z-index: 3; pointer-events: none; height: 28px; filter: drop-shadow(0 2px 1px rgba(0,0,0,.25));
+  background: radial-gradient(circle, #E2384A 3.5px, transparent 4px) 0 13px / 34px 24px repeat-x, radial-gradient(circle, #F3D27A 3px, transparent 3.5px) 17px 15px / 34px 24px repeat-x,
+    radial-gradient(ellipse 20px 12px at 50% 0, transparent 5px, #2F7A4E 5.5px, #1E5A3C 12px, transparent 12.5px) 0 0 / 34px 24px repeat-x; }
+[data-season="christmas"] .case .bunting { display: none; }
+
+/* ===== WINTER (after Epiphany) ===== */
+@media (prefers-color-scheme: light) { :root[data-season="winter"] { --sky1: #DCE8F0; --h1c: #F2F6F9; --h2c: #FFFFFF; --t1c: #4E7D66; --t2c: #2E5D45; } }
+
+/* ===== VALENTINE'S ===== */
+@media (prefers-color-scheme: light) { :root[data-season="valentine"] { --berry: #C2335A; --seal: #C2335A; --seal-d: #8A1E3D; --sky1: #F8DCE3; --sun: #FFD3DE; --tip: #E35B7E; --glow: #FFC2D1; } }
+[data-season="valentine"] .scene .hearts { display: inline; } [data-season="valentine"] .scene .hearts path { fill: #E35B7E; animation: ff 4.5s ease-in-out infinite; }
+[data-season="valentine"] .scene .hearts path:nth-child(2n) { animation-delay: -2s; } [data-season="valentine"] .scene .ff { display: none; }
+/* ===== ST. PATRICK'S ===== */
+@media (prefers-color-scheme: light) { :root[data-season="stpatricks"] { --seal: #2FA35B; --seal-d: #1C6E3B; --sky1: #DDEFD8; --h1c: #A7D28F; --h2c: #7CBF62; --glow: #FFE38A; } }
+[data-season="stpatricks"] .scene .clovers { display: inline; } [data-season="stpatricks"] .scene .shroom { display: none; }
+/* ===== SPRING & EASTER ===== */
+@media (prefers-color-scheme: light) { :root[data-season="spring"] { --sky1: #DDEFF6; --h1c: #BFE0A4; --h2c: #95CD77; --t1c: #8DBF77; --t2c: #5E9C52; --sun: #FFEFA8; --tip: #F28FB0; } }
+[data-season="spring"] .scene .tulips { display: inline; } [data-season="spring"] .scene .shroom { display: none; }
+/* ===== SUMMER and the FOURTH ===== */
+@media (prefers-color-scheme: light) { :root[data-season="summer"] { --sky1: #CDEBF7; --sun: #FFE38A; } }
+@media (prefers-color-scheme: light) { :root[data-season="patriotic"] { --sky1: #D7E6F7; --seal: #2F4C9A; --seal-d: #1D3170; --tip: #C8283E; } }
+[data-season="patriotic"] .scene .stars { display: inline; } [data-season="patriotic"] .scene .stars path { fill: #fff; animation: twinkle 2.6s ease-in-out infinite; }
+[data-season="patriotic"] .scene .stars path:nth-child(2n) { animation-delay: -1.3s; }
+/* ===== FALL and HARVEST ===== */
+@media (prefers-color-scheme: light) { :root[data-season="fall"], :root[data-season="harvest"] { --sky1: #F6E3C7; --sky2: #F6EEDC; --t1c: #D88A3A; --t2c: #B35F28; --h1c: #D9C48A; --h2c: #BFA466; --sun: #FFD99A; --seal: #C46A24; --seal-d: #8A4615; --tip: #D9772F; } }
+[data-season="fall"] .scene .leaves, [data-season="harvest"] .scene .leaves, [data-season="harvest"] .scene .pump { display: inline; }
+.scene .leaves path { animation: fall 9s linear infinite; transform-box: fill-box; }
+.scene .leaves path:nth-child(2) { animation-delay: -3s; } .scene .leaves path:nth-child(3) { animation-delay: -6s; }
+@keyframes fall { 0% { transform: translate(0, -10px) rotate(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(-30px, 80px) rotate(220deg); opacity: 0; } }
+/* ===== HALLOWEEN and DÍA DE MUERTOS ===== */
+@media (prefers-color-scheme: light) { :root[data-season="halloween"] { --sky1: #F0D3B0; --sky2: #F6EEDC; --t1c: #5C4A6E; --t2c: #3E3150; --h1c: #B9A27A; --h2c: #8E7A58; --sun: #FFC46B; --seal: #8A5CC9; --seal-d: #5B3790; --tip: #E8873A; --glow: #FFB45E; } }
+[data-season="halloween"] .scene .pump { display: inline; } [data-season="halloween"] .scene .shroom { display: none; }
+@media (prefers-color-scheme: light) { :root[data-season="muertos"] { --sky1: #F7D9E6; --seal: #E25FA2; --seal-d: #A83A73; --tip: #F3A12E; } }
+[data-season="muertos"] .scene .marig { display: inline; } [data-season="muertos"] .scene .shroom { display: none; }
+
+@media (prefers-reduced-motion: reduce) { .snowfall { animation: none !important; } .scene .bulb { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -694,24 +961,30 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   <header class="top">
     <svg class="scene" viewBox="0 0 400 130" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
       <circle class="sun" cx="318" cy="34" r="20"/>
+      <path class="moon" d="M322 16a18 18 0 1 0 12 31a15 15 0 1 1-12-31Z"/>
+      <g class="hearts"><path transform="translate(150 38) scale(1)" d="M0 3C-3 0-5-2-5-4a2.6 2.6 0 0 1 5-1 2.6 2.6 0 0 1 5 1c0 2-2 4-5 7z"/><path transform="translate(210 24) scale(0.8)" d="M0 3C-3 0-5-2-5-4a2.6 2.6 0 0 1 5-1 2.6 2.6 0 0 1 5 1c0 2-2 4-5 7z"/><path transform="translate(270 50) scale(1.1)" d="M0 3C-3 0-5-2-5-4a2.6 2.6 0 0 1 5-1 2.6 2.6 0 0 1 5 1c0 2-2 4-5 7z"/><path transform="translate(64 42) scale(0.8)" d="M0 3C-3 0-5-2-5-4a2.6 2.6 0 0 1 5-1 2.6 2.6 0 0 1 5 1c0 2-2 4-5 7z"/><path transform="translate(378 48) scale(0.9)" d="M0 3C-3 0-5-2-5-4a2.6 2.6 0 0 1 5-1 2.6 2.6 0 0 1 5 1c0 2-2 4-5 7z"/></g><g class="stars"><path transform="translate(150 36)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/><path transform="translate(210 22)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/><path transform="translate(270 48)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/><path transform="translate(64 40)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/><path transform="translate(378 50)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/><path transform="translate(110 18)" d="M0-4l1.2 2.6 2.8.3-2.1 1.9.6 2.8L0 2.2-2.5 3.6l.6-2.8L-4-1.1l2.8-.3z"/></g><g class="leaves"><path transform="translate(90 20)" d="M0 0c4-4 9-3 10 0-3 3-7 4-10 0z" fill="#D9772F"/><path transform="translate(200 10)" d="M0 0c4-4 9-3 10 0-3 3-7 4-10 0z" fill="#C9542A"/><path transform="translate(330 24)" d="M0 0c4-4 9-3 10 0-3 3-7 4-10 0z" fill="#E8A23A"/></g>
       <path class="h1" d="M0 92 C60 70 110 78 160 88 S260 66 320 78 S380 86 400 80 V130 H0Z"/>
       <g class="t1"><path d="M28 92 l11 -30 11 30Z"/><path d="M52 90 l8 -22 8 22Z"/><path d="M228 84 l10 -28 10 28Z"/><path d="M250 82 l7 -20 7 20Z"/><path d="M356 84 l9 -26 9 26Z"/></g>
       <path class="h2" d="M0 108 C70 92 130 100 200 104 S320 92 400 100 V130 H0Z"/>
       <g class="t2"><path d="M98 104 l13 -38 13 38Z"/><rect x="108.5" y="104" width="5" height="6" class="trunk"/><path d="M300 100 l12 -34 12 34Z"/><rect x="309.5" y="100" width="5" height="6" class="trunk"/></g>
       <g class="shroom"><rect x="183" y="104" width="5" height="8" rx="2"/><path d="M178 105 a7.5 6 0 0 1 15 0Z" class="cap"/><circle cx="183" cy="101.5" r="1.3" class="dot"/><circle cx="188.5" cy="103" r="1" class="dot"/></g>
+      <g class="snowy"><path d="M39 62 l3.3 9.0 q-1.6 -1.8 -3.3 0 q-1.6 1.8 -3.3 0Z"/><path d="M60 68 l2.4 6.6 q-1.2 -1.3 -2.4 0 q-1.2 1.3 -2.4 0Z"/><path d="M238 56 l3.0 8.4 q-1.5 -1.7 -3.0 0 q-1.5 1.7 -3.0 0Z"/><path d="M257 62 l2.1 6.0 q-1.1 -1.2 -2.1 0 q-1.1 1.2 -2.1 0Z"/><path d="M365 58 l2.7 7.8 q-1.4 -1.6 -2.7 0 q-1.4 1.6 -2.7 0Z"/><path d="M111 66 l3.9 11.4 q-2.0 -2.3 -3.9 0 q-2.0 2.3 -3.9 0Z"/><path d="M312 66 l3.6 10.2 q-1.8 -2.0 -3.6 0 q-1.8 2.0 -3.6 0Z"/></g>
+      <g class="xmas"><path class="wire" d="M0 6 Q25 18 50 6 Q75 18 100 6 Q125 18 150 6 Q175 18 200 6 Q225 18 250 6 Q275 18 300 6 Q325 18 350 6 Q375 18 400 6"/><g class="bulb"><rect x="11.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="12.5" cy="14.1" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="23.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="25.0" cy="15.6" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="36.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="37.5" cy="14.1" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="61.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="62.5" cy="14.1" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="bulb"><rect x="73.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="75.0" cy="15.6" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="86.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="87.5" cy="14.1" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="111.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="112.5" cy="14.1" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="123.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="125.0" cy="15.6" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="bulb"><rect x="136.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="137.5" cy="14.1" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="161.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="162.5" cy="14.1" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="173.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="175.0" cy="15.6" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="186.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="187.5" cy="14.1" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="bulb"><rect x="211.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="212.5" cy="14.1" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="223.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="225.0" cy="15.6" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="236.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="237.5" cy="14.1" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="261.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="262.5" cy="14.1" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="bulb"><rect x="273.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="275.0" cy="15.6" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="286.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="287.5" cy="14.1" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="311.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="312.5" cy="14.1" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="323.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="325.0" cy="15.6" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="bulb"><rect x="336.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="337.5" cy="14.1" rx="2.2" ry="3.1" fill="#E2384A"/></g><g class="bulb"><rect x="361.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="362.5" cy="14.1" rx="2.2" ry="3.1" fill="#F3C64F"/></g><g class="bulb"><rect x="373.8" y="11.4" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="375.0" cy="15.6" rx="2.2" ry="3.1" fill="#3FAF6B"/></g><g class="bulb"><rect x="386.3" y="9.9" width="2.4" height="2" fill="#5B6B5E"/><ellipse cx="387.5" cy="14.1" rx="2.2" ry="3.1" fill="#4C8FE0"/></g><g class="gifts"><rect x="168" y="97" width="12" height="10" rx="1.5" fill="#C2373F"/><rect x="173" y="97" width="2.2" height="10" fill="#F3D27A"/><path d="M174 97c-3-4-6-2-4 0m4 0c3-4 6-2 4 0" stroke="#F3D27A" stroke-width="1.4" fill="none"/><rect x="182" y="100" width="9" height="7" rx="1.2" fill="#217A4A"/><rect x="185.6" y="100" width="1.8" height="7" fill="#E2384A"/><rect x="193" y="102" width="7" height="5" rx="1" fill="#F3D27A"/><rect x="195.6" y="102" width="1.6" height="5" fill="#C2373F"/></g></g>
+      <g class="pump"><ellipse cx="184" cy="105" rx="8" ry="6" fill="#E8873A"/><path d="M180 100c0 6 0 9 1 10M188 100c0 6 0 9-1 10M184 99v12" stroke="#C46A24" stroke-width="1" fill="none"/><path d="M184 99c0-3 1-4 3-5" stroke="#5C7A3A" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="268" cy="98" rx="5.5" ry="4.2" fill="#F09A45"/><path d="M268 94c0-2 1-3 2-3" stroke="#5C7A3A" stroke-width="1.4" fill="none" stroke-linecap="round"/></g><g class="tulips"><g transform="translate(150 108)"><path d="M0 0v-9" stroke="#4E8A3A" stroke-width="1.4"/><path d="M-3 -9c0-4 1.5-5 3-3 1.5-2 3-1 3 3-1 2-5 2-6 0z" fill="#F28FB0"/></g><g transform="translate(160 110)"><path d="M0 0v-9" stroke="#4E8A3A" stroke-width="1.4"/><path d="M-3 -9c0-4 1.5-5 3-3 1.5-2 3-1 3 3-1 2-5 2-6 0z" fill="#F6C343"/></g><g transform="translate(205 106)"><path d="M0 0v-9" stroke="#4E8A3A" stroke-width="1.4"/><path d="M-3 -9c0-4 1.5-5 3-3 1.5-2 3-1 3 3-1 2-5 2-6 0z" fill="#E35B7E"/></g><g transform="translate(214 108)"><path d="M0 0v-9" stroke="#4E8A3A" stroke-width="1.4"/><path d="M-3 -9c0-4 1.5-5 3-3 1.5-2 3-1 3 3-1 2-5 2-6 0z" fill="#B98AE0"/></g><g transform="translate(340 102)"><path d="M0 0v-9" stroke="#4E8A3A" stroke-width="1.4"/><path d="M-3 -9c0-4 1.5-5 3-3 1.5-2 3-1 3 3-1 2-5 2-6 0z" fill="#F28FB0"/></g></g><g class="clovers"><g transform="translate(176 106)" fill="#2FA35B"><circle cx="-2" cy="-2" r="2.2"/><circle cx="2" cy="-2" r="2.2"/><circle cx="0" cy="-5.2" r="2.2"/><path d="M0 -2v6" stroke="#2C7A3F" stroke-width="1"/></g><g transform="translate(190 108)" fill="#2FA35B"><circle cx="-2" cy="-2" r="2.2"/><circle cx="2" cy="-2" r="2.2"/><circle cx="0" cy="-5.2" r="2.2"/><path d="M0 -2v6" stroke="#2C7A3F" stroke-width="1"/></g><g transform="translate(260 99)" fill="#2FA35B"><circle cx="-2" cy="-2" r="2.2"/><circle cx="2" cy="-2" r="2.2"/><circle cx="0" cy="-5.2" r="2.2"/><path d="M0 -2v6" stroke="#2C7A3F" stroke-width="1"/></g></g><g class="marig"><g transform="translate(178 105)"><circle r="3.4" fill="#F3A12E"/><circle r="1.6" fill="#E8762A"/></g><g transform="translate(188 107)"><circle r="3.4" fill="#F3A12E"/><circle r="1.6" fill="#E8762A"/></g><g transform="translate(262 99)"><circle r="3.4" fill="#F3A12E"/><circle r="1.6" fill="#E8762A"/></g><g transform="translate(150 108)"><circle r="3.4" fill="#F3A12E"/><circle r="1.6" fill="#E8762A"/></g></g>
       <g class="ff"><circle cx="150" cy="40" r="1.8"/><circle cx="210" cy="26" r="1.4"/><circle cx="270" cy="54" r="1.6"/><circle cx="64" cy="44" r="1.3"/><circle cx="378" cy="52" r="1.5"/></g>
     </svg>
-    <div class="brand"><svg id="logo" viewBox="0 0 120 120" aria-hidden="true"></svg><b>Flocks</b></div>
+    <div class="snowfall" aria-hidden="true"></div>
+    <div class="brand-wrap"><div class="brand"><img id="logo" src="icons/logo-christmas.webp" alt="" width="46" height="52"><b>Flocks</b></div><p class="hello" id="hello"></p></div>
     <button class="me-chip" id="meBtn" type="button" hidden aria-haspopup="dialog"></button>
   </header>
 
   <div id="banner" role="status"></div>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button class="tab" role="tab" id="tab-birds" data-tab="birds" aria-controls="view-birds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14.5c0-4.7 3.4-8.5 7.9-8.5 2.6 0 4.7 1.3 5.9 3.2l3.2.6-2.4 2.1c.1.5.2 1 .2 1.6 0 4.1-3.4 7-7.4 7-4.3 0-7.4-2.6-7.4-6Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="14.8" cy="10.2" r="1.2" fill="currentColor"/><path d="M8 13.5c1 2 3 2.8 5 2.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span class="long">All birds</span><span class="short">Birds</span></button>
+    <button class="tab" role="tab" id="tab-birds" data-tab="birds" aria-controls="view-birds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9v11h13V9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 17.5v2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="long">All birds</span><span class="short">Birds</span></button>
     <button class="tab" role="tab" id="tab-mine" data-tab="mine" aria-controls="view-mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12.5h18c-.6 4.3-4.3 7.5-9 7.5s-8.4-3.2-9-7.5Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M5 15.5c2 .8 4.3 1.2 7 1.2s5-.4 7-1.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="9.5" cy="9.5" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="14.5" cy="9" rx="2.3" ry="2.9" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="long">My flock</span><span class="short">My flock</span><span class="n" id="n-mine" hidden></span></button>
     <button class="tab" role="tab" id="tab-wish" data-tab="wish" aria-controls="view-wish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20C6 16 3 12.6 3 9.3 3 6.4 5.2 4.2 7.9 4.2c1.7 0 3.1.9 4.1 2.3 1-1.4 2.4-2.3 4.1-2.3 2.7 0 4.9 2.2 4.9 5.1 0 3.3-3 6.7-9 10.7Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg><span class="long">My wish list</span><span class="short">Wishes</span><span class="n" id="n-wish" hidden></span></button>
-    <button class="tab" role="tab" id="tab-shelf" data-tab="shelf" aria-controls="view-shelf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 18h19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M5.5 18v3M18.5 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M4 15.2c0-3.2 2.2-5.7 5.1-5.7 1.7 0 3.1.8 3.9 2.1l2 .4-1.6 1.4.1 1c0 2.4-2.2 3.6-4.8 3.6S4 17 4 15.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="18" cy="14.4" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="long">Shelf</span><span class="short">Shelf</span></button>
+    <button class="tab" role="tab" id="tab-shelf" data-tab="shelf" aria-controls="view-shelf"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M4 12h16" stroke="currentColor" stroke-width="1.9"/><path d="M8 12V8.5M11 12V7.5M15.5 12l-1.5-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="17" r="1.6" fill="currentColor"/><circle cx="14.5" cy="17" r="1.6" fill="currentColor"/></svg><span class="long">Shelf</span><span class="short">Shelf</span></button>
     <button class="tab" role="tab" id="tab-store" data-tab="store" aria-controls="view-store"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.5h13.6l-1.1 10.6a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M9 11V7.5a3 3 0 0 1 6 0V11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><span class="long">I’m at Target</span><span class="short">Target</span></button>
     <button class="tab" role="tab" id="tab-family" data-tab="family" aria-controls="view-family"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M12 9v11M4 13h16" stroke="currentColor" stroke-width="1.9"/><path d="M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9Zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span class="long">Family &amp; gifts</span><span class="short">Gifts</span></button>
   </nav>
@@ -719,7 +992,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   <section id="view-birds" role="tabpanel" aria-labelledby="tab-birds" hidden>
     <div class="toolbar">
       <div class="tool-row">
-        <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><label class="sr" for="q">Search birds</label><input id="q" type="search" placeholder="Search by name or look" autocomplete="off" autocorrect="off" enterkeyhint="search"><button class="clear" type="button" id="qClear" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
+        <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><label class="sr" for="q">Search birds</label><input id="q" type="search" placeholder="Search birds" autocomplete="off" autocorrect="off" enterkeyhint="search"><button class="clear" type="button" id="qClear" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
         <button class="icon-btn" id="filterBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Filter</span></button>
       </div>
       <div class="chips" id="chips" role="group" aria-label="Season"></div>
@@ -811,6 +1084,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   const rand = n => Math.random().toString(36).slice(2, 2 + n);
   const initial = name => esc((String(name || "?").trim().charAt(0) || "?").toUpperCase());
   const ICON = {
+    bow: `<svg class="bow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11c-2.5-4.5-7.5-6-8-3s3.5 4 8 3Zm0 0c2.5-4.5 7.5-6 8-3s-3.5 4-8 3Z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 11l-4 8M12 11l4 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="11" r="1.8" fill="currentColor"/></svg>`,
     heart: (on) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20C6 16 3 12.6 3 9.3 3 6.4 5.2 4.2 7.9 4.2c1.7 0 3.1.9 4.1 2.3 1-1.4 2.4-2.3 4.1-2.3 2.7 0 4.9 2.2 4.9 5.1 0 3.3-3 6.7-9 10.7Z" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2"/></svg>`,
     x: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`,
     camera: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
@@ -893,7 +1167,24 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     </svg>`;
   }
 
-  $("#logo").innerHTML = birdSVG({ body: "#7CC6A4", belly: "#FFF3D1", acc: "bow", accent: "#F2795D" }).replace(/^<svg[^>]*>|<\/svg>$/g, "");
+  // ---------- seasons ----------
+  // Each season has a real bird as the app's little mascot (the logo and the friendly empty screens),
+  // and the collection that's "in season" leads the birdhouses.
+  const THEME = document.documentElement.getAttribute("data-season") || "summer";
+  const MASCOTS = { christmas: "jolly-2021", winter: "freezy-2022", valentine: "beau-2018", stpatricks: "lucky-2020", spring: "tulip-2018", summer: "drummer-2022",
+    patriotic: "star-2022", fall: "hazel-2017", harvest: "hazel-2017", halloween: "gourdon-2024", muertos: "flora-2018" };
+  const IN_SEASON = { christmas: "christmas", valentine: "valentine", stpatricks: "stpatricks", spring: "spring", summer: "summer", patriotic: "patriotic", fall: "fall", harvest: "fall", halloween: "halloween", muertos: "muertos" }[THEME] || "";
+  const mascotSrc = THEME === "christmas" ? "icons/logo-christmas.webp" : "cutouts/" + (MASCOTS[THEME] || "cherie-2024") + ".webp";
+  $("#logo").src = mascotSrc;
+  $("#logo").onerror = function () { this.onerror = null; this.src = "cutouts/cherie-2024.webp"; };
+  { const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(); if (bg) document.querySelectorAll('meta[name="theme-color"]').forEach(mt => { if (/light/.test(mt.media)) mt.content = bg; }); }
+  function hello() {
+    const el = $("#hello"); if (!el) return;
+    const m = me(); if (!m) { el.textContent = ""; return; }
+    const h = new Date().getHours();
+    const xmas = THEME === "christmas";
+    el.textContent = (h < 5 ? `Up late, ${m.name}? \u{1F319}` : h < 12 ? `Good morning, ${m.name} ${xmas ? "\u2744\uFE0F" : "\u2615"}` : h < 17 ? `Good afternoon, ${m.name} ${xmas ? "\u{1F384}" : "\u{1F33C}"}` : `Good evening, ${m.name} ${xmas ? "\u2728" : "\u{1F319}"}`);
+  }
 
   // ---------- tiny IndexedDB key-value store (photo cache) ----------
   const idb = (() => {
@@ -1546,6 +1837,10 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     fam.querySelector(".short").textContent = o.length === 1 ? o[0].name : "Family";
     document.querySelectorAll(".tab").forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute("aria-selected", String(on)); t.tabIndex = on ? 0 : -1; });
     TABS.forEach(k => { $("#view-" + k).hidden = k !== S.tab; });
+    hello();
+    // 5. the picked tab's icon hops once
+    if (renderTabs.last && renderTabs.last !== S.tab) { const ic = $("#tab-" + S.tab + " svg"); if (ic) { ic.classList.remove("hop"); void ic.getBoundingClientRect(); ic.classList.add("hop"); } }
+    renderTabs.last = S.tab;
     $("footer").hidden = S.tab !== "birds";
   }
   function renderView() {
@@ -1575,7 +1870,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       ${q > 1 ? `<span class="qty" aria-label="${q} copies">×${q}</span>` : ""}
       <div class="card-body" data-open="${esc(b.id)}"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
       <div class="card-actions">
-        <button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock ✓" : "I have it"}</button>
+        <button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock" : "I have it"}</button>
         <button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>
       </div>
     </article>`;
@@ -1605,9 +1900,9 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     return h;
   }
   // A real bird (Chérie, sold at Target as "Bonjour") greets people on empty pages.
-  const MASCOT = `<img class="mascot" src="cutouts/cherie-2024.webp" alt="" onerror="this.remove()">`;
+  const MASCOT = `<img class="mascot" src="${mascotSrc}" alt="" onerror="this.remove()">`;
   function emptyState(t, p, extra) { return `<div class="empty">${MASCOT}<h2>${esc(t)}</h2><p>${esc(p)}</p>${extra || ""}</div>`; }
-  function loadingState() { return emptyState("Gathering the birds…", "One moment while the list loads."); }
+  function loadingState() { return `<div class="empty loading" role="status"><span class="bobs" aria-hidden="true"><i></i><i></i><i></i></span><h2>Gathering the birds…</h2><p>One moment while the list loads.</p></div>`; }
 
   // ---------- search ----------
   // Ignores accents and capitals ("cherie" finds Chérie); names that match best come first.
@@ -1650,7 +1945,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       <div><button class="card-body btnish" type="button" data-open="${esc(b.id)}" style="padding:0"><span class="nm" style="display:block">${esc(b.name)}</span><span class="meta" style="display:block">${esc(meta)}</span></button>
       ${m ? `<p class="ans ${q ? "yes" : "no"}">${q ? "✓ In your flock" + (q > 1 ? " (" + q + ")" : "") : "Not in your flock yet"}</p>` : ""}
       ${tags ? `<div class="tags">${tags}</div>` : ""}
-      <div class="acts"><button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock ✓" : "I have it"}</button><button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button></div></div></li>`;
+      <div class="acts"><button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock" : "I have it"}</button><button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button></div></div></li>`;
   }
 
   // ---------- views ----------
@@ -1718,10 +2013,10 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     const r = repoPhoto(b); return r ? `<img class="ph" src="${esc(r)}" alt="" decoding="async" onerror="this.remove()">` : "";
   }
   function house(s, list, m) {
-    const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
-    return `<button class="house" type="button" data-nav="${s.id}" style="--c:${s.c};--roof:${shade(s.c, -0.16)}" aria-label="${esc(s.label + ", " + (m ? `${got} of ${list.length} collected` : `${list.length} birds`))}">
-      <span class="roof" aria-hidden="true"></span>
-      <span class="box" aria-hidden="true"><span class="door">${doorArt(faceOf(list, m))}</span><span class="peg"></span></span>
+    const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0, full = !!(m && list.length && got === list.length);
+    return `<button class="house${full ? " full" : ""}${s.id === IN_SEASON ? " now" : ""}" type="button" data-nav="${s.id}" style="--c:${s.c};--roof:${shade(s.c, -0.16)}" aria-label="${esc(s.label + ", " + (m ? `${got} of ${list.length} collected` : `${list.length} birds`))}">
+      <span class="roof" aria-hidden="true"></span>${full ? `<span class="flags" aria-hidden="true" style="--f:${s.c}"></span>` : ""}
+      <span class="box" aria-hidden="true"><span class="door">${doorArt(faceOf(list, m))}</span><span class="peg"></span>${full ? `<span class="plaque">Full house!</span>` : ""}</span>
       <span class="h-name">${esc(s.label)}</span>
       <span class="h-count">${m ? `${got} of ${list.length}` : `${list.length} ${list.length === 1 ? "bird" : "birds"}`}</span>
       ${m ? `<span class="prog" aria-hidden="true"><i style="width:${Math.round(100 * got / list.length)}%;--c:${s.c}"></i></span>` : ""}
@@ -1746,7 +2041,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       const got = all.filter(b => qtyOf(m, b.id)).length;
       h += `<div class="nest-sum"><span class="ns-n">${got}</span><span class="ns-t"><b>of ${all.length} birds collected</b>${progress(got, all.length, "")}</span></div>`;
     }
-    h += `<section class="group"><div class="sec-h"><h2>Collections</h2></div><div class="houses">${SEASONS.map(s => { const l = all.filter(b => seasonOf(b).id === s.id); return l.length ? house(s, l, m) : ""; }).join("")}</div></section>`;
+    h += `<section class="group"><div class="sec-h"><h2>Collections</h2></div><div class="houses">${SEASONS.slice().sort((a, b) => (b.id === IN_SEASON) - (a.id === IN_SEASON)).map(s => { const l = all.filter(b => seasonOf(b).id === s.id); return l.length ? house(s, l, m) : ""; }).join("")}</div></section>`;
     if (fresh.length) h += `<section class="group"><div class="sec-h"><h2>New in ${top}</h2></div>${rail(fresh, m)}</section>`;
     h += `<div class="grid" style="margin-top:24px"><button class="add-card" type="button" id="addBird"><span class="plus" aria-hidden="true">+</span>Add a missing bird</button></div>`;
     return h;
@@ -1837,7 +2132,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
         ${newest.length ? `<div class="fs-new"><div class="stack" aria-hidden="true">${newest.map(b => `<span>${cutout(b) ? `<img class="cut" src="${esc(cutout(b))}" alt="" loading="lazy">` : `<img src="${esc(repoPhoto(b))}" alt="" loading="lazy">`}</span>`).join("")}</div><span class="cap">Newest arrivals</span></div>` : ""}
         ${near ? `<p class="near">Closest to a full set: <b>${esc(near.label)}</b>, ${near.left} to go</p>` : ""}
         <details class="panel" style="box-shadow:none;padding:0"><summary>Collection by season</summary>${seasonBars(m)}</details></div>` +
-      (list.length ? flockRails(list, m) : emptyState("Your flock is waiting", "Go to All birds and tap \"I have it\" on each bird you own.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+      (list.length ? flockRails(list, m) : emptyState("Your nest is ready", "Go to All birds and tap \"I have it\" on each bird you own. They'll fly in here.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
   }
   function flockRails(list, m) {
     return SEASONS.map(s => {
@@ -1853,7 +2148,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     const list = birds().filter(b => wants(m, b.id));
     const names = others().map(f => f.name);
     paint(el, `<p class="secret">${ICON.gift}<span>${names.length ? esc(names.join(" and ")) + " can see this list when choosing gifts." : "The family can see this list when choosing gifts."}</span></p>` +
-      (list.length ? grouped(list, false) : emptyState("No wishes yet", "Tap the heart on any bird you're hoping to find. It shows up here and in the family's gift ideas.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+      (list.length ? grouped(list, false) : emptyState("Your wish list is a quiet nest", "Tap \u2661 on any bird you're hoping to find. It shows up here and in the family's gift ideas.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
   }
   function renderFamily() {
     const el = $("#view-family"); const all = flocks(); const m = me();
@@ -1879,9 +2174,9 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       h += `<ul class="gift-list">${wished.map(b => {
         const art = artHTML(b, 160, ""); const url = safeUrl(b.url); const got = !!mine[b.id];
         const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
-        return `<li class="gift"><button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+        return `<li class="gift${got && !isMe ? " getting" : ""}"><button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
           <div><p class="nm">${esc(b.name)}</p><p class="meta">${esc(meta)}</p>
-          <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>${got ? `<button class="pill-btn" type="button" data-given="${esc(b.id)}" data-givenfor="${esc(p.id)}"><span class="sr">${esc(b.name)}: </span>Given! 🎁</button>` : ""}` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
+          <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${got ? ICON.bow : ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>${got ? `<button class="pill-btn" type="button" data-given="${esc(b.id)}" data-givenfor="${esc(p.id)}"><span class="sr">${esc(b.name)}: </span>Given! 🎁</button>` : ""}` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
       }).join("")}</ul>`;
       if (!isMe) h += `<p class="secret">${ICON.lock}<span>Only you can see what you're getting. ${esc(p.name)} won't see it in the app${gettingCount ? `. You're getting ${gettingCount}.` : "."}</span></p>`;
     } else h += `<p class="sub" style="margin:0">${esc(isMe ? "Your wish list is empty. Tap the heart on any bird to add it." : p.name + " hasn't wished for any birds yet.")}</p>`;
@@ -1942,7 +2237,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     const w = wants(m, b.id);
     const acts = (!q || S.got.has(b.id) ? gotBtn(b, "have-btn") : "") + `<button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>` + others().filter(f => wants(f, b.id) && !qtyOf(f, b.id)).map(f => {
       const got = !!(gifts[f.id] && gifts[f.id][b.id]);
-      return `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}">${ICON.gift}<span class="sr">${esc(b.name)}: </span>${got ? `Getting it for ${esc(f.name)} ✓` : `I’m getting this for ${esc(f.name)}`}</button>`;
+      return `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" data-giftfor="${esc(f.id)}" aria-pressed="${got}">${got ? ICON.bow : ICON.gift}<span class="sr">${esc(b.name)}: </span>${got ? `Getting it for ${esc(f.name)} ✓` : `I’m getting this for ${esc(f.name)}`}</button>`;
     }).join("") + (stockUrl(b) ? stockLink(b, stockUrl(b)) : "");
     return `<article class="row-b st-row${q ? " have" : ""}" data-k="${esc(key)}">
       <button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
@@ -2215,7 +2510,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     let h = "";
     if (m) {
       const since = q && m.owned[b.id] && m.owned[b.id].at ? new Date(m.owned[b.id].at + "T12:00:00").toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }) : "";
-      h += `<button class="btn big${q ? " leaf" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "\u2713 In my flock" : "I have it"}</button>`;
+      h += `<button class="btn big${q ? " leaf" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "In my flock" : "I have it"}</button>`;
       h += `<div class="mine-row">${q ? `<div><span class="lbl" id="qtyLbl">How many?</span>
           <div class="stepper" role="group" aria-labelledby="qtyLbl"><button type="button" data-step="-1" aria-label="One fewer"${q <= 1 ? " disabled" : ""}>−</button><output aria-live="polite">${q}</output><button type="button" data-step="1" aria-label="One more">+</button></div></div>` : ""}
           <button class="btn${w ? " wish-on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" style="align-self:flex-end">${ICON.heart(w)}${w ? "On my wish list" : "Add to wish list"}</button></div>
@@ -2271,6 +2566,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       <div class="field" style="margin-top:12px"><label for="s-new">Add someone to the family</label><div class="tool-row"><input id="s-new" type="text" maxlength="30" placeholder="Their name" style="flex:1"><button class="btn" type="button" id="addPerson">Add</button></div></div></details>
       ${isApprover() && api && api.kind === "live" ? `<div class="field"><span class="lbl">New birds</span><p class="hint" style="margin:0 0 8px">This phone asks you before birds the automatic check finds go on everyone’s list.${waitingChecked ? ` Last check: ${esc(waitingChecked.split(" ")[0])}.` : ""}</p><div class="tool-row"><button class="btn" type="button" id="nbReview">Review new birds</button><button class="btn" type="button" id="nbStop">Stop asking here</button></div></div>` : ""}
       ${api && api.kind === "live" ? `<div><button class="btn" type="button" id="forgetCode">Sign out on this phone</button><p class="hint">You'll need the family passcode to get back in.${outbox.length ? ` ${outbox.length} ${outbox.length === 1 ? "change hasn't" : "changes haven't"} sent yet; ${outbox.length === 1 ? "it sends" : "they send"} after you sign back in.` : ""}</p></div>` : ""}
+      <div><span class="lbl" id="ssound">Little sounds</span><div class="seg" role="group" aria-labelledby="ssound"><button type="button" data-sound="off" aria-pressed="${store.get("flocks.sound") !== "on"}">Off</button><button type="button" data-sound="on" aria-pressed="${store.get("flocks.sound") === "on"}">On</button></div><p class="hint">A soft tap and a chime when a bird joins. Only on this phone.</p></div>
       <p class="hint">Flocks keeps everyone's birds in one shared list. Photos come from Target's listings, the Target Birds fan wiki and resale listings. Any bird without one can get a family photo.</p>`;
     if (full) dlg.innerHTML = bar("Settings") + `<div class="dlg-body" id="settingsBody">${body}</div>`;
     else if (!$("#settingsBody .confirm") && !(document.activeElement && dlg.contains(document.activeElement) && document.activeElement.tagName === "INPUT")) {
@@ -2299,7 +2595,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   function toast(msg, action, pic) {
     // An open sheet sits in the top layer, so the toast goes inside it to stay visible (and its Undo tappable).
     const t = toastEl, host = dlg.open ? dlg : document.body; if (t.parentNode !== host) host.appendChild(t);
-    t.innerHTML = `${pic ? `<img class="t-cut" src="${esc(pic)}" alt="" onerror="this.remove()">` : ""}<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
+    t.innerHTML = `${pic ? `<img class="t-cut${/^cutouts\//.test(pic) ? "" : " ph"}" src="${esc(pic)}" alt="" onerror="this.remove()">` : ""}<span class="msg"></span>${action ? `<button type="button" id="toastAct">${esc(action.label)}</button>` : ""}`;
     t.querySelector(".msg").textContent = msg; t.hidden = false; toastAction = action || null;
     clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAction = null; }, action ? 5000 : 2600);
   }
@@ -2317,10 +2613,13 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   // A new bird hops on its photo, a few hearts float up, and the message shows the bird itself.
   function celebrate(b, action) {
     if (!b) return;
-    toast(`${b.name} joined your flock!`, action || null, cutout(b) || repoPhoto(b));
+    const lines = [`${b.name} joined your flock!`, `${b.name} flew in!`, `Welcome home, ${b.name}!`, `${b.name} found the nest!`].concat(THEME === "christmas" ? [`${b.name} is home for the holidays!`] : []);
+    toast(lines[Math.floor(Math.random() * lines.length)], action || null, cutout(b) || repoPhoto(b));
+    sound("chime");
     requestAnimationFrame(() => {
       const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
       document.querySelectorAll(`[data-have="${CSS.escape(b.id)}"], [data-gotit="${CSS.escape(b.id)}"]`).forEach(btn => {
+        if (!still) { btn.classList.remove("stamp"); void btn.offsetWidth; btn.classList.add("stamp"); setTimeout(() => btn.classList.remove("stamp"), 700); }
         const host = btn.closest(".card, .row-b, #birdLive"); const pic = host && host.querySelector(".tile img, .thumb img, .hero img");
         if (!pic || still) return;
         pic.classList.remove("joy"); void pic.offsetWidth; pic.classList.add("joy");
@@ -2332,6 +2631,30 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
         }
       });
     });
+  }
+  // 2. a heart that blooms, with two little leaves fluttering off
+  function bloom(bid) {
+    sound("tok");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    requestAnimationFrame(() => document.querySelectorAll(`.heart[data-wish="${CSS.escape(bid)}"]`).forEach(h => {
+      h.classList.remove("bloom"); void h.offsetWidth; h.classList.add("bloom");
+      ["", " r"].forEach(c => { const l = document.createElement("span"); l.className = "leafy" + c; l.setAttribute("aria-hidden", "true"); h.appendChild(l); setTimeout(() => l.remove(), 900); });
+    }));
+  }
+  // 11. little sounds, off unless turned on in settings
+  let actx = null;
+  function sound(kind) {
+    if (store.get("flocks.sound") !== "on") return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume();
+      const t0 = actx.currentTime, notes = kind === "chime" ? [[1046.5, 0], [1318.5, .11], [1568, .22]] : [[320, 0]];
+      notes.forEach(([f, at]) => {
+        const o = actx.createOscillator(), g = actx.createGain(); o.type = kind === "chime" ? "sine" : "triangle";
+        o.frequency.setValueAtTime(f, t0 + at); if (kind !== "chime") o.frequency.exponentialRampToValueAtTime(140, t0 + at + .08);
+        g.gain.setValueAtTime(.0001, t0 + at); g.gain.exponentialRampToValueAtTime(kind === "chime" ? .18 : .22, t0 + at + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + at + (kind === "chime" ? .6 : .1));
+        o.connect(g).connect(actx.destination); o.start(t0 + at); o.stop(t0 + at + .65);
+      });
+    } catch (e) {}
   }
   function setWish(bid, on) { const m = me(); if (!m || !api) return; write("setWish", [m.id, bid, on]); }
   function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; write("setGift", [m.id, forId, bid, on]); }
@@ -2418,9 +2741,10 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     if (d.gotit) { if (!needMe()) return; gotIt(d.gotit); return; }
     if (d.stry) { S.sq = d.stry; $("#sq").value = d.stry; renderStore(); return; }
     if (t.id === "sqClear") { S.sq = ""; $("#sq").value = ""; renderStore(); $("#sq").focus(); return; }
-    if (d.have) { if (!needMe()) return; const m = me(); setOwned(d.have, qtyOf(m, d.have) ? 0 : 1, true); return; }
+    if (d.sound) { store.set("flocks.sound", d.sound); document.querySelectorAll("[data-sound]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.sound === d.sound))); sound("chime"); return; }
+    if (d.have) { if (!needMe()) return; const m = me(); if (qtyOf(m, d.have)) sound("tok"); setOwned(d.have, qtyOf(m, d.have) ? 0 : 1, true); return; }
     if (d.wish) {
-      if (!needMe()) return; const m = me(); const on = !wants(m, d.wish); setWish(d.wish, on);
+      if (!needMe()) return; const m = me(); const on = !wants(m, d.wish); setWish(d.wish, on); if (on) bloom(d.wish);
       const names = others().map(f => f.name).join(" and ");
       toast(on && qtyOf(m, d.wish) ? "You already have this one, but it's on your wish list too." : on ? "On your wish list." + (names ? ` ${names} can see it.` : "") : "Taken off your wish list");
       return;
@@ -2508,7 +2832,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   // A Home Screen app can stay open for days without reloading, so after a while away it checks for a newer
   // version of this page and reloads to it, but only when nothing is waiting to send and no sheet is open.
   // BUILD changes with every release.
-  const BUILD = "2026-11-20b";
+  const BUILD = "2026-11-20c";
   let awayAt = 0, buildBusy = false;
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") { awayAt = Date.now(); return; }
