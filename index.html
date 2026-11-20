@@ -588,7 +588,8 @@ body { background-color: var(--bg); background-image: var(--leafpat); }
 .me-chip { background: var(--surface); box-shadow: var(--ctl); }
 
 /* the search bar stays put while scrolling */
-.toolbar { background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.toolbar { background: var(--bg); }
+@supports (color: color-mix(in srgb, red, red)) { .toolbar { background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); } }
 
 /* cards: a framed photo on cream paper */
 .card { background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
@@ -630,13 +631,13 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
 
 .houses { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px 14px; }
 .house { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0; border: 0; padding: 0 0 6px; background: transparent; color: var(--ink); min-width: 0; text-align: center; }
-.house .roof { width: 100%; height: 44px; position: relative; z-index: 1; background: var(--c); background: color-mix(in srgb, var(--c) 72%, #4A2C14);
+.house .roof { width: 100%; height: 44px; position: relative; z-index: 1; background-color: var(--roof, var(--c));
   background-image: repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.12) 9px 11px); clip-path: polygon(50% 0, 100% 100%, 0 100%); margin-bottom: -2px; }
 .house .box { width: 82%; aspect-ratio: 1 / .92; border-radius: 0 0 16px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative;
   background-color: var(--wood-l); background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 2px, transparent 2px 15px), linear-gradient(180deg, var(--wood-l), var(--wood));
   box-shadow: inset 0 -5px 0 rgba(0,0,0,.14), 0 8px 18px rgba(60,35,10,.16); }
 .door { position: relative; display: block; width: 66%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 35%, #4A2E18, #1F130A 72%);
-  box-shadow: 0 0 0 5px var(--wood-d), 0 0 0 7px color-mix(in srgb, var(--c, #C98B4E) 60%, transparent); }
+  box-shadow: 0 0 0 5px var(--wood-d), 0 0 0 7px var(--c, #C98B4E); }
 .door img { position: absolute; display: block; }
 .door img.cut { left: 8%; right: 8%; bottom: 0; width: 84%; height: 90%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
 .door img.ph { inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -651,7 +652,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
 .page-h > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .page-h h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: var(--fs-0); line-height: 1.1; }
 .page-h p { margin: 0; color: var(--muted); font-weight: 600; font-size: var(--fs-3); }
-.door.sm { width: 68px; flex: none; box-shadow: 0 0 0 4px var(--wood), 0 0 0 6px color-mix(in srgb, var(--c, #C98B4E) 60%, transparent); }
+.door.sm { width: 68px; flex: none; box-shadow: 0 0 0 4px var(--wood), 0 0 0 6px var(--c, #C98B4E); }
 .yr-row .sec-h .yr { margin: 0; font-size: var(--fs-1); }
 .sec-h .see { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -6px -6px -6px 0; padding: 0 6px; border: 0; background: transparent; color: var(--primary); font-weight: 800; font-size: var(--fs-3); }
 .sec-h .see svg { width: 18px; height: 18px; }
@@ -666,7 +667,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
 .mt .t img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
 .mt .t .np svg { width: 34%; height: auto; opacity: .75; } .mt .t .np span { display: none; }
 .mt .l { padding: 0 4px; font-family: var(--display); font-weight: 600; font-size: var(--fs-3); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mt-heart { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,251,242,.94); color: var(--berry); box-shadow: 0 1px 4px rgba(0,0,0,.15); z-index: 2; }
+.mt-heart { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,251,242,.94); color: #A8344A; box-shadow: 0 1px 4px rgba(0,0,0,.15); z-index: 2; }
 .mt-heart.them { color: #9A5A1E; }
 .mt-heart svg { width: 15px; height: 15px; }
 .mt.have .t::before { content: ""; position: absolute; right: 6px; bottom: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--leaf-fill); box-shadow: 0 2px 6px rgba(0,0,0,.18); z-index: 2; }
@@ -674,6 +675,14 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
 @media (hover: hover) { .mt:hover .t img { transform: scale(1.04); transition: transform .2s ease; } }
 @media (min-width: 720px) { .rail { grid-auto-columns: 150px; margin-inline: 0; padding-inline: 2px; } .houses { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .scene .ff circle { animation: none; opacity: .7; } }
+/* the owned check sits on the light gray photo tile, so it keeps a deep green in both themes */
+.card.have .tile::before, .row-b.have .thumb::before, .mt.have .t::before { background: #2D7343; box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(0,0,0,.2); }
+.card.have .tile::after, .row-b.have .thumb::after, .mt.have .t::after { border-color: #fff; }
+.mt.more .t { background: var(--surface-2); display: flex; flex-direction: column; gap: 2px; color: var(--primary); }
+.mt.more .more-n { font-family: var(--display); font-weight: 600; font-size: 1.6rem; line-height: 1; }
+.mt.more .more-l { font-weight: 800; font-size: var(--fs-4); }
+.top { min-height: 116px; padding-bottom: 48px; }
+.page-h h2:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } button:active { transform: none; } }
 </style>
 </head>
@@ -1659,7 +1668,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
         : `<button class="btn primary" type="button" id="addBird" data-name="${esc(nice(q).slice(0, 60))}">Add \u201c${esc(nice(q).slice(0, 40))}\u201d to the list</button>`}</div>`);
       return;
     }
-    const flat = !!(S.show || S.year || S.sort !== "season");
+    const flat = !!(S.show || S.year);
     if (!flat) {
       if (!S.season) { paint($("#resultLine"), ""); paint(out, browseHome(m)); return; }
       const s = SEASON[S.season] || SEASON.other;
@@ -1696,37 +1705,40 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   }
   function doorArt(b) {
     if (!b) return "";
-    const c = cutout(b); if (c) return `<img class="cut" src="${esc(c)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
-    const r = repoPhoto(b); return r ? `<img class="ph" src="${esc(r)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : "";
+    const c = cutout(b); if (c) return `<img class="cut" src="${esc(c)}" alt="" decoding="async" onerror="this.remove()">`;
+    const r = repoPhoto(b); return r ? `<img class="ph" src="${esc(r)}" alt="" decoding="async" onerror="this.remove()">` : "";
   }
   function house(s, list, m) {
     const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
-    return `<button class="house" type="button" data-nav="${s.id}" style="--c:${s.c}">
+    return `<button class="house" type="button" data-nav="${s.id}" style="--c:${s.c};--roof:${shade(s.c, -0.16)}" aria-label="${esc(s.label + ", " + (m ? `${got} of ${list.length} collected` : `${list.length} birds`))}">
       <span class="roof" aria-hidden="true"></span>
       <span class="box" aria-hidden="true"><span class="door">${doorArt(faceOf(list, m))}</span><span class="peg"></span></span>
       <span class="h-name">${esc(s.label)}</span>
       <span class="h-count">${m ? `${got} of ${list.length}` : `${list.length} ${list.length === 1 ? "bird" : "birds"}`}</span>
-      ${m ? progress(got, list.length, s.c) : ""}
+      ${m ? `<span class="prog" aria-hidden="true"><i style="width:${Math.round(100 * got / list.length)}%;--c:${s.c}"></i></span>` : ""}
     </button>`;
   }
   function tileMini(b, m) {
     const art = artHTML(b, 240, ""), q = qtyOf(m, b.id), w = wants(m, b.id);
-    const want = flocks().some(f => f.id !== S.meId && wants(f, b.id) && !qtyOf(f, b.id));
-    return `<button class="mt${q ? " have" : ""}" type="button" data-open="${esc(b.id)}" data-k="${esc(b.id)}" aria-label="${esc(b.name + (b.year ? ", " + b.year : "") + (q ? ", in your flock" : ""))}">
+    const wanters = flocks().filter(f => f.id !== S.meId && wants(f, b.id) && !qtyOf(f, b.id)), want = wanters.length > 0;
+    const lab = b.name + (b.year ? ", " + b.year : "") + (q ? ", in your flock" : "") + (w ? ", on your wish list" : "") + (wanters.length ? ", " + wanters.map(f => f.name).join(" and ") + " wants it" : "");
+    return `<button class="mt${q ? " have" : ""}" type="button" data-open="${esc(b.id)}" data-k="${esc(b.id)}" aria-label="${esc(lab)}">
       <span class="t${art.photo ? "" : " nophoto"}">${art.html}${w ? `<span class="mt-heart" aria-hidden="true">${ICON.heart(true)}</span>` : want ? `<span class="mt-heart them" aria-hidden="true">${ICON.gift}</span>` : ""}</span>
       <span class="l">${esc(b.name)}</span></button>`;
   }
-  function rail(list, m) { return `<div class="rail">${list.map(b => tileMini(b, m)).join("")}</div>`; }
+  function rail(list, m, more) {
+    return `<div class="rail">${list.map(b => tileMini(b, m)).join("")}${more ? `<button class="mt more" type="button" data-navyear="${esc(more.y)}"><span class="t"><span class="more-n">+${more.n}</span><span class="more-l">See all ${more.all}</span></span><span class="l">&nbsp;</span></button>` : ""}</div>`;
+  }
   function browseHome(m) {
     const all = birds(); let h = "";
     const top = Math.max(0, ...all.map(yrOf));
-    const fresh = all.filter(b => yrOf(b) === top && (cutout(b) || repoPhoto(b))).sort(newestFirst).slice(0, 18);
-    if (fresh.length) h += `<section class="group"><div class="sec-h"><h2>New in ${top}</h2></div>${rail(fresh, m)}</section>`;
+    const fresh = all.filter(b => yrOf(b) === top && (cutout(b) || repoPhoto(b))).sort(newestFirst).slice(0, 12);
     if (m) {
       const got = all.filter(b => qtyOf(m, b.id)).length;
       h += `<div class="nest-sum"><span class="ns-n">${got}</span><span class="ns-t"><b>of ${all.length} birds collected</b>${progress(got, all.length, "")}</span></div>`;
     }
-    h += `<section class="group"><div class="sec-h"><h2>Collections</h2><span class="count">Tap a birdhouse</span></div><div class="houses">${SEASONS.map(s => { const l = all.filter(b => seasonOf(b).id === s.id); return l.length ? house(s, l, m) : ""; }).join("")}</div></section>`;
+    h += `<section class="group"><div class="sec-h"><h2>Collections</h2></div><div class="houses">${SEASONS.map(s => { const l = all.filter(b => seasonOf(b).id === s.id); return l.length ? house(s, l, m) : ""; }).join("")}</div></section>`;
+    if (fresh.length) h += `<section class="group"><div class="sec-h"><h2>New in ${top}</h2></div>${rail(fresh, m)}</section>`;
     h += `<div class="grid" style="margin-top:24px"><button class="add-card" type="button" id="addBird"><span class="plus" aria-hidden="true">+</span>Add a missing bird</button></div>`;
     return h;
   }
@@ -1738,28 +1750,54 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     h += years.map(y => {
       const yi = list.filter(b => String(b.year || "") === y), g = m ? yi.filter(b => qtyOf(m, b.id)).length : 0;
       const done = m && g === yi.length;
-      return `<section class="group yr-row"><div class="sec-h"><h3 class="yr">${esc(y || "Year unknown")}</h3><span class="count">${m ? (done ? `<span class="done">Complete set ✓</span>` : `${g} of ${yi.length}`) : `${yi.length} ${yi.length === 1 ? "bird" : "birds"}`}</span><button class="see" type="button" data-navyear="${esc(y || "?")}">See all<span class="sr"> ${esc(s.label)} ${esc(y)}</span>${ICON.right}</button></div>${rail(yi, m)}</section>`;
+      return `<section class="group yr-row"><div class="sec-h"><h3 class="yr">${esc(y || "Year unknown")}</h3><span class="count">${m ? (done ? `<span class="done">Complete set ✓</span>` : `${g} of ${yi.length}`) : `${yi.length} ${yi.length === 1 ? "bird" : "birds"}`}</span><button class="see" type="button" data-navyear="${esc(y || "?")}">See all<span class="sr"> ${esc(s.label)} ${esc(y)}</span>${ICON.right}</button></div>${rail(yi.slice(0, 12), m, yi.length > 12 ? { y: y || "?", n: yi.length - 12, all: yi.length } : null)}</section>`;
     }).join("");
     return h;
   }
   function setPage(s, y, m) {
-    const list = birds().filter(b => seasonOf(b).id === s.id && String(b.year || "") === (y === "?" ? "" : y)).sort((a, b) => a.name.localeCompare(b.name));
+    const list = birds().filter(b => seasonOf(b).id === s.id && String(b.year || "") === (y === "?" ? "" : y));
+    sortList(list);
     if (!list.length) return emptyState("No birds here", "This set is empty.");
     const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
     return `<header class="page-h" style="--c:${s.c}"><span class="door sm" aria-hidden="true">${doorArt(faceOf(list, m))}</span><div><h2>${esc(s.label)} ${esc(y === "?" ? "" : y)}</h2><p>${m ? (got === list.length ? "You have the whole set!" : `${got} of ${list.length} collected`) : `${list.length} birds`}</p>${m ? progress(got, list.length, s.c) : ""}</div></header>
       <div class="grid">${list.map(slot).join("")}</div>`;
   }
-  function navTo(season, set, push) {
+  // History: each browse level and each open sheet is a history entry, so the phone's back button goes up one step.
+  const hkey = st => st ? [st.tab || "", st.s || "", st.y || ""].join("|") : "";
+  const hereState = () => ({ fl: 1, tab: S.tab, s: S.season, y: S.set });
+  function hsave() { try { history.replaceState(Object.assign({}, history.state || hereState(), hereState(), { sc: window.scrollY }), ""); } catch (e) {} }
+  function focusPage() { const h = $("#birdsOut .page-h h2"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
+  function navTo(season, set, how) {
+    if (how !== "none") hsave();
+    const from = hkey(hereState());
     S.season = season || ""; S.set = season ? (set || "") : "";
-    if (push !== false) { try { history.pushState({ fl: 1, s: S.season, y: S.set }, ""); } catch (e) {} }
-    renderBirds(); window.scrollTo({ top: 0 });
+    const st = Object.assign(hereState(), { from, sc: 0 });
+    try { if (how === "replace") history.replaceState(st, ""); else if (how !== "none") history.pushState(st, ""); } catch (e) {}
+    renderBirds(); window.scrollTo({ top: 0 }); focusPage();
   }
+  // Going up: step back through history when the entry before is the parent, else replace this entry.
+  function goUp(season, set) {
+    const target = hkey({ tab: "birds", s: season || "", y: season ? set || "" : "" });
+    const st = history.state;
+    if (st && st.fl && !st.dlg && st.from === target) { history.back(); return; }
+    navTo(season, set, "replace");
+  }
+  let popping = false;
   window.addEventListener("popstate", e => {
-    const st = e.state || {};
-    if (dlg.open && dlgState.kind && !dlgState.locked) closeDialog(true);
+    const st = e.state;
+    if (dlg.open && dlgState.kind) {
+      if (dlgState.locked) { try { history.pushState(Object.assign(hereState(), { dlg: 1 }), ""); } catch (x) {} return; }
+      popping = true; closeDialog(); popping = false;
+    }
+    if (!st || !st.fl || hkey(st) === hkey(hereState())) return;
+    if (st.tab !== S.tab && TABS.includes(st.tab)) { if (S.tab === "store") leaveStore(); S.tab = st.tab; store.set("flocks.tab", S.tab); }
     S.season = st.s || ""; S.set = st.y || "";
-    if (S.tab === "birds") { renderBirds(); window.scrollTo({ top: 0 }); }
+    if (S.q && S.tab === "birds") { S.q = ""; $("#q").value = ""; }
+    renderTabs(); renderView();
+    const y = st.sc || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y }));
+    if (S.tab === "birds") focusPage();
   });
+  try { history.scrollRestoration = "manual"; } catch (e) {}
   function seasonBars(f) {
     return `<div class="srows">${SEASONS.map(s => {
       const all = birds().filter(b => seasonOf(b).id === s.id); if (!all.length) return "";
@@ -1795,7 +1833,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     return SEASONS.map(s => {
       const items = list.filter(b => seasonOf(b).id === s.id).sort(newestFirst); if (!items.length) return "";
       const all = birds().filter(b => seasonOf(b).id === s.id).length;
-      return `<section class="group"><div class="sec-h"><span class="sw" style="--c:${s.c}"></span><h2>${esc(s.label)}</h2><span class="count">${items.length} of ${all}</span><button class="see" type="button" data-gonav="${s.id}">All ${esc(s.label)}<span class="sr"> birds</span>${ICON.right}</button></div>${rail(items, m)}</section>`;
+      return `<section class="group"><div class="sec-h"><span class="sw" style="--c:${s.c}"></span><h2>${esc(s.label)}</h2><span class="count">${items.length} of ${all}</span><button class="see" type="button" data-gonav="${s.id}">Browse<span class="sr"> all ${esc(s.label)} birds</span>${ICON.right}</button></div>${rail(items, m)}</section>`;
     }).join("");
   }
   function renderWish() {
@@ -2064,7 +2102,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   const dlg = $("#dlg"), toastEl = $("#toast");
   const dlgState = { kind: "", id: "", opener: null, noteStart: "", locked: false, preview: "" };
   function openDialog(kind, arg) {
-    if (dlg.open) closeDialog(true);
+    if (dlg.open) { reopening = true; closeDialog(true); reopening = false; }
     dlgState.kind = kind; dlgState.id = (arg && arg.id) || ""; dlgState.preview = ""; dlgState.opener = document.activeElement; dlgState.locked = kind === "code" || kind === "welcome";
     if (dlgState.opener === document.body) dlgState.opener = null;
     if (kind === "bird") renderBirdDialog();
@@ -2076,11 +2114,13 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     else if (kind === "decorate") renderDecorate();
     else if (kind === "approve") { dlgState.all = !!(arg && arg.all); nbChoice.clear(); renderApprove(dlgState.all); }
     document.documentElement.classList.add("modal-open");
+    if (!dlgState.locked) { try { const st = history.state; if (st && st.dlg) history.replaceState(st, ""); else { hsave(); history.pushState(Object.assign(hereState(), { dlg: 1, from: hkey(hereState()) }), ""); } } catch (e) {} }
     try { dlg.showModal(); } catch (e) { dlg.setAttribute("open", ""); }
     const title = kind === "welcome" && dlg.querySelector("#dlgTitle"); if (title) title.tabIndex = -1;
     const first = dlg.querySelector("[autofocus]") || dlg.querySelector(".x") || title || dlg.querySelector("button, input");
     if (first) first.focus({ preventScroll: true });
   }
+  let reopening = false;
   function closeDialog(silent) {
     if (dlgState.kind === "bird") saveNoteNow();
     const opener = dlgState.opener;
@@ -2090,6 +2130,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     dlg.innerHTML = "";
     document.documentElement.classList.remove("modal-open");
     if (!silent && opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    if (!popping && !reopening) setTimeout(() => { try { if (!dlg.open && history.state && history.state.dlg) history.back(); } catch (e) {} }, 0);
     if (!approvalAsked) setTimeout(() => askApproval(), 350);
   }
   dlg.addEventListener("cancel", e => { e.preventDefault(); if (!dlgState.locked) closeDialog(); });
@@ -2300,16 +2341,16 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     if (t.id === "toastAct") { const a = toastAction; toastEl.hidden = true; toastAction = null; if (a) a.run(); return; }
     if (d.close !== undefined) { closeDialog(); return; }
     if (d.tab) {
-      if (d.tab === S.tab && d.tab === "birds" && (S.season || S.set) && !S.q) { navTo("", ""); return; }
+      if (d.tab === S.tab && d.tab === "birds" && (S.season || S.set) && !S.q) { goUp(""); return; }
       if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); if (d.tab === "store" && !$("#storeHead").hidden) $("#sq").focus({ preventScroll: true }); return; }
-      S.scroll[S.tab] = window.scrollY; if (S.tab === "store") leaveStore(); S.tab = d.tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now())); renderTabs(); renderView();
+      S.scroll[S.tab] = window.scrollY; if (S.tab === "store") leaveStore(); hsave(); S.tab = d.tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now())); try { history.replaceState(Object.assign({}, history.state, hereState()), ""); } catch (e) {} renderTabs(); renderView();
       const y = S.scroll[S.tab] || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y })); return;
     }
     if (d.goto) { if (S.tab === "store" && d.goto !== "store") leaveStore(); S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
     if (d.welcome !== undefined) { openDialog("welcome"); return; }
-    if (d.nav !== undefined) { if (d.nav === "" && (S.show || S.year || S.sort !== "season")) { S.show = ""; S.year = ""; } navTo(d.nav, ""); return; }
+    if (d.nav !== undefined) { if (S.show || S.year) { S.show = ""; S.year = ""; } if (t.classList.contains("crumb")) goUp(d.nav); else navTo(d.nav, ""); return; }
     if (d.navyear !== undefined) { navTo(S.season, d.navyear); return; }
-    if (d.gonav) { S.scroll[S.tab] = window.scrollY; S.tab = "birds"; store.set("flocks.tab", S.tab); renderTabs(); navTo(d.gonav, ""); return; }
+    if (d.gonav) { hsave(); S.scroll[S.tab] = window.scrollY; S.q = ""; $("#q").value = ""; $("#qClear").hidden = true; S.show = ""; S.year = ""; const from = hkey(hereState()); S.tab = "birds"; store.set("flocks.tab", S.tab); renderTabs(); S.season = d.gonav; S.set = ""; try { history.pushState(Object.assign(hereState(), { from, sc: 0 }), ""); } catch (e) {} renderBirds(); window.scrollTo({ top: 0 }); focusPage(); return; }
     if (d.season !== undefined) { S.season = S.season === d.season ? "" : d.season; renderBirds(); return; }
     if (d.show !== undefined) { S.show = d.show; dlg.querySelectorAll("[data-show]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.show === S.show))); renderBirds(); return; }
     if (d.sort) { S.sort = d.sort; store.set("flocks.sort", S.sort); dlg.querySelectorAll("[data-sort]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.sort === S.sort))); renderBirds(); return; }
@@ -2317,7 +2358,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     if (d.try) { S.q = d.try; $("#q").value = d.try; renderBirds(); return; }
     if (t.id === "qClear") { S.q = ""; $("#q").value = ""; renderBirds(); $("#q").focus(); return; }
     if (t.id === "resetFilters") { S.show = ""; S.year = ""; S.sort = "season"; store.set("flocks.sort", "season"); renderFilter(); renderBirds(); return; }
-    if (t.id === "clearFilters") { S.show = ""; S.season = ""; S.set = ""; S.year = ""; S.sort = "season"; store.set("flocks.sort", "season"); renderBirds(); return; }
+    if (t.id === "clearFilters") { S.show = ""; S.year = ""; renderBirds(); return; }
     if (t.id === "filterBtn") { openDialog("filter"); return; }
     if (t.id === "meBtn") { openDialog("settings"); return; }
     if (d.open) { openDialog("bird", { id: d.open }); return; }
@@ -2455,6 +2496,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       qs.delete("approver"); history.replaceState(null, "", location.pathname + (qs.toString() ? "?" + qs : "") + location.hash);
       setTimeout(() => toast(on ? "This phone will ask you about new birds." : "This phone won’t ask about new birds anymore."), 600);
     }
+    try { history.replaceState(hereState(), ""); } catch (e) {}
     renderTabs(); renderView();
     if (!configured) { start(makeLocal()); return; }
     const code = store.get("flocks.code");
