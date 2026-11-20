@@ -9,8 +9,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Flocks">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#EEF6F2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1A1828" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6EEDC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151E19" media="(prefers-color-scheme: dark)">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -20,8 +20,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-/* Layout: compact app bar, tab views (bottom tab bar on phones), product-style bird cards on a mint ground.
-   Plum ink, mint ground, peach and berry accents. Filled buttons use dark plum or deep green for contrast. */
+/* Layout: hillside app bar, tab views (wooden tab bar on phones), Collections of birdhouses, framed bird photos.
+   Final colours are set in the "storybook woodland pass" block near the end. */
 :root {
   --bg: #EEF6F2;
   --surface: #FFFFFF;
@@ -533,12 +533,162 @@ button { touch-action: manipulation; }
 @media (min-width: 720px) and (max-width: 1059px) { .tab .long { display: none; } .tab .short { display: block; } }
 #dlgTitle:focus { outline: none; }
 .burst { position: fixed; z-index: 45; pointer-events: none; color: var(--berry); font-size: 1.1rem; animation: luv .9s ease-out forwards; }
+/* ---- storybook woodland pass, Nov 2026 ----
+   A cozy birdhouse in the woods: parchment ground, bark-brown ink, forest-green actions, wooden tab bar,
+   a hand-drawn hillside in the header. Bird photos keep their light gray tile so they never look boxed in. */
+:root {
+  --bg: #F6EEDC; --surface: #FFFBF2; --surface-2: #F0E5CE; --tile: #EBEBEB; --ink: #36271A; --muted: #6B5743;
+  --line: #E4D6BA; --line-strong: #A88C6A; --primary: #2E5B3B; --on-primary: #FFF8EA;
+  --leaf: #2D7343; --leaf-fill: #36804D; --on-leaf: #FFFFFF; --leaf-soft: #E2EED6;
+  --berry: #A8344A; --berry-soft: #F7E0DF; --on-berry: #FFFFFF; --peach: #B5622B; --peach-soft: #F6E2CC; --butter-soft: #FAEDC6;
+  --focus: #2E5B3B;
+  --shadow: 0 1px 0 rgba(90,60,25,.06), 0 6px 18px rgba(90,60,25,.10);
+  --ctl: 0 1px 2px rgba(90,60,25,.10), 0 2px 10px rgba(90,60,25,.08);
+  --wood: #8A5A32; --wood-l: #B07B4A; --wood-d: #5E3B1F; --cream: #FFF6E3; --bar1: #7A4F2B; --bar2: #5F3D1F;
+  --sky1: #CFE7E3; --sky2: #F3EBD6; --h1c: #B9D2A0; --t1c: #93B583; --h2c: #86AD6B; --t2c: #5A8450; --sun: #FFE7A8; --ffc: #FFF8D0; --trunk: #7A5434; --capc: #D2544B;
+  --leafpat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%236E8F4E' fill-opacity='.07'%3E%3Cpath d='M20 30c8-10 20-10 24-6-6 8-16 12-24 6z'/%3E%3Cpath d='M86 82c-2-12 6-22 12-22 2 10-4 18-12 22z'/%3E%3Ccircle cx='70' cy='22' r='2.5'/%3E%3Ccircle cx='30' cy='94' r='2'/%3E%3C/g%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151E19; --surface: #1F2B24; --surface-2: #29382F; --ink: #F4ECDC; --muted: #C3B6A0; --line: #33453A; --line-strong: #7F907F;
+    --primary: #F1DDAE; --on-primary: #1B241E; --leaf: #93D3A2; --leaf-fill: #93D3A2; --on-leaf: #10261A; --leaf-soft: #233A2B;
+    --berry: #F294A6; --berry-soft: #432630; --on-berry: #2A0F17; --peach: #F0A36E; --peach-soft: #43301F; --butter-soft: #3A3322; --focus: #F1DDAE;
+    --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.30); --ctl: 0 1px 2px rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+    --wood: #6E4626; --wood-l: #8A5A32; --wood-d: #3E2714; --bar1: #4E331C; --bar2: #3A2614;
+    --sky1: #1B2B3A; --sky2: #18241E; --h1c: #22382C; --t1c: #1D3326; --h2c: #2A4733; --t2c: #183020; --sun: #F3E6BC; --ffc: #FFE58A; --trunk: #3B2A1A; --capc: #A84540;
+    --leafpat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%23FFE58A' fill-opacity='.05'%3E%3Cpath d='M20 30c8-10 20-10 24-6-6 8-16 12-24 6z'/%3E%3Cpath d='M86 82c-2-12 6-22 12-22 2 10-4 18-12 22z'/%3E%3Ccircle cx='70' cy='22' r='2.5'/%3E%3Ccircle cx='30' cy='94' r='2'/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151E19; --surface: #1F2B24; --surface-2: #29382F; --ink: #F4ECDC; --muted: #C3B6A0; --line: #33453A; --line-strong: #7F907F;
+  --primary: #F1DDAE; --on-primary: #1B241E; --leaf: #93D3A2; --leaf-fill: #93D3A2; --on-leaf: #10261A; --leaf-soft: #233A2B;
+  --berry: #F294A6; --berry-soft: #432630; --on-berry: #2A0F17; --peach: #F0A36E; --peach-soft: #43301F; --butter-soft: #3A3322; --focus: #F1DDAE;
+  --shadow: 0 1px 0 rgba(0,0,0,.25), 0 8px 22px rgba(0,0,0,.30); --ctl: 0 1px 2px rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+  --wood: #6E4626; --wood-l: #8A5A32; --wood-d: #3E2714; --bar1: #4E331C; --bar2: #3A2614;
+  --sky1: #1B2B3A; --sky2: #18241E; --h1c: #22382C; --t1c: #1D3326; --h2c: #2A4733; --t2c: #183020; --sun: #F3E6BC; --ffc: #FFE58A; --trunk: #3B2A1A; --capc: #A84540;
+}
+body { background-color: var(--bg); background-image: var(--leafpat); }
+
+/* header: a little hillside with pines, a toadstool and fireflies */
+.top { position: relative; isolation: isolate; margin: -8px -16px 0; padding: 16px 16px 58px; min-height: 132px; align-items: flex-start;
+  background: linear-gradient(180deg, var(--sky1), var(--sky2)); border-radius: 0 0 28px 28px; overflow: hidden; }
+.scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.scene .sun { fill: var(--sun); opacity: .9; }
+.scene .h1 { fill: var(--h1c); } .scene .t1 { fill: var(--t1c); }
+.scene .h2 { fill: var(--h2c); } .scene .t2 path { fill: var(--t2c); } .scene .trunk { fill: var(--trunk); }
+.scene .shroom rect { fill: var(--cream); } .scene .cap { fill: var(--capc); } .scene .dot { fill: #FFF6E3; }
+.scene .ff circle { fill: var(--ffc); animation: ff 4.5s ease-in-out infinite; }
+.scene .ff circle:nth-child(2n) { animation-delay: -1.8s; } .scene .ff circle:nth-child(3n) { animation-delay: -3s; }
+@keyframes ff { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.brand { gap: 6px; }
+.brand svg { width: 42px; height: 42px; filter: drop-shadow(0 2px 2px rgba(60,35,10,.25)); }
+.brand b { padding: 3px 14px 5px; border-radius: 12px; color: var(--cream); background: linear-gradient(180deg, #B98352, #8A5A32);
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 16px), linear-gradient(180deg, #B98352, #8A5A32);
+  box-shadow: 0 3px 0 #5E3B1F, 0 8px 16px rgba(60,35,10,.22); text-shadow: 0 1px 0 rgba(60,35,10,.35); }
+.me-chip { background: var(--surface); box-shadow: var(--ctl); }
+
+/* the search bar stays put while scrolling */
+.toolbar { background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+
+/* cards: a framed photo on cream paper */
+.card { background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.card > .tile { margin: 6px 6px 0; width: auto; border-radius: 15px; }
+.card > .owners { top: 14px; left: 14px; }
+.card > .qty { top: 14px; right: 14px; }
+.row-b { background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.row-b.have { box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.panel, .meter, .empty { background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.add-card { border-color: var(--line-strong); color: var(--ink); }
+.add-card .plus { background: var(--primary); color: var(--on-primary); }
+.sec-h h2, .yr { color: var(--ink); }
+dialog.sheet { background: var(--surface); }
+dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
+.owners .av { border-color: var(--surface); }
+
+/* tabs: a wooden plank */
+.tabs { background: var(--bar1); background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 2px, transparent 2px 22px), linear-gradient(180deg, var(--bar1), var(--bar2)); box-shadow: 0 3px 0 rgba(40,24,10,.25), var(--shadow); }
+.tab { color: rgba(255,246,227,.84); }
+.tab[aria-selected="true"] { background: var(--cream); color: #4A2F18; box-shadow: none; }
+@media (max-width: 719px) {
+  .tabs { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 2px, transparent 2px 22px), linear-gradient(180deg, var(--bar1), var(--bar2)); -webkit-backdrop-filter: none; backdrop-filter: none;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.08), 0 -6px 20px rgba(40,24,10,.18); border-radius: 22px 22px 0 0; padding-top: 7px; }
+  .tab { color: rgba(255,246,227,.84); }
+  .tab[aria-selected="true"] { background: transparent; color: #FFE3A3; }
+  .tab[aria-selected="true"] svg { background: rgba(255,227,163,.18); border-radius: 10px; box-sizing: content-box; padding: 2px 10px; margin-block: -2px; }
+}
+
+/* browsing: Collections > season > year */
+.crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.crumb { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 16px 0 10px; border: 0; border-radius: 999px; background: var(--surface); box-shadow: var(--ctl); font-weight: 700; font-size: var(--fs-3); color: var(--ink); }
+.crumb svg { width: 18px; height: 18px; }
+.prog { display: block; width: 100%; height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(90,60,25,.06); }
+.prog i { display: block; height: 100%; border-radius: inherit; background: var(--c, var(--leaf-fill)); min-width: 0; }
+.nest-sum { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 20px; background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.nest-sum .ns-n { font-family: var(--display); font-weight: 600; font-size: 2.25rem; line-height: 1; color: var(--leaf); font-variant-numeric: tabular-nums; }
+.nest-sum .ns-t { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.nest-sum .ns-t b { font-weight: 700; font-size: var(--fs-3); color: var(--muted); }
+
+.houses { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px 14px; }
+.house { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0; border: 0; padding: 0 0 6px; background: transparent; color: var(--ink); min-width: 0; text-align: center; }
+.house .roof { width: 100%; height: 44px; position: relative; z-index: 1; background: var(--c); background: color-mix(in srgb, var(--c) 72%, #4A2C14);
+  background-image: repeating-linear-gradient(180deg, transparent 0 9px, rgba(0,0,0,.12) 9px 11px); clip-path: polygon(50% 0, 100% 100%, 0 100%); margin-bottom: -2px; }
+.house .box { width: 82%; aspect-ratio: 1 / .92; border-radius: 0 0 16px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative;
+  background-color: var(--wood-l); background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 2px, transparent 2px 15px), linear-gradient(180deg, var(--wood-l), var(--wood));
+  box-shadow: inset 0 -5px 0 rgba(0,0,0,.14), 0 8px 18px rgba(60,35,10,.16); }
+.door { position: relative; display: block; width: 66%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 35%, #4A2E18, #1F130A 72%);
+  box-shadow: 0 0 0 5px var(--wood-d), 0 0 0 7px color-mix(in srgb, var(--c, #C98B4E) 60%, transparent); }
+.door img { position: absolute; display: block; }
+.door img.cut { left: 8%; right: 8%; bottom: 0; width: 84%; height: 90%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+.door img.ph { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.house .peg { width: 20%; height: 6px; border-radius: 3px; background: var(--wood-d); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.house .h-name { margin-top: 10px; font-family: var(--display); font-weight: 600; font-size: var(--fs-2); line-height: 1.2; }
+.house .h-count { color: var(--muted); font-weight: 700; font-size: var(--fs-4); font-variant-numeric: tabular-nums; }
+.house .prog { width: 64%; margin-top: 5px; height: 6px; }
+@media (hover: hover) { .house:hover .box { transform: translateY(-2px); transition: transform .18s ease; } }
+.house:focus-visible { outline-offset: 4px; border-radius: 16px; }
+
+.page-h { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 22px; background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.page-h > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.page-h h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: var(--fs-0); line-height: 1.1; }
+.page-h p { margin: 0; color: var(--muted); font-weight: 600; font-size: var(--fs-3); }
+.door.sm { width: 68px; flex: none; box-shadow: 0 0 0 4px var(--wood), 0 0 0 6px color-mix(in srgb, var(--c, #C98B4E) 60%, transparent); }
+.yr-row .sec-h .yr { margin: 0; font-size: var(--fs-1); }
+.sec-h .see { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -6px -6px -6px 0; padding: 0 6px; border: 0; background: transparent; color: var(--primary); font-weight: 800; font-size: var(--fs-3); }
+.sec-h .see svg { width: 18px; height: 18px; }
+.sec-h .done { color: var(--leaf); font-weight: 800; }
+.rail { display: grid; grid-auto-flow: column; grid-auto-columns: 128px; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
+  scrollbar-width: none; margin-inline: -16px; padding: 4px 16px 10px; scroll-padding-inline: 16px; }
+.rail::-webkit-scrollbar { display: none; }
+#birdsOut > * + * { margin-top: 16px; }
+#birdsOut > .group + .group { margin-top: 24px; }
+.mt { display: flex; flex-direction: column; gap: 6px; border: 0; padding: 0; background: transparent; color: var(--ink); text-align: left; min-width: 0; scroll-snap-align: start; }
+.mt .t { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1 / 1; border-radius: 18px; background: var(--tile); overflow: hidden; box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--line), 0 6px 14px rgba(60,35,10,.12); margin: 5px 5px 2px; width: calc(100% - 10px); }
+.mt .t img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.mt .t .np svg { width: 34%; height: auto; opacity: .75; } .mt .t .np span { display: none; }
+.mt .l { padding: 0 4px; font-family: var(--display); font-weight: 600; font-size: var(--fs-3); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-heart { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,251,242,.94); color: var(--berry); box-shadow: 0 1px 4px rgba(0,0,0,.15); z-index: 2; }
+.mt-heart.them { color: #9A5A1E; }
+.mt-heart svg { width: 15px; height: 15px; }
+.mt.have .t::before { content: ""; position: absolute; right: 6px; bottom: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--leaf-fill); box-shadow: 0 2px 6px rgba(0,0,0,.18); z-index: 2; }
+.mt.have .t::after { content: ""; position: absolute; right: 14px; bottom: 14px; width: 5px; height: 10px; border: solid var(--on-leaf); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); z-index: 3; }
+@media (hover: hover) { .mt:hover .t img { transform: scale(1.04); transition: transform .2s ease; } }
+@media (min-width: 720px) { .rail { grid-auto-columns: 150px; margin-inline: 0; padding-inline: 2px; } .houses { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .scene .ff circle { animation: none; opacity: .7; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } button:active { transform: none; } }
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
+    <svg class="scene" viewBox="0 0 400 130" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <circle class="sun" cx="318" cy="34" r="20"/>
+      <path class="h1" d="M0 92 C60 70 110 78 160 88 S260 66 320 78 S380 86 400 80 V130 H0Z"/>
+      <g class="t1"><path d="M28 92 l11 -30 11 30Z"/><path d="M52 90 l8 -22 8 22Z"/><path d="M228 84 l10 -28 10 28Z"/><path d="M250 82 l7 -20 7 20Z"/><path d="M356 84 l9 -26 9 26Z"/></g>
+      <path class="h2" d="M0 108 C70 92 130 100 200 104 S320 92 400 100 V130 H0Z"/>
+      <g class="t2"><path d="M98 104 l13 -38 13 38Z"/><rect x="108.5" y="104" width="5" height="6" class="trunk"/><path d="M300 100 l12 -34 12 34Z"/><rect x="309.5" y="100" width="5" height="6" class="trunk"/></g>
+      <g class="shroom"><rect x="183" y="104" width="5" height="8" rx="2"/><path d="M178 105 a7.5 6 0 0 1 15 0Z" class="cap"/><circle cx="183" cy="101.5" r="1.3" class="dot"/><circle cx="188.5" cy="103" r="1" class="dot"/></g>
+      <g class="ff"><circle cx="150" cy="40" r="1.8"/><circle cx="210" cy="26" r="1.4"/><circle cx="270" cy="54" r="1.6"/><circle cx="64" cy="44" r="1.3"/><circle cx="378" cy="52" r="1.5"/></g>
+    </svg>
     <div class="brand"><svg id="logo" viewBox="0 0 120 120" aria-hidden="true"></svg><b>Flocks</b></div>
     <button class="me-chip" id="meBtn" type="button" hidden aria-haspopup="dialog"></button>
   </header>
@@ -656,6 +806,8 @@ button { touch-action: manipulation; }
     gift: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 9v11M4 13h16" stroke="currentColor" stroke-width="2"/></svg>`,
     lock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
     gear: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.87 10.68 L21.53 10.85 L21.53 13.15 L18.87 13.32 L17.80 15.93 L19.55 17.93 L17.93 19.55 L15.93 17.80 L13.32 18.87 L13.15 21.53 L10.85 21.53 L10.68 18.87 L8.07 17.80 L6.07 19.55 L4.45 17.93 L6.20 15.93 L5.13 13.32 L2.47 13.15 L2.47 10.85 L5.13 10.68 L6.20 8.07 L4.45 6.07 L6.07 4.45 L8.07 6.20 L10.68 5.13 L10.85 2.47 L13.15 2.47 L13.32 5.13 L15.93 6.20 L17.93 4.45 L19.55 6.07 L17.80 8.07Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`,
+    right: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    back: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     chev: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`
   };
 
@@ -756,10 +908,10 @@ button { touch-action: manipulation; }
     meId: store.get("flocks.me") || "",
     // The Target page is for the store: after a few hours away, open on All birds instead.
     tab: (t => TABS.includes(t) && !(t === "store" && Date.now() - (Number(store.get("flocks.tab.at")) || 0) > 3 * 3600e3) ? t : "birds")(store.get("flocks.tab")),
-    q: "", season: "", show: "", year: "", scroll: {}, sort: ["season", "name", "newest", "oldest"].includes(store.get("flocks.sort")) ? store.get("flocks.sort") : "season",
+    q: "", season: "", set: "", show: "", year: "", scroll: {}, sort: ["season", "name", "newest", "oldest"].includes(store.get("flocks.sort")) ? store.get("flocks.sort") : "season",
     person: "",
     sq: "", storeSnap: null, got: new Map(),   // I'm at Target: search, the wish list as it was on arrival, birds marked "Got it" there
-    shelf: (() => { let v = {}; try { v = JSON.parse(store.get("flocks.shelf") || "{}") || {}; } catch (e) {} return { who: "", wood: WOODS[v.wood] ? v.wood : "oak", wall: WALLS[v.wall] ? v.wall : "mint", sort: SHELF_SORTS.some(x => x[0] === v.sort) ? v.sort : "season", move: v.move !== false }; })(),
+    shelf: (() => { let v = {}; try { v = JSON.parse(store.get("flocks.shelf") || "{}") || {}; } catch (e) {} return { who: "", wood: WOODS[v.wood] ? v.wood : "oak", wall: WALLS[v.wall] ? v.wall : "cream", sort: SHELF_SORTS.some(x => x[0] === v.sort) ? v.sort : "season", move: v.move !== false }; })(),
     mode: "starting",                  // starting | preview | live | need-code | locked | unset
     netErr: false, waiting: false
   };
@@ -1316,7 +1468,7 @@ button { touch-action: manipulation; }
       if (fk) { const t = nn.querySelector(fk); if (t) t.focus({ preventScroll: true }); }
     });
   }
-  const FOCUS_ATTRS = ["data-gotit", "data-have", "data-wish", "data-open", "data-step", "data-season", "data-gift", "data-person", "data-goto", "data-welcome", "data-perch", "data-shelfwho"];
+  const FOCUS_ATTRS = ["data-gotit", "data-have", "data-wish", "data-open", "data-step", "data-season", "data-gift", "data-person", "data-goto", "data-welcome", "data-perch", "data-shelfwho", "data-nav", "data-navyear", "data-gonav"];
   function focusKey(el) {
     if (!el || el === document.body) return null;
     if (el.id) return "#" + CSS.escape(el.id);
@@ -1494,7 +1646,7 @@ button { touch-action: manipulation; }
     $("#qClear").hidden = !S.q;
     if (!S.loaded) { out.innerHTML = loadingState(); $("#resultLine").innerHTML = ""; return; }
     const m = me(), q = S.q.trim();
-    $("#chips").hidden = !!q;
+    $("#chips").hidden = true;
     if (q) {
       // Searching looks through every bird, whatever season or filter is picked, so the answer is never hidden.
       const hits = searchBirds(q);
@@ -1507,6 +1659,14 @@ button { touch-action: manipulation; }
         : `<button class="btn primary" type="button" id="addBird" data-name="${esc(nice(q).slice(0, 60))}">Add \u201c${esc(nice(q).slice(0, 40))}\u201d to the list</button>`}</div>`);
       return;
     }
+    const flat = !!(S.show || S.year || S.sort !== "season");
+    if (!flat) {
+      if (!S.season) { paint($("#resultLine"), ""); paint(out, browseHome(m)); return; }
+      const s = SEASON[S.season] || SEASON.other;
+      if (!S.set) { paint($("#resultLine"), crumbs([["", "Collections"]])); paint(out, seasonPage(s, m)); return; }
+      paint($("#resultLine"), crumbs([[s.id, s.label]]));
+      paint(out, setPage(s, S.set, m)); return;
+    }
     const list = birds().filter(b => {
       if (S.season && seasonOf(b).id !== S.season) return false;
       if (S.year && String(b.year || "") !== S.year) return false;
@@ -1515,11 +1675,91 @@ button { touch-action: manipulation; }
       if (S.show === "wanted" && !others().some(f => wants(f, b.id) && !qtyOf(f, b.id))) return false;
       return true;
     });
-    const filtered = !!(S.season || S.show || S.year);
-    paint($("#resultLine"), `<span>${list.length} of ${birds().length} birds</span>${filtered ? `<button class="link" type="button" id="clearFilters">Clear filters</button>` : ""}`);
+    paint($("#resultLine"), `<span>${list.length} of ${birds().length} birds${S.season ? " in " + esc((SEASON[S.season] || SEASON.other).label) : ""}</span><button class="link" type="button" id="clearFilters">Clear filters</button>`);
     paint(out, (list.length ? grouped(list, false) : emptyState("No birds match", "Try a different name, season or filter.")) +
       `<div class="grid" style="margin-top:14px"><button class="add-card" type="button" id="addBird"><span class="plus" aria-hidden="true">+</span>Add a missing bird</button></div>`);
   }
+
+  // ---------- browsing: Collections > season > year set ----------
+  const yrOf = b => parseInt(b.year, 10) || 0;
+  const newestFirst = (a, b) => yrOf(b) - yrOf(a) || a.name.localeCompare(b.name);
+  function crumbs(path) {
+    return `<nav class="crumbs" aria-label="Back to">${path.map(([id, label], i) => `<button class="crumb${i === path.length - 1 ? " up" : ""}" type="button" data-nav="${esc(id)}">${i === path.length - 1 ? ICON.back : ""}${esc(label)}</button>`).join(`<span class="sep" aria-hidden="true">/</span>`)}</nav>`;
+  }
+  function progress(got, all, c, label) {
+    return `<span class="prog" role="img" aria-label="${esc(label || `${got} of ${all} collected`)}"><i style="width:${all ? Math.round(100 * got / all) : 0}%;${c ? `--c:${c}` : ""}"></i></span>`;
+  }
+  // The bird that looks out of a birdhouse door: one you own if you can, else the newest one with a cut-out.
+  function faceOf(list, m) {
+    const s = list.slice().sort(newestFirst), solo = s.filter(b => !/\bmini\b|pack|set$/i.test(b.name + " " + (b.kind || "")) && !/photo shows the whole/i.test(b.about || ""));
+    return solo.find(b => m && qtyOf(m, b.id) && cutout(b)) || solo.find(b => cutout(b)) || s.find(b => m && qtyOf(m, b.id) && cutout(b)) || s.find(b => cutout(b)) || s.find(b => repoPhoto(b)) || null;
+  }
+  function doorArt(b) {
+    if (!b) return "";
+    const c = cutout(b); if (c) return `<img class="cut" src="${esc(c)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
+    const r = repoPhoto(b); return r ? `<img class="ph" src="${esc(r)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : "";
+  }
+  function house(s, list, m) {
+    const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
+    return `<button class="house" type="button" data-nav="${s.id}" style="--c:${s.c}">
+      <span class="roof" aria-hidden="true"></span>
+      <span class="box" aria-hidden="true"><span class="door">${doorArt(faceOf(list, m))}</span><span class="peg"></span></span>
+      <span class="h-name">${esc(s.label)}</span>
+      <span class="h-count">${m ? `${got} of ${list.length}` : `${list.length} ${list.length === 1 ? "bird" : "birds"}`}</span>
+      ${m ? progress(got, list.length, s.c) : ""}
+    </button>`;
+  }
+  function tileMini(b, m) {
+    const art = artHTML(b, 240, ""), q = qtyOf(m, b.id), w = wants(m, b.id);
+    const want = flocks().some(f => f.id !== S.meId && wants(f, b.id) && !qtyOf(f, b.id));
+    return `<button class="mt${q ? " have" : ""}" type="button" data-open="${esc(b.id)}" data-k="${esc(b.id)}" aria-label="${esc(b.name + (b.year ? ", " + b.year : "") + (q ? ", in your flock" : ""))}">
+      <span class="t${art.photo ? "" : " nophoto"}">${art.html}${w ? `<span class="mt-heart" aria-hidden="true">${ICON.heart(true)}</span>` : want ? `<span class="mt-heart them" aria-hidden="true">${ICON.gift}</span>` : ""}</span>
+      <span class="l">${esc(b.name)}</span></button>`;
+  }
+  function rail(list, m) { return `<div class="rail">${list.map(b => tileMini(b, m)).join("")}</div>`; }
+  function browseHome(m) {
+    const all = birds(); let h = "";
+    const top = Math.max(0, ...all.map(yrOf));
+    const fresh = all.filter(b => yrOf(b) === top && (cutout(b) || repoPhoto(b))).sort(newestFirst).slice(0, 18);
+    if (fresh.length) h += `<section class="group"><div class="sec-h"><h2>New in ${top}</h2></div>${rail(fresh, m)}</section>`;
+    if (m) {
+      const got = all.filter(b => qtyOf(m, b.id)).length;
+      h += `<div class="nest-sum"><span class="ns-n">${got}</span><span class="ns-t"><b>of ${all.length} birds collected</b>${progress(got, all.length, "")}</span></div>`;
+    }
+    h += `<section class="group"><div class="sec-h"><h2>Collections</h2><span class="count">Tap a birdhouse</span></div><div class="houses">${SEASONS.map(s => { const l = all.filter(b => seasonOf(b).id === s.id); return l.length ? house(s, l, m) : ""; }).join("")}</div></section>`;
+    h += `<div class="grid" style="margin-top:24px"><button class="add-card" type="button" id="addBird"><span class="plus" aria-hidden="true">+</span>Add a missing bird</button></div>`;
+    return h;
+  }
+  function seasonPage(s, m) {
+    const list = birds().filter(b => seasonOf(b).id === s.id).sort(newestFirst);
+    const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
+    const years = [...new Set(list.map(b => String(b.year || "")))];
+    let h = `<header class="page-h" style="--c:${s.c}"><span class="door sm" aria-hidden="true">${doorArt(faceOf(list, m))}</span><div><h2>${esc(s.label)}</h2><p>${m ? `${got} of ${list.length} collected` : `${list.length} birds`} · ${years.length} ${years.length === 1 ? "year" : "years"}</p>${m ? progress(got, list.length, s.c) : ""}</div></header>`;
+    h += years.map(y => {
+      const yi = list.filter(b => String(b.year || "") === y), g = m ? yi.filter(b => qtyOf(m, b.id)).length : 0;
+      const done = m && g === yi.length;
+      return `<section class="group yr-row"><div class="sec-h"><h3 class="yr">${esc(y || "Year unknown")}</h3><span class="count">${m ? (done ? `<span class="done">Complete set ✓</span>` : `${g} of ${yi.length}`) : `${yi.length} ${yi.length === 1 ? "bird" : "birds"}`}</span><button class="see" type="button" data-navyear="${esc(y || "?")}">See all<span class="sr"> ${esc(s.label)} ${esc(y)}</span>${ICON.right}</button></div>${rail(yi, m)}</section>`;
+    }).join("");
+    return h;
+  }
+  function setPage(s, y, m) {
+    const list = birds().filter(b => seasonOf(b).id === s.id && String(b.year || "") === (y === "?" ? "" : y)).sort((a, b) => a.name.localeCompare(b.name));
+    if (!list.length) return emptyState("No birds here", "This set is empty.");
+    const got = m ? list.filter(b => qtyOf(m, b.id)).length : 0;
+    return `<header class="page-h" style="--c:${s.c}"><span class="door sm" aria-hidden="true">${doorArt(faceOf(list, m))}</span><div><h2>${esc(s.label)} ${esc(y === "?" ? "" : y)}</h2><p>${m ? (got === list.length ? "You have the whole set!" : `${got} of ${list.length} collected`) : `${list.length} birds`}</p>${m ? progress(got, list.length, s.c) : ""}</div></header>
+      <div class="grid">${list.map(slot).join("")}</div>`;
+  }
+  function navTo(season, set, push) {
+    S.season = season || ""; S.set = season ? (set || "") : "";
+    if (push !== false) { try { history.pushState({ fl: 1, s: S.season, y: S.set }, ""); } catch (e) {} }
+    renderBirds(); window.scrollTo({ top: 0 });
+  }
+  window.addEventListener("popstate", e => {
+    const st = e.state || {};
+    if (dlg.open && dlgState.kind && !dlgState.locked) closeDialog(true);
+    S.season = st.s || ""; S.set = st.y || "";
+    if (S.tab === "birds") { renderBirds(); window.scrollTo({ top: 0 }); }
+  });
   function seasonBars(f) {
     return `<div class="srows">${SEASONS.map(s => {
       const all = birds().filter(b => seasonOf(b).id === s.id); if (!all.length) return "";
@@ -1549,7 +1789,14 @@ button { touch-action: manipulation; }
         ${newest.length ? `<div class="fs-new"><div class="stack" aria-hidden="true">${newest.map(b => `<span>${cutout(b) ? `<img class="cut" src="${esc(cutout(b))}" alt="" loading="lazy">` : `<img src="${esc(repoPhoto(b))}" alt="" loading="lazy">`}</span>`).join("")}</div><span class="cap">Newest arrivals</span></div>` : ""}
         ${near ? `<p class="near">Closest to a full set: <b>${esc(near.label)}</b>, ${near.left} to go</p>` : ""}
         <details class="panel" style="box-shadow:none;padding:0"><summary>Collection by season</summary>${seasonBars(m)}</details></div>` +
-      (list.length ? grouped(list, true) : emptyState("Your flock is waiting", "Go to All birds and tap \"I have it\" on each bird you own.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+      (list.length ? flockRails(list, m) : emptyState("Your flock is waiting", "Go to All birds and tap \"I have it\" on each bird you own.", `<button class="btn primary" type="button" data-goto="birds">Browse all birds</button>`)));
+  }
+  function flockRails(list, m) {
+    return SEASONS.map(s => {
+      const items = list.filter(b => seasonOf(b).id === s.id).sort(newestFirst); if (!items.length) return "";
+      const all = birds().filter(b => seasonOf(b).id === s.id).length;
+      return `<section class="group"><div class="sec-h"><span class="sw" style="--c:${s.c}"></span><h2>${esc(s.label)}</h2><span class="count">${items.length} of ${all}</span><button class="see" type="button" data-gonav="${s.id}">All ${esc(s.label)}<span class="sr"> birds</span>${ICON.right}</button></div>${rail(items, m)}</section>`;
+    }).join("");
   }
   function renderWish() {
     const el = $("#view-wish"); const m = me();
@@ -2053,12 +2300,16 @@ button { touch-action: manipulation; }
     if (t.id === "toastAct") { const a = toastAction; toastEl.hidden = true; toastAction = null; if (a) a.run(); return; }
     if (d.close !== undefined) { closeDialog(); return; }
     if (d.tab) {
+      if (d.tab === S.tab && d.tab === "birds" && (S.season || S.set) && !S.q) { navTo("", ""); return; }
       if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); if (d.tab === "store" && !$("#storeHead").hidden) $("#sq").focus({ preventScroll: true }); return; }
       S.scroll[S.tab] = window.scrollY; if (S.tab === "store") leaveStore(); S.tab = d.tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now())); renderTabs(); renderView();
       const y = S.scroll[S.tab] || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y })); return;
     }
     if (d.goto) { if (S.tab === "store" && d.goto !== "store") leaveStore(); S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
     if (d.welcome !== undefined) { openDialog("welcome"); return; }
+    if (d.nav !== undefined) { if (d.nav === "" && (S.show || S.year || S.sort !== "season")) { S.show = ""; S.year = ""; } navTo(d.nav, ""); return; }
+    if (d.navyear !== undefined) { navTo(S.season, d.navyear); return; }
+    if (d.gonav) { S.scroll[S.tab] = window.scrollY; S.tab = "birds"; store.set("flocks.tab", S.tab); renderTabs(); navTo(d.gonav, ""); return; }
     if (d.season !== undefined) { S.season = S.season === d.season ? "" : d.season; renderBirds(); return; }
     if (d.show !== undefined) { S.show = d.show; dlg.querySelectorAll("[data-show]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.show === S.show))); renderBirds(); return; }
     if (d.sort) { S.sort = d.sort; store.set("flocks.sort", S.sort); dlg.querySelectorAll("[data-sort]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.sort === S.sort))); renderBirds(); return; }
@@ -2066,7 +2317,7 @@ button { touch-action: manipulation; }
     if (d.try) { S.q = d.try; $("#q").value = d.try; renderBirds(); return; }
     if (t.id === "qClear") { S.q = ""; $("#q").value = ""; renderBirds(); $("#q").focus(); return; }
     if (t.id === "resetFilters") { S.show = ""; S.year = ""; S.sort = "season"; store.set("flocks.sort", "season"); renderFilter(); renderBirds(); return; }
-    if (t.id === "clearFilters") { S.show = ""; S.season = ""; S.year = ""; renderBirds(); return; }
+    if (t.id === "clearFilters") { S.show = ""; S.season = ""; S.set = ""; S.year = ""; S.sort = "season"; store.set("flocks.sort", "season"); renderBirds(); return; }
     if (t.id === "filterBtn") { openDialog("filter"); return; }
     if (t.id === "meBtn") { openDialog("settings"); return; }
     if (d.open) { openDialog("bird", { id: d.open }); return; }
