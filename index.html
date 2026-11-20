@@ -13,8 +13,8 @@
 <meta name="theme-color" content="#151E19" media="(prefers-color-scheme: dark)">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=santa">
+<link rel="icon" type="image/png" href="icons/icon-192.png?v=santa">
 <script src="config.js"></script>
 <script>
 // The app dresses for the time of year. ?season=halloween (etc.) previews another season on this page only.
@@ -2832,7 +2832,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   // A Home Screen app can stay open for days without reloading, so after a while away it checks for a newer
   // version of this page and reloads to it, but only when nothing is waiting to send and no sheet is open.
   // BUILD changes with every release.
-  const BUILD = "2026-11-20c";
+  const BUILD = "2026-11-20d";
   let awayAt = 0, buildBusy = false;
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") { awayAt = Date.now(); return; }
