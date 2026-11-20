@@ -227,6 +227,9 @@ details[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
 .thumbs .t { aspect-ratio: 1 / 1; border-radius: 14px; background: var(--tile); display: grid; place-items: center; overflow: hidden; position: relative; }
 .thumbs .t svg { width: 80%; height: 80%; }
 .thumbs span.l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.heads { border: 2px solid var(--berry); }
+.heads h2 { display: flex; align-items: center; gap: 8px; }
+.heads h2 svg { width: 22px; height: 22px; color: var(--berry); flex: none; }
 .secret { display: flex; gap: 8px; align-items: flex-start; font-size: .94rem; color: var(--muted); font-weight: 600; }
 .secret svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
 
@@ -1065,7 +1068,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   }
 
   // ---------- sync ----------
-  let api = null, gen = 0, inflight = 0, lastSig = "", timer = 0;
+  let api = null, gen = 0, inflight = 0, lastSig = "", timer = 0, loadedOK = false;
   function schedule(ms) {
     clearTimeout(timer);
     if (api && api.kind === "live" && document.visibilityState === "visible") timer = setTimeout(refresh, ms == null ? (outbox.length ? 10000 : 30000) : ms);
@@ -1122,11 +1125,14 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
           try { r = await a[x.k](...x.a); }
           catch (e) {
             const st = e && e.status;
-            // A request the database will never take, or one it keeps refusing while everything else works,
-            // is set aside so it can't hold up the rest. No signal, or a database that isn't answering at all,
-            // never drops anything.
-            const never = st >= 400 && st < 500 && ![401, 403, 408, 429].includes(st);
-            if (st && !never && !S.netErr) { outbox = readOutbox(); const y = outbox.find(z => z.id === x.id); if (y) { y.n = (y.n || 0) + 1; saveOutbox(); if (y.n >= 3) { settle(x, "error"); dropped = true; continue; } } }
+            // A request the database will never take (400: it can't read it), or one it keeps refusing while
+            // everything else works, is set aside so it can't hold up the rest. No signal, a database that isn't
+            // answering at all, or one that is being updated (404 for a moment while setup.sql runs) never drops
+            // anything: strikes only count after a load has worked in this session, so app restarts while the
+            // database is down can't add up.
+            const never = st === 400;
+            // At most one strike a minute, so a short outage never adds up; a 404 gets twice the patience.
+            if (st && !never && loadedOK && !S.netErr) { outbox = readOutbox(); const y = outbox.find(z => z.id === x.id); if (y && Date.now() - (y.t || 0) > 60e3) { y.n = (y.n || 0) + 1; y.t = Date.now(); saveOutbox(); if (y.n >= (st === 404 ? 6 : 3)) { settle(x, "error"); dropped = true; continue; } } }
             if (never) { settle(x, "error"); dropped = true; continue; }
             stuck = true; break;
           }
@@ -1157,6 +1163,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       if (r && r.error) { authProblem(r.error); return; }
       if (S.mode === "locked" || S.mode === "unset") { S.mode = a.kind === "live" ? "live" : "preview"; renderBanner(); }
       if (startGen === gen && inflight === 0) apply(r, true);
+      loadedOK = true;
       if (S.netErr) { S.netErr = false; renderBanner(); }
     } catch (e) {
       if (!S.netErr) { S.netErr = true; renderBanner(); }
@@ -1286,13 +1293,15 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       }
     }, 3000);
   }
-  function canWrite() {
-    if (S.mode === "locked") { toast("Flocks is paused for a few minutes after too many wrong passcodes."); return false; }
+  // While Flocks is paused after wrong passcodes, ticks, hearts, gift plans and notes still go in the outbox on
+  // this phone and send once the pause ends. Only the bigger changes (strict) wait.
+  function canWrite(strict) {
+    if (S.mode === "locked" && (strict || !api || api.kind !== "live")) { toast("Flocks is paused for a few minutes after too many wrong passcodes."); return false; }
     if (S.mode === "unset" || S.mode === "need-code" || !api) { toast("Flocks isn't ready yet."); return false; }
     return true;
   }
   async function mutate(local, remote, failMsg) {
-    if (!canWrite()) return false;
+    if (!canWrite(true)) return false;
     local(S.data); dirty(); gen++; inflight++;
     lastSig = "";            // the screen now differs from the last server copy, so the next load always re-applies
     onData();
@@ -1520,7 +1529,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     const el = $("#banner"); let h = "";
     if (S.mode === "preview") h = storageOK ? `<div class="banner"><b>Preview.</b> Changes are saved on this device only. Once the family database is connected, everyone shares one list.</div>`
       : `<div class="banner"><b>Preview.</b> This browser isn't letting Flocks save, so changes will disappear when the page closes.</div>`;
-    else if (S.mode === "locked") h = `<div class="banner"><b>Too many wrong passcodes.</b> Flocks is paused for 15 minutes to keep it safe. Try again after that.</div>`;
+    else if (S.mode === "locked") h = `<div class="banner"><b>Too many wrong passcodes.</b> Flocks is paused for 15 minutes to keep it safe. Anything you tick or heart is kept on this phone and sends when it unpauses.</div>`;
     else if (S.mode === "unset") h = `<div class="banner"><b>Almost ready.</b> The family passcode hasn't been set yet. Ask whoever set up Flocks to finish the last step.</div>`;
     else if (S.waiting && outbox.length) h = `<div class="banner"><b>${outbox.length} ${outbox.length === 1 ? "change" : "changes"} waiting to send.</b> ${outbox.length === 1 ? "It's" : "They're"} saved on this phone and will send when there's signal.</div>`;
     else if (S.netErr) h = `<div class="banner"><b>Offline.</b> Showing the last saved copy. Changes are saved on this phone and send when you're back online.</div>`;
@@ -1566,7 +1575,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       ${q > 1 ? `<span class="qty" aria-label="${q} copies">×${q}</span>` : ""}
       <div class="card-body" data-open="${esc(b.id)}"><h3 class="nm">${esc(b.name)}</h3><p class="meta">${esc(meta)}</p>${tags ? `<div class="tags">${tags}</div>` : ""}</div>
       <div class="card-actions">
-        <button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "In my flock ✓" : "I have it"}</button>
+        <button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock ✓" : "I have it"}</button>
         <button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button>
       </div>
     </article>`;
@@ -1641,7 +1650,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       <div><button class="card-body btnish" type="button" data-open="${esc(b.id)}" style="padding:0"><span class="nm" style="display:block">${esc(b.name)}</span><span class="meta" style="display:block">${esc(meta)}</span></button>
       ${m ? `<p class="ans ${q ? "yes" : "no"}">${q ? "✓ In your flock" + (q > 1 ? " (" + q + ")" : "") : "Not in your flock yet"}</p>` : ""}
       ${tags ? `<div class="tags">${tags}</div>` : ""}
-      <div class="acts"><button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}">${q ? "In my flock ✓" : "I have it"}</button><button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button></div></div></li>`;
+      <div class="acts"><button class="have-btn${q ? " on" : ""}" type="button" data-have="${esc(b.id)}" aria-pressed="${!!q}"><span class="sr">${esc(b.name)}: </span>${q ? "In my flock ✓" : "I have it"}</button><button class="heart${w ? " on" : ""}" type="button" data-wish="${esc(b.id)}" aria-pressed="${w}" aria-label="${esc(b.name)} on my wish list" style="color:var(--berry)">${ICON.heart(w)}</button></div></div></li>`;
   }
 
   // ---------- views ----------
@@ -1790,9 +1799,10 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       popping = true; closeDialog(); popping = false;
     }
     if (!st || !st.fl || hkey(st) === hkey(hereState())) return;
+    const wasTab = S.tab;
     if (st.tab !== S.tab && TABS.includes(st.tab)) { if (S.tab === "store") leaveStore(); S.tab = st.tab; store.set("flocks.tab", S.tab); }
     S.season = st.s || ""; S.set = st.y || "";
-    if (S.q && S.tab === "birds") { S.q = ""; $("#q").value = ""; }
+    if (S.q && S.tab === "birds" && wasTab === "birds") { S.q = ""; $("#q").value = ""; $("#qClear").hidden = true; }
     renderTabs(); renderView();
     const y = st.sc || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y }));
     if (S.tab === "birds") focusPage();
@@ -1861,6 +1871,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     let h = `<div class="people" role="group" aria-label="Whose flock">${order.map(f => `<button class="person" type="button" data-person="${esc(f.id)}" aria-pressed="${f.id === p.id}"><span class="av" style="${avStyle(flockColor(f, all.indexOf(f)))}">${initial(f.name)}</span>${esc(f.id === S.meId ? f.name + " (you)" : f.name)}</button>`).join("")}</div>`;
     h += `<div class="panel"><div class="person-head"><span class="av" style="${avStyle(flockColor(p, pi))}">${initial(p.name)}</span><div><h2>${esc(isMe ? "Your flock" : p.name + "'s flock")}</h2><p class="sub" style="margin:0">${owned.length} of ${birds().length} birds · ${wished.length} on the wish list</p></div></div>
       <details><summary class="lbl" style="min-height:44px;display:flex;align-items:center;cursor:pointer">Collection by season</summary>${seasonBars(p)}</details></div>`;
+    if (!isMe) h += headsUp(m, p);
     h += `<div class="panel"><h2>${esc(isMe ? "Your wish list" : "Gift ideas for " + p.name)}</h2>`;
     if (!isMe) h += `<p class="sub">Birds ${esc(p.name)} is wishing for and doesn't have yet.</p>`;
     else h += `<p class="sub">This is what the family sees when shopping for you. Whatever they've decided to get you stays hidden.</p>`;
@@ -1870,7 +1881,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
         const meta = [seasonOf(b).label, b.year, b.price].filter(Boolean).join(" · ");
         return `<li class="gift"><button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
           <div><p class="nm">${esc(b.name)}</p><p class="meta">${esc(meta)}</p>
-          <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
+          <div class="acts">${!isMe ? `<button class="pill-btn${got ? " on" : ""}" type="button" data-gift="${esc(b.id)}" aria-pressed="${got}">${ICON.gift}${got ? "You're getting this ✓" : "I'm getting this"}</button>${got ? `<button class="pill-btn" type="button" data-given="${esc(b.id)}" data-givenfor="${esc(p.id)}"><span class="sr">${esc(b.name)}: </span>Given! 🎁</button>` : ""}` : ""}${url && isTarget(url) ? `<a class="pill-btn" href="${esc(url)}" target="_blank" rel="noopener">${ICON.ext}See on Target</a>` : `<a class="pill-btn" href="${esc(resaleSearch(b))}" target="_blank" rel="noopener">${ICON.ext}Find it on eBay</a>`}</div></div></li>`;
       }).join("")}</ul>`;
       if (!isMe) h += `<p class="secret">${ICON.lock}<span>Only you can see what you're getting. ${esc(p.name)} won't see it in the app${gettingCount ? `. You're getting ${gettingCount}.` : "."}</span></p>`;
     } else h += `<p class="sub" style="margin:0">${esc(isMe ? "Your wish list is empty. Tap the heart on any bird to add it." : p.name + " hasn't wished for any birds yet.")}</p>`;
@@ -1969,7 +1980,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       (mine.length ? grid(mine, "m:", null) : `<p class="hint st-none">Nothing on your wish list yet. Tap the heart on a bird you’re hoping to find.</p>`) + `</section>`;
     for (const f of others()) {
       const list = all.filter(b => wants(f, b.id) && !qtyOf(f, b.id)).sort(byNewest);
-      h += `<section class="group">${head(f, "For " + f.name, list.length ? `${list.length} on ${f.name}’s list` : "")}` +
+      h += `<section class="group">${head(f, "For " + f.name, list.length ? `${list.length} on ${f.name}’s list` : "")}` + headsUp(m, f) +
         (list.length ? `<p class="secret">${ICON.lock}<span>Only you can see what you’re getting.</span></p>` + grid(list, "g:" + f.id + ":", f)
           : `<p class="hint st-none">${esc(f.name)} hasn’t wished for any birds yet.</p>`) + `</section>`;
     }
@@ -2324,6 +2335,30 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   }
   function setWish(bid, on) { const m = me(); if (!m || !api) return; write("setWish", [m.id, bid, on]); }
   function setGift(forId, bid, on) { const m = me(); if (!m || !api) return; write("setGift", [m.id, forId, bid, on]); }
+  // Gift plans that no longer match: the bird is in their flock now, or off their wish list.
+  // Without this the plan just drops out of sight, and a double buy shows up at the unwrapping.
+  function staleGifts(m, p) {
+    const mine = (m && m.gifts && m.gifts[p.id]) || {};
+    return Object.keys(mine).filter(id => mine[id] && S.data.birds[id] && (qtyOf(p, id) || !wants(p, id))).map(id => Object.assign({ id }, S.data.birds[id]));
+  }
+  function headsUp(m, p) {
+    const list = m ? staleGifts(m, p) : [];
+    if (!list.length) return "";
+    return `<div class="panel heads"><h2>${ICON.gift}Heads up</h2><p class="sub">Only you can see this.</p><ul class="gift-list">${list.map(b => {
+      const art = artHTML(b, 160, ""), has = qtyOf(p, b.id);
+      return `<li class="gift"><button class="thumb${art.photo ? "" : " nophoto"}" type="button" data-open="${esc(b.id)}" aria-label="${esc(b.name)}, details">${art.html}</button>
+        <div><p class="nm">${esc(has ? `${p.name} has ${b.name} now` : `${b.name} is off ${p.name}’s wish list`)}</p>
+        <p class="meta">${esc(has ? "If that was your gift, it arrived. If not, you may have a double." : `You were planning to get it for ${p.name}.`)}</p>
+        <div class="acts"><button class="pill-btn" type="button" data-giftclear="${esc(b.id)}" data-giftfor="${esc(p.id)}"><span class="sr">${esc(b.name)}: </span>${has ? "OK, clear it" : "Cancel my plan"}</button></div></div></li>`;
+    }).join("")}</ul></div>`;
+  }
+  // "Given!" puts the bird in their flock (and off their wish list) and finishes your plan. Undo puts it all back.
+  function giveGift(forId, bid) {
+    const m = me(), f = flock(forId), b = S.data.birds[bid]; if (!m || !f || !b || !api || !canWrite()) return;
+    const wasQ = qtyOf(f, bid), wasW = wants(f, bid);
+    write([["setOwned", [forId, bid, Math.max(1, wasQ), today()]], ["setGift", [m.id, forId, bid, false]]]);
+    toast(`${b.name} flew to ${f.name}’s flock!`, { label: "Undo", run: () => write([["setOwned", [forId, bid, wasQ, ""]]].concat(wasW ? [["setWish", [forId, bid, true]]] : [], [["setGift", [m.id, forId, bid, true]]])) }, cutout(b) || repoPhoto(b));
+  }
   function addPerson(name, becomeIt) {
     name = String(name || "").trim().slice(0, 30); if (!name || !api) return false;
     const id = "flock-" + slug(name).slice(0, 30) + "-" + rand(4);
@@ -2334,6 +2369,16 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
   }
   function become(id) { leaveStore(); S.meId = id; store.set("flocks.me", id); S.person = ""; const m = me(); closeDialog(true); onData(); if (m) toast(`Hi ${m.name}!`); }
 
+  // Leaving All birds adds one history step, so the phone's back button returns there instead of closing the app.
+  function switchTab(tab, top) {
+    const st0 = history.state || {}, prevTab = S.tab;
+    S.scroll[S.tab] = window.scrollY;
+    if (tab === "birds" && st0.tb) { if (top) S.scroll.birds = 0; history.back(); return; }
+    if (S.tab === "store") leaveStore(); hsave(); S.tab = tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now()));
+    try { if (prevTab === "birds" && !st0.tb) history.pushState(Object.assign(hereState(), { tb: 1, from: hkey(Object.assign({}, st0, { tab: "birds" })), sc: 0 }), ""); else history.replaceState(Object.assign({}, history.state, hereState()), ""); } catch (e) {}
+    renderTabs(); renderView();
+    const y = top ? 0 : S.scroll[S.tab] || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y }));
+  }
   document.addEventListener("click", e => {
     // the name and year on a card open the bird too
     const t = e.target.closest("button, a, label") || e.target.closest(".card-body[data-open]"); if (!t) return;
@@ -2343,10 +2388,9 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     if (d.tab) {
       if (d.tab === S.tab && d.tab === "birds" && (S.season || S.set) && !S.q) { goUp(""); return; }
       if (d.tab === S.tab) { window.scrollTo({ top: 0, behavior: "smooth" }); if (d.tab === "birds") $("#q").focus({ preventScroll: true }); if (d.tab === "store" && !$("#storeHead").hidden) $("#sq").focus({ preventScroll: true }); return; }
-      S.scroll[S.tab] = window.scrollY; if (S.tab === "store") leaveStore(); hsave(); S.tab = d.tab; store.set("flocks.tab", S.tab); store.set("flocks.tab.at", String(Date.now())); try { history.replaceState(Object.assign({}, history.state, hereState()), ""); } catch (e) {} renderTabs(); renderView();
-      const y = S.scroll[S.tab] || 0; window.scrollTo({ top: y }); requestAnimationFrame(() => window.scrollTo({ top: y })); return;
+      switchTab(d.tab); return;
     }
-    if (d.goto) { if (S.tab === "store" && d.goto !== "store") leaveStore(); S.tab = d.goto; store.set("flocks.tab", S.tab); renderTabs(); renderView(); window.scrollTo({ top: 0 }); return; }
+    if (d.goto) { if (d.goto !== S.tab) switchTab(d.goto, true); return; }
     if (d.welcome !== undefined) { openDialog("welcome"); return; }
     if (d.nav !== undefined) { if (S.show || S.year) { S.show = ""; S.year = ""; } if (t.classList.contains("crumb")) goUp(d.nav); else navTo(d.nav, ""); return; }
     if (d.navyear !== undefined) { navTo(S.season, d.navyear); return; }
@@ -2382,6 +2426,8 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       return;
     }
     if (d.step && dlgState.kind === "bird") { if (!needMe()) return; const m = me(); const q = Math.max(1, Math.min(99, qtyOf(m, dlgState.id) + Number(d.step))); if (q === qtyOf(m, dlgState.id)) return; setOwned(dlgState.id, q, false); return; }
+    if (d.given) { if (!needMe()) return; giveGift(d.givenfor, d.given); return; }
+    if (d.giftclear) { if (!needMe()) return; const b = S.data.birds[d.giftclear]; setGift(d.giftfor, d.giftclear, false); toast(`Cleared ${b ? b.name : "that gift"}`); return; }
     if (d.gift) { if (!needMe()) return; const m = me(); const who = d.giftfor || S.person; const on = !(m.gifts && m.gifts[who] && m.gifts[who][d.gift]); setGift(who, d.gift, on); return; }
     if (d.person) { S.person = d.person; renderFamily(); return; }
     if (d.swatch) { draft.body = d.swatch; dlg.querySelectorAll("[data-swatch]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); const a = $("#addArt"); if (a) { a.style.setProperty("--tint", soft(draft.body)); a.innerHTML = birdSVG({ body: draft.body }); } return; }
@@ -2397,7 +2443,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     if (d.dodel) {
       const fid = d.dodel; const self = fid === S.meId; const f = flock(fid);
       const typed = $("#delName"); if (!f || !typed || typed.value.trim().toLowerCase() !== String(f.name).trim().toLowerCase()) { const er = $("#delErr"); if (er) er.textContent = `Type ${f ? f.name : "the name"} exactly to remove.`; return; }
-      if (!canWrite()) return;
+      if (!canWrite(true)) return;
       if (self) { S.meId = ""; store.del("flocks.me"); closeDialog(true); }
       mutate(dd => OPS.deleteFlock(dd, fid), () => api.deleteFlock(fid));
       if (!self && dlgState.kind === "settings") renderSettings(true);
@@ -2454,6 +2500,25 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
     }
   });
   document.addEventListener("focusout", e => { if (e.target && e.target.id === "note") saveNoteNow(); });
+  // Swiping home can freeze the app before the note's timer fires, so save it as the app goes to the background.
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && dlgState.kind === "bird") saveNoteNow(); });
+  addEventListener("pagehide", () => { if (dlgState.kind === "bird") saveNoteNow(); });
+
+  // ---------- staying up to date ----------
+  // A Home Screen app can stay open for days without reloading, so after a while away it checks for a newer
+  // version of this page and reloads to it, but only when nothing is waiting to send and no sheet is open.
+  // BUILD changes with every release.
+  const BUILD = "2026-11-20b";
+  let awayAt = 0, buildBusy = false;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") { awayAt = Date.now(); return; }
+    if (!awayAt || Date.now() - awayAt < 10 * 60e3 || buildBusy || navigator.onLine === false) return;
+    buildBusy = true;
+    fetch("index.html", { cache: "no-store" }).then(r => r.ok ? r.text() : "").then(t => {
+      const m = /const BUILD = "([^"]+)"/.exec(t);
+      if (m && m[1] > BUILD && !readOutbox().length && !dlg.open && S.tab !== "store" && !flushing && inflight === 0) location.reload();
+    }).catch(() => {}).finally(() => { buildBusy = false; });
+  });
   document.addEventListener("submit", async e => {
     e.preventDefault();
     if (e.target.id === "codeForm") {
@@ -2477,7 +2542,7 @@ dialog.sheet::backdrop { background: rgba(40,26,12,.5); }
       closeDialog();
       const ok = await write("addBird", [id, rec]);
       const file = draft.file; draft.file = null;
-      if (ok) { const own = draft.have && me(); toast(own ? `${name} is on the list and in your flock` : `${name} is on the list`); draft.name = ""; draft.kind = ""; if (own) setOwned(id, 1, false); if (file) uploadPhoto(id, file); }
+      if (ok) { const own = draft.have && me(); toast(own ? `${name} is on the list and in your flock` : `${name} is on the list`); draft.name = ""; draft.kind = ""; if (own) setOwned(id, 1, false); if (file) { if (S.mode === "locked") toast("Flocks is paused for a few minutes. Add the photo again after that."); else uploadPhoto(id, file); } }
     }
   });
 
