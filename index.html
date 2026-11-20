@@ -1022,6 +1022,7 @@ button { touch-action: manipulation; }
       j.birds.forEach(b => { if (b && typeof b.id === "string" && typeof b.name === "string") { const x = Object.assign({}, b); delete x.id; o[b.id] = x; } });
       const changed = JSON.stringify(o) !== JSON.stringify(OFFICIAL) || !officialAt;
       OFFICIAL = o; officialAt = Date.now();
+      if (changed) loadPhotoLists();   // new birds: fetch their photos too
       if (!changed || !lastRaw) return;
       lastSig = "";   // the next apply always redraws
       if (inflight === 0) { try { apply(JSON.parse(lastRaw), false); } catch (e) {} }
@@ -1190,15 +1191,32 @@ button { touch-action: manipulation; }
   const resaleSearch = b => "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent("featherly friends " + b.name + (b.year ? " " + b.year : ""));
   function targetImg(b, w) { const u = safeUrl(b.img); if (!u || !/^https:\/\/target\.scene7\.com\//.test(u)) return ""; return u.split("?")[0] + "?wid=" + w + "&hei=" + w + "&fmt=pjpeg&qlt=85"; }
   // photos/index.json lists the real photos the repo's photo finder saved: id -> { v, from, page }
-  let repoPhotos = {}, repoReady = false;
-  fetch("photos/index.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).then(j => {
-    if (j && typeof j === "object") { delete j._missing; repoPhotos = j; }
-  }).catch(() => {}).finally(() => { repoReady = true; if (S.loaded) { renderView(); if (dlgState.kind === "bird") renderBirdHero(); } });
   // cutouts/index.json lists birds cut out of their photo for the shelf: id -> photo version
-  let cutouts = {}, cutReady = false;
-  fetch("cutouts/index.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {}).then(j => {
-    if (j && typeof j === "object") cutouts = j;
-  }).catch(() => {}).finally(() => { cutReady = true; if (S.loaded && S.tab === "shelf") renderShelf(); });
+  // Both lists load again whenever the bird list does and when the app comes back to the front,
+  // so a bird added while the app was open gets its photo without a restart.
+  let repoPhotos = {}, repoReady = false, cutouts = {}, cutReady = false, photoListsAt = 0, photoListsBusy = null;
+  function loadPhotoLists() {
+    if (photoListsBusy) return photoListsBusy;
+    photoListsAt = Date.now();
+    const before = JSON.stringify([repoPhotos, cutouts]);
+    const p1 = fetch("photos/index.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
+      if (j && typeof j === "object") { delete j._missing; repoPhotos = j; }
+    }).catch(() => {});
+    const p2 = fetch("cutouts/index.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(j => {
+      if (j && typeof j === "object") cutouts = j;
+    }).catch(() => {});
+    photoListsBusy = Promise.all([p1, p2]).finally(() => {
+      photoListsBusy = null;
+      const first = !repoReady || !cutReady;
+      repoReady = cutReady = true;
+      if (S.loaded && (first || JSON.stringify([repoPhotos, cutouts]) !== before)) {
+        failedImg.clear(); renderView(); if (dlgState.kind === "bird") renderBirdHero();
+      }
+    });
+    return photoListsBusy;
+  }
+  loadPhotoLists();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && Date.now() - photoListsAt > 60e3) loadPhotoLists(); });
   const cutout = b => { const v = cutouts[b.id]; return v && /^[0-9a-f]{6,40}$/.test(String(v)) && !failedImg.has("c:" + b.id) ? "cutouts/" + encodeURIComponent(b.id) + ".webp?v=" + v : ""; };
   const repoPhoto = b => { const p = repoPhotos[b.id]; return p && /^[0-9a-f]{6,40}$/.test(String(p.v)) && !failedImg.has("r:" + b.id) ? "photos/" + encodeURIComponent(b.id) + ".jpg?v=" + p.v : ""; };
   const CAMERA_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;

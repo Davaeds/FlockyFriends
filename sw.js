@@ -1,7 +1,7 @@
 // Flocks service worker. Same-origin GET requests only; the database and Target
 // photos always go straight to the network.
 // - Versioned files (photos/…?v=, cutouts/…?v=) never change, so the saved copy is used.
-// - The photo and cutout lists show the saved copy at once and update in the background;
+// - The photo and cutout lists are fetched fresh like everything else (saved copy after 3 seconds);
 //   saved photos and cutouts that are no longer listed are then thrown away.
 // - Everything else tries the network first, but uses the saved copy if the network
 //   takes longer than 3 seconds (weak signal in a store), fails, or sends an error or sign-in page.
@@ -68,14 +68,18 @@ self.addEventListener("fetch", (e) => {
       return res;
     });
     e.waitUntil(fresh.catch(() => {}));
-    e.respondWith(caches.match(req, { ignoreSearch: true }).then((hit) => hit || fresh));
+    e.respondWith(networkFirst(req, fresh));   // a stale list leaves a just-added bird without its photo
     return;
   }
   const fresh = fetch(req).then((res) => save(req, res));
   e.waitUntil(fresh.catch(() => {}));
+  e.respondWith(networkFirst(req, fresh));
+});
+
+function networkFirst(req, fresh) {
   const fallback = () => caches.match(req, { ignoreSearch: true })
     .then((hit) => hit || (req.mode === "navigate" ? caches.match("index.html") : undefined));
-  e.respondWith(new Promise((resolve) => {
+  return new Promise((resolve) => {
     let done = false;
     const finish = (r) => { if (!done && r) { done = true; resolve(r); } };
     const timer = setTimeout(() => fallback().then(finish), 3000);
@@ -84,5 +88,5 @@ self.addEventListener("fetch", (e) => {
       if (res.ok && fits(req, res)) return finish(res);
       fallback().then((hit) => finish(hit || res));   // an error or sign-in page: the saved copy is better, if there is one
     }).catch(() => { clearTimeout(timer); fallback().then((hit) => { if (hit) finish(hit); else { done = true; resolve(Response.error()); } }); });
-  }));
-});
+  });
+}
