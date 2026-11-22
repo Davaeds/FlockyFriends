@@ -1,21 +1,7 @@
 {
  "note": "Birds the automatic check found that aren't on the list yet. The app hides them until Ethan adds them; see tools/find_new_birds.py.",
- "checked": "2026-11-20 15:42 UTC",
- "birds": [
-  {
-   "name": "Ollie",
-   "season": "christmas",
-   "year": "2026",
-   "kind": "",
-   "source": "wiki",
-   "body": "#E0525B",
-   "url": "https://target-birds.fandom.com/wiki/All_Releases",
-   "urlLabel": "Fan wiki",
-   "about": "Listed on the Target Birds fan wiki (Christmas 2026).",
-   "found": "2026-11-04",
-   "id": "ollie-2026"
-  }
- ],
+ "checked": "2026-11-22 20:25 UTC",
+ "birds": [],
  "rereleases": [
   "Scout 2026 (back from 2016)",
   "Parker 2026 (back from 2017)",
